@@ -1,0 +1,14 @@
+mapname:map2018MultiTypes
+treasure:82:95
+treasure:96:24
+treasure:42:60
+treasure:66:46
+treasure:112:10
+diamonds:14:24
+diamonds:19:41
+agentTanker:Agent5:38:200:200
+agentCollect:Agent3:5:-1:18
+agentCollect:Agent4:122:41:-1
+agentExplo:Agent1:77:-1:-1
+agentExplo:Agent2:83:-1:-1
+wumpus:Golem:98:200:0
