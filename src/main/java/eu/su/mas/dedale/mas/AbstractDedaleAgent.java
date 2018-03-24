@@ -37,10 +37,11 @@ import eu.su.mas.dedale.princ.ConfigurationFile;
 /**
  * Any agent willing to interact with a the DEDALE environment must extend this class
  * it offers :
- *  - the API to move and act in the env, either is it distributed or not
- *  - the management of the communication reach
- *  - the deployment of the agent
- *  
+ * <ul>
+ *  <li> the API to move and act in the env, either it is distributed or not</li>
+ *  <li> the management of the communication reach</li>
+ *  <li> the deployment of the agent</li>
+ *  </ul>
  * 
  * @author Cédric Herpson.
  *
@@ -50,11 +51,6 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 	private static final long serialVersionUID = -7435630598237152610L;
 		
 	private EntityCharacteristics ec;
-
-	//here, used to choose the type of resource the agent can pick
-	//This info is stored in EntityType.carac
-	//private Observation myTreasureType;
-	//private int COMMUNICATION_REACH=3;
 
 	/**
 	 * The key is the Observation used as an ObservationType
@@ -331,24 +327,11 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 
 		if (receiverNumber>0){
 			super.send(msg);
-			//			realEnv.updateNodeInterfaceComRendering();
+			
 		}//else{
 		//	System.out.println(msg.getSender().getLocalName()+"-- No agent within reach --");
 		//}
 	}
-
-//	/**
-//	 *Gives a ref of the environment to the agent and deploys (pseudo-randomly) him on the map. 
-//	 * Without GK, this method MUST be called in the setup of the agent.
-//	 * Otherwise, it is managed transparently through the GK exchanges.
-//	 * @param env a ref to the environment
-//	 */
-//	//TODO delete this method and always use a GK
-//	public void deployEntity(IEnvironment env){
-//		realEnv=env;
-//		realEnv.deployEntity(this.getLocalName(),ec.getMyEntityType(),ec.getInitialLocation());
-//	}
-	
 
 	/**
 	 * Used to get a ref of this environment from the genericSharableObject table to realEnv, as well as the agents characteristics obtained through the configurationFile
@@ -425,65 +408,13 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 	}
 	
 
-	//	/**
-	//	 * Gives a ref of the environment to the agent and deploys (pseudo-randomly) him on the map as a collector agent. 
-	//	 * Without GK, this method MUST be called in the setup of the agent.
-	//	 * Otherwise, it is managed transparently through the GK exchanges.
-	//	 * @param env a ref to the environment
-	//	 */
-	//	public void deployAgent(Environment env){
-	//		realEnv=env;
-	//		realEnv.deployEntity(this.getLocalName(),EntityType.AGENT_COLLECTOR);
-	//	}
 
-	//	/**
-	//	 *Gives a ref of the environment to the agent and deploys (pseudo-randomly) him on the map. 
-	//	 * Without GK, this method MUST be called in the setup of the agent.
-	//	 * Otherwise, it is managed transparently through the GK exchanges.
-	//	 * @param env a ref to the environment
-	//	 * @param e type of the agent
-	//	 */
-	//	public void deployAgent(Environment env,EntityType e){
-	//		realEnv=env;
-	//		realEnv.deployEntity(this.getLocalName(),e);
-	//	}
-
-	//	/**
-	//	 * Deploy (pseudo-randomly) a wumpus on the map. This method MUST be called in the setup of the agent.
-	//	 * @param env a ref to the environment
-	//	 */
-	//	public void deployWumpus(Environment env){
-	//		realEnv=env;
-	//		realEnv.deployEntity(this.getLocalName(),EntityType.WUMPUS);
-	//	}
-
-	//	/**
-	//	 * 
-	//	 * @param nodeId my current position
-	//	 * @return The available observations, null if the given position does not correspond to the one 
-	//	 * of the agent.
-	//	 */
-	//	private List<Couple<String,List<DataFromEnv>>> observe(String nodeId){
-	//		return this.realEnv.observe(nodeId,this.getLocalName());
-	//	}
-	//
-	//	/**
-	//	 * 
-	//	 * 
-	//	 * @param myDestination the targeted nodeId
-	//	 * @return true is the move is legit and done, false otherwise
-	//	 */
-	//	private boolean move(String myDestination){
-	//		return this.realEnv.move(this.getLocalName(),myDestination);
-	//	}
-
-
-	/*
-	 * *****************
+	/******************
 	 * Agent Creation
-	 * *****************
+	 ******************
 	 */
 
+	
 	protected void setup(){	
 		super.setup();
 		
@@ -568,7 +499,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 
 
 
-
+	// see DELTA
 	//	public void addAbility(Ability ability,String abilityID,String role,List<List<Object>> behavioursParameters,Knowledge knowledge){
 	//		//Call to the protocol class that will get me all the behaviours necessary to add to the agent regarding the role r
 	//

@@ -26,6 +26,7 @@ public final class ConfigurationFile {
 	 * Required by the environment class to be able to load it
 	 */
 	public static EnvironmentType ENVIRONMENT_TYPE=EnvironmentType.GS;
+	
 	public static Integer DEFAULT_COMMUNICATION_REACH=3;
 	
 	public static String GATEKEEPER_NAME="GK";

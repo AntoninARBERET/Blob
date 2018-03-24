@@ -109,7 +109,7 @@ public class DummyWumpusShift extends AbstractDedaleAgent{
 			String myPosition=((AbstractDedaleAgent) this.myAgent).getCurrentPosition();
 			if (myPosition!=""){
 				List<Couple<String,List<Couple<Observation,Integer>>>> lobs=((AbstractDedaleAgent)this.myAgent).observe();//myPosition
-				System.out.println(this.myAgent.getLocalName()+" -- list of observables: "+lobs);
+				//System.out.println(this.myAgent.getLocalName()+" -- list of observables: "+lobs);
 
 				//If I have treasure in my backPack and the waitingTime is reached
 				if(grabbed && currentWaitingTimeBeforeDromOff==0){
@@ -141,12 +141,12 @@ public class DummyWumpusShift extends AbstractDedaleAgent{
 						//						break;
 
 						case GOLD:
-							System.out.println("My treasure type is : "+((AbstractDedaleAgent) this.myAgent).getMyTreasureType());
-							System.out.println("My current backpack capacity is:"+ ((AbstractDedaleAgent) this.myAgent).getBackPackFreeSpace());
+							//System.out.println("My treasure type is : "+((AbstractDedaleAgent) this.myAgent).getMyTreasureType());
+							//System.out.println("My current backpack capacity is:"+ ((AbstractDedaleAgent) this.myAgent).getBackPackFreeSpace());
 							int valGrabbed=((AbstractDedaleAgent)this.myAgent).pick();
-							System.out.println("The agent grabbed :"+valGrabbed);
+							//System.out.println("The agent grabbed :"+valGrabbed);
 
-							System.out.println("the remaining backpack capacity is: "+ ((AbstractDedaleAgent) this.myAgent).getBackPackFreeSpace());
+							//System.out.println("the remaining backpack capacity is: "+ ((AbstractDedaleAgent) this.myAgent).getBackPackFreeSpace());
 							b=true;
 							if (valGrabbed>0 && !grabbed){
 								grabbed=true;
@@ -154,11 +154,11 @@ public class DummyWumpusShift extends AbstractDedaleAgent{
 							}
 							break;
 						case DIAMOND:
-							System.out.println("My treasure type is : "+((AbstractDedaleAgent) this.myAgent).getMyTreasureType());
-							System.out.println("My current backpack capacity is:"+ ((AbstractDedaleAgent) this.myAgent).getBackPackFreeSpace());	//System.out.println("The agent grabbed :"+((mas.abstractAgent)this.myAgent).pick());
+							//System.out.println("My treasure type is : "+((AbstractDedaleAgent) this.myAgent).getMyTreasureType());
+							//System.out.println("My current backpack capacity is:"+ ((AbstractDedaleAgent) this.myAgent).getBackPackFreeSpace());	//System.out.println("The agent grabbed :"+((mas.abstractAgent)this.myAgent).pick());
 							int valdiamGrabbed=((AbstractDedaleAgent)this.myAgent).pick();
-							System.out.println("The agent grabbed :"+valdiamGrabbed);	
-							System.out.println("the remaining backpack capacity is: "+ ((AbstractDedaleAgent) this.myAgent).getBackPackFreeSpace());
+							//System.out.println("The agent grabbed :"+valdiamGrabbed);	
+							//System.out.println("the remaining backpack capacity is: "+ ((AbstractDedaleAgent) this.myAgent).getBackPackFreeSpace());
 							b=true;
 							if (valdiamGrabbed>0 && !grabbed){
 								grabbed=true;
@@ -170,10 +170,10 @@ public class DummyWumpusShift extends AbstractDedaleAgent{
 						}
 					}
 					//If the agent picked (part of) the treasure
-					if (b){
-						List<Couple<String,List<Couple<Observation,Integer>>>> lobs2=((AbstractDedaleAgent)this.myAgent).observe();//myPosition
-						System.out.println("State of the observations after picking "+lobs2);
-					}
+//					if (b){
+//						List<Couple<String,List<Couple<Observation,Integer>>>> lobs2=((AbstractDedaleAgent)this.myAgent).observe();//myPosition
+//						System.out.println("State of the observations after picking "+lobs2);
+//					}
 
 					//decrement the currentWaiting time
 					if(grabbed){

@@ -7,7 +7,7 @@ import eu.su.mas.dedale.princ.ConfigurationFile;
 import scala.util.Random;
 
 /**
- * This class contain, for each agent, all its default caracteristics
+ * This class contain, for each agent, all its (default) characteristics
  * @author hc
  *
  */
