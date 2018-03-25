@@ -5,6 +5,11 @@ import java.util.List;
 
 import dataStructures.tuple.Couple;
 
+/**
+ * Interface that any environment for Dedale's agent should implement
+ * @author hc
+ *
+ */
 public interface IEnvironment {
 
 	

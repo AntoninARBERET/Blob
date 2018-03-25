@@ -1,4 +1,4 @@
-package eu.su.mas.dedale.mas.agents;
+package eu.su.mas.dedale.mas.agents.dedaleDummyAgents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,7 @@ import dataStructures.tuple.Couple;
 import debug.Debug;
 import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
-
-import eu.su.mas.dedale.mas.agents.behaviours.startMyBehaviours;
+import eu.su.mas.dedale.mas.agent.behaviours.startMyBehaviours;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.TickerBehaviour;
 

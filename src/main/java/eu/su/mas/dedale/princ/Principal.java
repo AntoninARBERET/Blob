@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
-import eu.su.mas.dedale.mas.agents.DummyCollectorAgent;
-import eu.su.mas.dedale.mas.agents.DummyMovingAgent;
-import eu.su.mas.dedale.mas.agents.DummyTankerAgent;
-import eu.su.mas.dedale.mas.agents.DummyWumpusShift;
 import eu.su.mas.dedale.mas.agents.GateKeeperAgent;
+import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyCollectorAgent;
+import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyMovingAgent;
+import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyTankerAgent;
+import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyWumpusShift;
 //import jade.core.AgentContainer;
 import jade.core.Profile;
 import jade.core.ProfileImpl;

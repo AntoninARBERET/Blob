@@ -3,9 +3,9 @@ package eu.su.mas.dedale.mas;
 import org.junit.Assert;
 
 import env.Environment;
-import eu.su.mas.dedale.mas.agents.interactions.protocols.P_deployMe;
-import eu.su.mas.dedale.mas.agents.interactions.protocols.deployMe.R1_deployMe;
-import eu.su.mas.dedale.mas.agents.interactions.protocols.deployMe.R1_managerAnswer;
+import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe;
+import eu.su.mas.dedale.mas.agent.interactions.protocols.deployMe.R1_deployMe;
+import eu.su.mas.dedale.mas.agent.interactions.protocols.deployMe.R1_managerAnswer;
 import jade.wrapper.ContainerController;
 import jade.wrapper.ControllerException;
 

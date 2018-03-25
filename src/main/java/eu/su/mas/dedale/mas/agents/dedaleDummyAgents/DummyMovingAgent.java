@@ -1,12 +1,11 @@
-package eu.su.mas.dedale.mas.agents;
+package eu.su.mas.dedale.mas.agents.dedaleDummyAgents;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
-
-import eu.su.mas.dedale.mas.agents.behaviours.RandomWalkBehaviour;
-import eu.su.mas.dedale.mas.agents.behaviours.startMyBehaviours;
+import eu.su.mas.dedale.mas.agent.behaviours.RandomWalkBehaviour;
+import eu.su.mas.dedale.mas.agent.behaviours.startMyBehaviours;
 import jade.core.behaviours.Behaviour;
 
 public class DummyMovingAgent extends AbstractDedaleAgent{

@@ -1,9 +1,11 @@
-package eu.su.mas.dedale.mas.agents.behaviours;
+package eu.su.mas.dedale.mas.agent.behaviours;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
-import eu.su.mas.dedale.mas.agents.interactions.protocols.P_deployMe;
+import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe;
+import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyMovingAgent;
 import jade.core.AID;
 import jade.core.ContainerID;
 import jade.core.behaviours.Behaviour;
@@ -11,6 +13,16 @@ import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
+/**
+ * This behaviour must be the only one added directly to any dedale agent.<br/>
+ * It allows the agent to wait for its deployment in the environment before triggering its associated behaviours.<br/>
+ * Indeed, an agent have to wait for the gatekeeper to deliver a reference to the env before calling the Environment's API
+ * 
+ *  {@see DummyMovingAgent} source code for an example
+ *  
+ * @author hc
+ *
+ */
 public class startMyBehaviours extends SimpleBehaviour {
 
 	private static final long serialVersionUID = 1326096402723539425L;
@@ -19,7 +31,15 @@ public class startMyBehaviours extends SimpleBehaviour {
 	private boolean messageFromGK=false;
 	private List<Behaviour> lBehav;
 
-
+/**
+ * 
+ * @param a
+ * @param behaviourList the list of behaviours to be added after the agent a is deployed in the environment
+ * e.g.<br/>
+ * List<Behaviour> lb=new ArrayList<Behaviour>();<br/>
+   lb.add(new RandomWalkBehaviour(this));<br/>
+	addBehaviour(new startMyBehaviours(this,lb));
+ */
 	public startMyBehaviours(AbstractDedaleAgent a,List<Behaviour> behaviourList) {
 		super(a);
 		lBehav=behaviourList;

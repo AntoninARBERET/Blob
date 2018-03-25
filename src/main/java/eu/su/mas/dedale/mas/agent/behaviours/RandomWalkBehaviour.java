@@ -1,4 +1,4 @@
-package eu.su.mas.dedale.mas.agents.behaviours;
+package eu.su.mas.dedale.mas.agent.behaviours;
 
 import java.io.IOException;
 import java.util.List;

@@ -1,4 +1,4 @@
-package eu.su.mas.dedale.mas.agents.interactions.protocols;
+package eu.su.mas.dedale.mas.agent.interactions.protocols;
 
 
 
@@ -24,10 +24,11 @@ import org.junit.Assert;
 /**
  * This class is used to allow an agent to ask an 
  * environmentManager Agent to deploy it in.
- * 
- * A -request(DeployMe) --> GateKeeper
- * A <- Refuse/Agree ref to env -- GateKeeper
- * A -Confirm deployed-> A
+ * <ul>
+ * <li> A -request(DeployMe) --> GateKeeper</li>
+ * <li> A <- Refuse/Agree ref to env -- GateKeeper</li>
+ * <li> A -Confirm deployed-> A </li>
+ * </u>
  * 
  * @author Cédric Herpson
  */
@@ -69,7 +70,6 @@ public class P_deployMe implements Serializable{
 			try {
 				temp = c.getContainerName().toString();
 			} catch (ControllerException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			System.out.println(this.myAgent.getLocalName()+" : I'm currently on container: "+temp);
@@ -91,7 +91,6 @@ public class P_deployMe implements Serializable{
 			//			try {
 			//				temp = c.getContainerName().toString();
 			//			} catch (ControllerException e1) {
-			//				// TODO Auto-generated catch block
 			//				e1.printStackTrace();
 			//			}
 			//			
@@ -120,7 +119,6 @@ public class P_deployMe implements Serializable{
 			//				
 			//				}
 			//			} catch (ControllerException e) {
-			//				// TODO Auto-generated catch block
 			//				e.printStackTrace();
 			//			}
 
@@ -198,7 +196,6 @@ public class P_deployMe implements Serializable{
 						System.out.println("The GakeKeeper refused to add the agent "+this.myAgent.getLocalName()+ " in the environment.\n "
 								+ "The agent is currently on the container "+ this.myAgent.getContainerController().getContainerName()+" and the GateKeeper is on "+msg.getContent());
 					} catch (ControllerException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					//send a message to myself to activate the other behaviours

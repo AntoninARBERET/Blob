@@ -42,7 +42,11 @@ import eu.su.mas.dedale.env.Observation;
 /**
  * This class is an implementation of the IEnvironment using the graphStream library
  * 
- * It currently supports 3 types of agents (tanker, explorer and collector), 1 wumpus (which generates stench), Well (that generate wind and kill the agents that come in them), and two types of treasures (gold and diamonds) 
+ * It currently supports : 
+ *  - 3 types of agents (tanker, explorer and collector), 
+ *  - 1 wumpus (which generates stench), 
+ *  - Well (that generate wind and kill the agents that come in them),
+ *  - and two types of treasures (gold and diamonds) 
  * @author hc
  *
  */
@@ -75,7 +79,9 @@ public class gsEnvironment implements IEnvironment {
 	
 
 
-
+/**
+ * 
+ */
 	public void CreateEnvironment(String topologyConfigurationFilePath, String instanceConfiguration,boolean isGrid, Integer envSize,boolean diamond,boolean gold,boolean well) {
 		//	TODO allow the generation of elements on a loaded topology
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");

@@ -27,10 +27,10 @@ import eu.su.mas.dedale.env.EntityCharacteristics;
 import eu.su.mas.dedale.env.EntityType;
 import eu.su.mas.dedale.env.IEnvironment;
 import eu.su.mas.dedale.env.Observation;
-import eu.su.mas.dedale.mas.agents.behaviours.ReceiveTreasureTankerBehaviour;
-import eu.su.mas.dedale.mas.agents.interactions.protocols.P_deployMe;
-import eu.su.mas.dedale.mas.agents.interactions.protocols.P_deployMe.R1_ManagerAnswer;
-import eu.su.mas.dedale.mas.agents.interactions.protocols.P_deployMe.R1_deployMe;
+import eu.su.mas.dedale.mas.agent.behaviours.ReceiveTreasureTankerBehaviour;
+import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe;
+import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe.R1_ManagerAnswer;
+import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe.R1_deployMe;
 import eu.su.mas.dedale.princ.ConfigurationFile;
 
 
@@ -113,10 +113,12 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 
 	/**
 	 * 
-	 * @return The available observations from the agent's current position; 
+	 * @return The available observations from the agent's current position.</br> 
 	 * A list of observed position (PositionID), and for each one is associated its list of observations under the form (ObservationType, Value))
-	 * . Null if there is a malfunction
-	 * Example : {Position1; [(Observation1,Value1);(Obseration2,Value2)],Position2; [(Observation1,Value1);(Obseration2,Value2)],..}  
+	 * . Null if there is a malfunction</br>
+	 * Example : {</br> Position1; [(Observation1,Value1);(Obseration2,Value2)],
+	 * </br>Position2; [(Observation1,Value1);(Obseration2,Value2)],</br>
+	 * ..}  
 	 * 
 	 * @see Observation for the list of Observation components
 	 */
@@ -126,8 +128,10 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 
 
 	/**
+	 * This method should be the last method called in your behaviour.</br>
+	 * The agent can die if he moves too carelessly.
 	 * @param myDestination the targeted nodeId
-	 * @return true is the move is legit and done, false otherwise
+	 * @return true if the move is legit and triggered, false otherwise
 	 */
 	public boolean moveTo(String myDestination){
 		int consequence=this.realEnv.moveTo(this.getLocalName(),this.ec, myDestination);
@@ -225,7 +229,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 		
 		//critical section is preferred to check the agentSiloName type and ensure the boolean answer. Otherwise I cannot give a boolean answer to the agent.
 		//At the same time it is normal to block the agent during the realisation of a task.
-		//conception decision to explain
+		//conception decision to explain in the documentation
 
 		if (ec.getMyTreasureType()!=Observation.NO_TREASURE && ec.getMyTreasureType()!=Observation.ANY_TREASURE && this.realEnv.isReachable(this.getLocalName(),agentSiloName,this.ec.getCommunicationReach())){
 			//this.addAbility(ability, abilityID, role, behavioursParameters, knowledge);
@@ -400,21 +404,37 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 		}
 
 		if (!found){
-			Debug.error("The agent "+agentName +" whas not found in the configuration file: "+instanceConfigurationEntitiesFullPath);
+			Debug.error("The agent "+agentName +" whas not found in the configuration file: "+instanceConfigurationEntitiesFullPath+".\n Its mandatory to give its caracteristics. See https://dedale.gitlab.io/page/tutorial/deployAgents/");
 		}
 		Object[] result={ec,ConfigurationFile.GATEKEEPER_NAME};
 
 		return result;
 	}
 	
-
+	/********************************
+	 * Visible to the project only
+	 *******************************/
+	/**
+	 * Used by the Knowledge components
+	 * @return the backpack
+	 */
+	protected HashMap<Observation,Integer> getBackPack(){
+		return this.myBackPack;
+	}
 
 	/******************
 	 * Agent Creation
 	 ******************
 	 */
 
-	
+	/**
+	 * This method is automatically called when a Dedale agent is created.
+	 * It initialize its internal variables and add the mandatory abilities of any dedale's agent : 
+	 * <ul>
+	 * <li> To deploy itself within the environment and let its internal treasure state be observable :DeployMe</li>
+	 * <li> To received treasures if the agent's type is "tanker"</li>
+	 * </ul> 
+	 */
 	protected void setup(){	
 		super.setup();
 		

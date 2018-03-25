@@ -7,7 +7,7 @@ import eu.su.mas.dedale.env.EnvironmentType;
 import eu.su.mas.dedale.env.IEnvironment;
 import eu.su.mas.dedale.env.gs.gsEnvironment;
 import eu.su.mas.dedale.env.jme.jmeEnvironment;
-import eu.su.mas.dedale.mas.agents.interactions.protocols.P_deployMe;
+import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe;
 import eu.su.mas.dedale.princ.ConfigurationFile;
 //import env.Environment;
 import jade.core.Agent;
@@ -98,13 +98,13 @@ public class GateKeeperAgent extends AbstractDeltaAgent {
 		//}
 
 
-		//3) Add the behaviours allowing the GK to add/remove agent from the env
-
-		//P_deployMe.getRole2(env, this);
-		//R2_envManager(this,env);
+		//3) Add the behaviour(s) allowing the GK to add/remove agent from the env
 		P_deployMe p= new P_deployMe();
 		addBehaviour(p.new R2_envManager(this,env));
-		//add
+		
+		//4) Add the behaviour(s) to work as a Gui
+		
+		
 		System.out.println("the agent "+this.getLocalName()+ " is started");
 
 	}
