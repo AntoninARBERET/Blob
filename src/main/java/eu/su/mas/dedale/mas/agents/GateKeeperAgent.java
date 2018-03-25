@@ -73,16 +73,16 @@ public class GateKeeperAgent extends AbstractDeltaAgent {
 		//		}else{
 		//the environment should be loaded
 		//the environement should be 
-		//{ConfigurationFile.ENVIRONMENTisGENERATED, ConfigurationFile.INSTANCE_TOPOLOGY,ConfigurationFile.INSTANCE_CONFIGURATION_ELEMENTS,ConfigurationFile.ENVIRONMENT_TYPE,ConfigurationFile.ENVIRONMENT_SIZE,ConfigurationFile.ACTIVE_DIAMOND,ConfigurationFile.ACTIVE_GOLD,ConfigurationFile.ACTIVE_WELL};//used to give informations to the agent
-		Assert.assertEquals(args.length, 3);
+		//{ConfigurationFile.INSTANCE_TOPOLOGY,ConfigurationFile.INSTANCE_CONFIGURATION_ELEMENTS,ConfigurationFile.ENVIRONMENT_TYPE,COnfigurationFile.isGrid,ConfigurationFile.ENVIRONMENT_SIZE,ConfigurationFile.ACTIVE_DIAMOND,ConfigurationFile.ACTIVE_GOLD,ConfigurationFile.ACTIVE_WELL};//used to give informations to the agent
+		Assert.assertEquals(args.length, 8);
 		switch ((EnvironmentType) args[2]) {
 		case GS:
 			env= new gsEnvironment();
-			env.CreateEnvironment((String)args[0], (String)args[1]);
+			env.CreateEnvironment((String)args[0], (String)args[1],(boolean)args[3],(Integer)args[4],(boolean)args[5],(boolean)args[6],(boolean)args[7]);
 			break;
 		case JME:
 			env = new jmeEnvironment();
-			env.CreateEnvironment((String)args[0], (String)args[1]);
+			env.CreateEnvironment((String)args[0], (String)args[1],(boolean)args[3],(Integer)args[4],(boolean)args[5],(boolean)args[6],(boolean)args[7]);
 			break;	
 		default:
 			Debug.error("This type of environment is not yet supported");

@@ -11,7 +11,10 @@ import eu.su.mas.dedale.env.Observation;
 
 public class jmeEnvironment implements IEnvironment {
 
-	public void CreateEnvironment(String topologyConfigurationFilePath, String instanceConfiguration) {
+
+
+	public void CreateEnvironment(String topologyConfigurationFilePath, String instanceConfiguration, boolean isGrid,
+			Integer envSize, boolean diamond, boolean gold, boolean well) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -71,6 +74,7 @@ public class jmeEnvironment implements IEnvironment {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 	
 

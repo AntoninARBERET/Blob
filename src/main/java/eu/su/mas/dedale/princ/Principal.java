@@ -264,7 +264,7 @@ public class Principal {
 			Assert.assertNotNull("This container does not exist",c);
 			agentName="GK";
 			try {
-				Object[] objtab=new Object[]{ConfigurationFile.INSTANCE_TOPOLOGY,ConfigurationFile.INSTANCE_CONFIGURATION_ELEMENTS,ConfigurationFile.ENVIRONMENT_TYPE};//used to give informations to the agent
+				Object[] objtab=new Object[]{ConfigurationFile.INSTANCE_TOPOLOGY,ConfigurationFile.INSTANCE_CONFIGURATION_ELEMENTS,ConfigurationFile.ENVIRONMENT_TYPE,ConfigurationFile.ENVIRONMENTisGRID,ConfigurationFile.ENVIRONMENT_SIZE,ConfigurationFile.ACTIVE_DIAMOND,ConfigurationFile.ACTIVE_GOLD,ConfigurationFile.ACTIVE_WELL};//used to give informations to the agent
 				//Object[] objtab=new Object[]{null,null,ConfigurationFile.ENVIRONMENT_TYPE};//used to give informations to the agent
 				System.out.println("GateKeeperAgent.class.getName(): "+GateKeeperAgent.class.getName());
 				AgentController	ag=c.createNewAgent(agentName,GateKeeperAgent.class.getName(),objtab);

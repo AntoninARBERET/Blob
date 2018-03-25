@@ -35,7 +35,7 @@ import eu.su.mas.dedale.env.IEnvironment;
 import eu.su.mas.dedale.env.InGameConfigurationFile;
 import eu.su.mas.dedale.env.Observation;
 
-import eu.su.mas.dedale.princ.ConfigurationFile;
+//import eu.su.mas.dedale.princ.ConfigurationFile;
 
 
 
@@ -76,7 +76,7 @@ public class gsEnvironment implements IEnvironment {
 
 
 
-	public void CreateEnvironment(String topologyConfigurationFilePath, String instanceConfiguration) {
+	public void CreateEnvironment(String topologyConfigurationFilePath, String instanceConfiguration,boolean isGrid, Integer envSize,boolean diamond,boolean gold,boolean well) {
 		//	TODO allow the generation of elements on a loaded topology
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 
@@ -84,10 +84,10 @@ public class gsEnvironment implements IEnvironment {
 
 		if (topologyConfigurationFilePath==null && instanceConfiguration==null){
 			//randomlyGenerated environment
-			generateGraph(ConfigurationFile.ENVIRONMENTisGRID,ConfigurationFile.ENVIRONMENT_SIZE);
+			generateGraph(isGrid,envSize);
 
 			//2)addComponents
-			addElements();
+			addElements(diamond,gold,well);
 
 		}else{
 			Assert.assertNotNull("The topology configuration should be given",topologyConfigurationFilePath);
@@ -509,10 +509,10 @@ public class gsEnvironment implements IEnvironment {
 	 * Randomly add the required components to the environment based on the configurationFile, the InGameConfigurationFile and the ElemenType class
 	 * Currently : well, gold, diamond
 	 */
-	private void addElements() {
+	private void addElements(boolean diamond,boolean gold,boolean well) {
 		Random r;
 
-		if (ConfigurationFile.ACTIVE_WELL){
+		if (well){
 			//wells added
 			int nbHole=1+(int)Math.round(this.graph.getNodeSet().size()*ElementType.WELL.getOccurrencePercentage());
 			for (int i=0;i<nbHole;i++){
@@ -524,7 +524,7 @@ public class gsEnvironment implements IEnvironment {
 			}
 		}
 
-		if (ConfigurationFile.ACTIVE_GOLD){
+		if (gold){
 			//adding treasures
 			int nbTreasures=1+(int)Math.round(this.graph.getNodeSet().size()*ElementType.GOLD.getOccurrencePercentage());
 			r= new Random();
@@ -540,7 +540,7 @@ public class gsEnvironment implements IEnvironment {
 			}
 		}
 
-		if (ConfigurationFile.ACTIVE_DIAMOND){
+		if (diamond){
 			//adding treasures
 			int nbTreasures=1+(int)Math.round(this.graph.getNodeSet().size()*ElementType.DIAMOND.getOccurrencePercentage());
 			r= new Random();

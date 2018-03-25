@@ -62,7 +62,7 @@ public final class ConfigurationFile {
 	/**
 	 * Parameter used to generate the environment 
 	 */
-	public static Integer ENVIRONMENT_SIZE=4;
+	public static Integer ENVIRONMENT_SIZE=7;
 	
 	/**
 	 * Parameter used to perceive the wumpus
