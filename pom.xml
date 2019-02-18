@@ -58,6 +58,10 @@
   	<resources>
         <resource>
             <directory>src/main/**</directory>
+        
+         <excludes>
+          <exclude>**/*old*.*</exclude>
+        </excludes>
         </resource>
     </resources>
     
