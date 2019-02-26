@@ -228,7 +228,7 @@ public class gsEnvironment implements IEnvironment {
 		updateNodeRendering(n);
 	}
 
-	public String getCurrentPosition(String entityName) {
+	public synchronized String getCurrentPosition(String entityName) {
 		Iterator<Node> nodeCollection=this.graph.getNodeIterator();
 		boolean found=false;
 		Node n=null;
@@ -246,7 +246,7 @@ public class gsEnvironment implements IEnvironment {
 	}
 
 
-	public List<Couple<String, List<Couple<Observation, Integer>>>> observe(String currentPosition, String agentName) {
+	public synchronized List<Couple<String, List<Couple<Observation, Integer>>>> observe(String currentPosition, String agentName) {
 		List<Couple<String, List<Couple<Observation, Integer>>>> l= new ArrayList<Couple<String, List<Couple<Observation, Integer>>>>();
 		Node n=this.graph.getNode(currentPosition);
 
@@ -271,7 +271,7 @@ public class gsEnvironment implements IEnvironment {
 	}
 
 	/**
-	 * 
+	 * Synchronized method to 
 	 * @param n the node to consider
 	 * @param onIt true if the agent is in node n, false otherwise
 	 * @return the associated observations (at the moment of the access)
@@ -376,7 +376,7 @@ public class gsEnvironment implements IEnvironment {
 		return pickedQuantity;
 	}
 
-	public void dropOff(String location, ElementType e, Integer quantity) {
+	public synchronized void dropOff(String location, ElementType e, Integer quantity) {
 		//allowed to drop	
 		indicateElementPresence(this.graph.getNode(location),e,quantity);
 

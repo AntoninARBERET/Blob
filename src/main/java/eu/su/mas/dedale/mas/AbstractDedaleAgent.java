@@ -122,7 +122,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 	 * 
 	 * @see Observation for the list of Observation components
 	 */
-	public List<Couple<String, List<Couple<Observation,Integer>>>> observe(){
+	public synchronized List<Couple<String, List<Couple<Observation,Integer>>>> observe(){
 		return this.realEnv.observe(this.getCurrentPosition(),this.getLocalName());
 	}
 
@@ -133,7 +133,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 	 * @param myDestination the targeted nodeId
 	 * @return true if the move is legit and triggered, false otherwise
 	 */
-	public boolean moveTo(String myDestination){
+	public synchronized boolean moveTo(String myDestination){
 		int consequence=this.realEnv.moveTo(this.getLocalName(),this.ec, myDestination);
 		if(consequence==1){
 			return true;
@@ -153,7 +153,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 	 * @return the amount of wealth that the agent was able to pick. 0 if there is no treasure at this place, or if the agent cannot grab it (
 	 * backPack full, not authorized,...)
 	 */
-	public int pick(){
+	public synchronized int pick(){
 		//TODO update the agent BackPack and decide on the quantity according to its capability
 		int pickedQuantity;
 		switch (ec.getMyTreasureType()) {
