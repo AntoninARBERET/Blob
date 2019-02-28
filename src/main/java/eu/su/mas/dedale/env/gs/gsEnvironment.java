@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -283,12 +282,7 @@ public class gsEnvironment implements IEnvironment {
 
 		//Iterator on the attributes of node n
 		while(iter!=null && iter.hasNext()){
-			String attrib="";
-			try{
-			attrib=iter.next();
-			}catch(ConcurrentModificationException e){
-				System.out.println("Here we are");
-			}
+			String attrib=iter.next();
 			if (ElementType.WIND.getName().equalsIgnoreCase(attrib)){
 				l.add(new Couple<Observation, Integer>(Observation.WIND,null));
 			}
