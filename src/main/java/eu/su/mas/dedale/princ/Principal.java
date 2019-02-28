@@ -278,6 +278,8 @@ public class Principal {
 		/*the main exist, we deploy the agent(s) on  their local containers
 		 *They will have to find the gatekeeper's container to deploy themselves in the environment. This is automatically performed by all agent that extends AbstractDedaleAgent*/
 
+		AgentController	ag;
+		
 		/*****************************************************
 		 * 
 		 * 				ADD YOUR AGENTS HERE
@@ -316,9 +318,9 @@ public class Principal {
 		Object [] entityParametersC={"My parameters"};
 		
 		//4) Give the class name of your agent to let the system instantiate it
-		AgentController	ag=createNewDedaleAgent(c, agentName, DummyCollectorAgent.class.getName(), entityParametersC);
+		ag=createNewDedaleAgent(c, agentName, DummyCollectorAgent.class.getName(), entityParametersC);
 		agentList.add(ag);
-		
+			
 		/*********
 		 * AGENT Silo
 		 *********/
@@ -335,8 +337,8 @@ public class Principal {
 		//4) Give the class name of your agent to let the system instantiate it
 		ag=createNewDedaleAgent(c, agentName, DummyTankerAgent.class.getName(), entityParameters2);
 		agentList.add(ag);
-		
-		
+	
+	
 		
 //		/*********
 //		 * AGENT 1
@@ -423,171 +425,6 @@ public class Principal {
 //		ag=createNewDedaleAgent(c, agentName, DummyMigrationAgent.class.getName(), entityParameters5);
 //		agentList.add(ag);
 		
-		
-
-		
-		//				try {
-		//					Object[] objtab=new Object[]{gatekeeperName};//used to give informations to the agent
-		//					AgentController	ag=c.createNewAgent(agentName,DummyMigrationAgent.class.getName(),objtab);
-		//					agentList.add(ag);
-		//					System.out.println(agentName+" launched");
-		//				} catch (StaleProxyException e) {
-		//					e.printStackTrace();
-		//				}
-
-		//if (ConfigurationFile.PLATFORMisDISTRIBUTED)
-		/*
-		 *Distributed, the main already exist, we deploy the agent(s) on MyLocalContainer
-		 *They will have to find the gatekeeper's container to deploy themselves
-		 */
-
-		//		c = containerList.get("MyLocalContainer");
-		//		Assert.assertNotNull("This container does not exist",c);
-		//		agentName="Ulysse1";
-		//		String gatekeeperName="GK";
-		//		try {
-		//			Object[] objtab=new Object[]{gatekeeperName};//used to give informations to the agent
-		//			AgentController	ag=c.createNewAgent(agentName,DummyMigrationAgent.class.getName(),objtab);
-		//			agentList.add(ag);
-		//			System.out.println(agentName+" launched");
-		//		} catch (StaleProxyException e) {
-		//			e.printStackTrace();
-		//		}
-
-		//}
-
-		/*
-		 * Local and no GateKeeper
-		 */
-
-		//		//wumpus on container0
-		//		c = containerList.get("container0");
-		//		agentName="Golem";//"Wumpus1"
-		//		try {
-		//			Object[] objtab=new Object[]{env};//used to give informations to the agent
-		//			AgentController	ag=c.createNewAgent(agentName,DummyWumpusAgent.class.getName(),objtab);
-		//			agentList.add(ag);
-		//			System.out.println(agentName+" launched");
-		//		} catch (StaleProxyException e) {
-		//			e.printStackTrace();
-		//		}
-
-		//		agentName="Wumpus2";
-		//		try {
-		//
-		//
-		//			Object[] objtab=new Object[]{env,agentName};//used to give informations to the agent
-		//			AgentController	ag=c.createNewAgent(agentName,DummyAgentWumpus.class.getName(),objtab);
-		//			agentList.add(ag);
-		//			System.out.println(agentName+" launched");
-		//		} catch (StaleProxyException e) {
-		//			e.printStackTrace();
-		//		}
-		//
-		//		//wumpus on container0
-		//		c = containerList.get("container0");
-		//		agentName="Wumpus3";
-		//		try {
-		//
-		//
-		//			Object[] objtab=new Object[]{env,agentName};//used to give informations to the agent
-		//			AgentController	ag=c.createNewAgent(agentName,DummyAgentWumpus.class.getName(),objtab);
-		//			agentList.add(ag);
-		//			System.out.println(agentName+" launched");
-		//		} catch (StaleProxyException e) {
-		//			e.printStackTrace();
-		//		}
-		//
-		//
-		//Agent0 on container0
-		//		c = containerList.get("MyDistantContainer0");
-		//		agentName="Explo1";
-		//		try {
-		//
-		//			Object[] objtab=new Object[]{"GK"};//{env}//used to give informations to the agent
-		//			AgentController	ag=c.createNewAgent(agentName,DummyMigrationAgent.class.getName(),objtab);
-		//			agentList.add(ag);
-		//			System.out.println(agentName+" launched");
-		//		} catch (StaleProxyException e) {
-		//			e.printStackTrace();
-		//		}
-		//
-		//		c = containerList.get("container0");
-		//		agentName="Agent1";
-		//		try {
-		//
-		//			Object[] objtab=new Object[]{env};//used to give informations to the agent
-		//			AgentController	ag=c.createNewAgent(agentName,DummyExploAgent.class.getName(),objtab);
-		//			agentList.add(ag);
-		//			System.out.println(agentName+" launched");
-		//		} catch (StaleProxyException e) {
-		//			e.printStackTrace();
-		//		}
-		//
-		//		c = containerList.get("container0");
-		//		agentName="Agent2";
-		//		try {
-		//
-		//			Object[] objtab=new Object[]{env};//used to give informations to the agent
-		//			AgentController	ag=c.createNewAgent(agentName,DummyExploAgent.class.getName(),objtab);
-		//			agentList.add(ag);
-		//			System.out.println(agentName+" launched");
-		//		} catch (StaleProxyException e) {
-		//			e.printStackTrace();
-		//		}
-		//		c = containerList.get("container0");
-		//		agentName="Agent3";
-		//		try {
-		//
-		//			Object[] objtab=new Object[]{env};//used to give informations to the agent
-		//			AgentController	ag=c.createNewAgent(agentName,DummyExploAgent.class.getName(),objtab);
-		//			agentList.add(ag);
-		//			System.out.println(agentName+" launched");
-		//		} catch (StaleProxyException e) {
-		//			e.printStackTrace();
-		//		}
-		//		c = containerList.get("container0");
-		//		agentName="Agent4";
-		//		try {
-		//
-		//			Object[] objtab=new Object[]{env};//used to give informations to the agent
-		//			AgentController	ag=c.createNewAgent(agentName,DummyExploAgent.class.getName(),objtab);
-		//			agentList.add(ag);
-		//			System.out.println(agentName+" launched");
-		//		} catch (StaleProxyException e) {
-		//			e.printStackTrace();
-		//		}
-		//		
-		//		c = containerList.get("container0");
-		//		agentName="Agent5";
-		//		try {
-		//
-		//			Object[] objtab=new Object[]{env};//used to give informations to the agent
-		//			AgentController	ag=c.createNewAgent(agentName,DummyExploAgent.class.getName(),objtab);
-		//			agentList.add(ag);
-		//			System.out.println(agentName+" launched");
-		//		} catch (StaleProxyException e) {
-		//			e.printStackTrace();
-		//		}
-
-		//		//Agent0 on container0
-		//		c = containerList.get("container0");
-		//		agentName="Explo3";
-		//		try {
-		//
-		//
-		//			Object[] objtab=new Object[]{env};//used to give informations to the agent
-		//			AgentController	ag=c.createNewAgent(agentName,DummyExploAgent.class.getName(),objtab);
-		//			agentList.add(ag);
-		//			System.out.println(agentName+" launched");
-		//		} catch (StaleProxyException e) {
-		//			e.printStackTrace();
-		//		}
-
-
-
-
-
 
 		System.out.println("Agents created...");
 		return agentList;
