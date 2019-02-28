@@ -389,7 +389,13 @@ public class gsEnvironment implements IEnvironment {
 		return false;
 	}
 
-	public boolean isReachable(String senderName, String receiverName, int communicationReach) {
+	/**
+	 * This method must be synchronized due tothe way graphStream computes the shortestPath
+	 * @param senderName name of the entity willing to send the message
+	 * @param receiverName name of the receiver
+	 * @param communicationReach number of hops autorised to reach the targer
+	 */
+	public synchronized boolean isReachable(String senderName, String receiverName, int communicationReach) {
 		String senderNodeId = getCurrentPosition(senderName);
 		String receiverNodeId = getCurrentPosition(receiverName);
 
