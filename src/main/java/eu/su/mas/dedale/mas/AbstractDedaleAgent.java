@@ -275,7 +275,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 
 	/**
 	 * Throw a grenade to a given location.
-	 * @param targetId the Id of the room the entity is aiming at
+	 * @param locationId the Id of the room the entity is aiming at
 	 * @return true if done, false otherwise (the location as to far,..) 
 	 * The consequences of this action, if any, will be seen in the environment
 	 */
