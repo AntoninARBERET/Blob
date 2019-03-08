@@ -107,7 +107,10 @@ public class gsEnvironment implements IEnvironment {
 
 		//3) define GUI parameters
 		this.graph.setAttribute("ui.stylesheet", nodeStyle);
+		this.graph.display(true);
+		//this.graph.setProperty("org.graphstream.ui")
 		this.viewer=this.graph.display();
+		pb here in the display
 
 		//printAllNodes();
 		this.environmentName="env";
@@ -167,7 +170,7 @@ public class gsEnvironment implements IEnvironment {
 			boolean free = isOkToDeployEntityOn(n.getId());
 			if (free)	{
 				System.out.println("Entity " + entityName + " of type : "+e.toString()+", deployed in " + n.getId());
-				n.addAttribute(e.getMyEntityType().getName(), entityName);
+				n.setAttribute(e.getMyEntityType().getName(), entityName);
 				updateNodeRendering(n);
 			}else {
 				Debug.error("Impossible to deploy entity " + entityName + ", the indicated position is not free");
@@ -229,7 +232,7 @@ public class gsEnvironment implements IEnvironment {
 	}
 
 	public synchronized String getCurrentPosition(String entityName) {
-		Iterator<Node> nodeCollection=this.graph.getNodeIterator();
+		Iterator<Node> nodeCollection=this.graph.iterator();
 		boolean found=false;
 		Node n=null;
 
@@ -259,7 +262,7 @@ public class gsEnvironment implements IEnvironment {
 		//TODO switch to the Couple class in tools
 		l.add(c);
 
-		Iterator<Node>iter=n.getNeighborNodeIterator();
+		Iterator<Node>iter=n.neighborNodes().iterator();// getNeighborNodeIterator();
 		while(iter.hasNext()){
 			Node temp=iter.next();
 			la= getObservations(temp,false);
@@ -277,7 +280,7 @@ public class gsEnvironment implements IEnvironment {
 	 * @return the associated observations (at the moment of the access)
 	 */
 	private synchronized List<Couple<Observation, Integer>> getObservations(Node n,Boolean onIt) {
-		Iterator<String>	iter=n.getAttributeKeyIterator();
+		Iterator<String>	iter=n.attributeKeys().iterator();//getAttributeKeyIterator();
 		List<Couple<Observation, Integer>> l= new ArrayList<Couple<Observation, Integer>>();
 
 		//Iterator on the attributes of node n
@@ -360,7 +363,7 @@ public class gsEnvironment implements IEnvironment {
 		int pickedQuantity=0;
 		if (maxQuantity>0 && n.hasAttribute(e.getName())){
 			//the agent can grab some of e and there is e on the current position
-			Integer treasureToPick=n.getAttribute(e.getName());
+			Integer treasureToPick=(Integer) n.getAttribute(e.getName());
 			if (maxQuantity>=treasureToPick){
 				//the treasure is cleared
 				pickedQuantity=treasureToPick;
@@ -477,10 +480,10 @@ public class gsEnvironment implements IEnvironment {
 		gen.end();
 
 		//show the node Id on the GUI
-		Iterator<Node> iter=graph.getNodeIterator();
+		Iterator<Node> iter=graph.iterator();
 		while (iter.hasNext()){
 			Node n=iter.next();
-			n.addAttribute("ui.label",n.getId());
+			n.setAttribute("ui.label",n.getId());
 		}
 		//return g;
 	}
@@ -507,11 +510,11 @@ public class gsEnvironment implements IEnvironment {
 			e.printStackTrace();
 		}
 
-		Iterator<Node> it = graph.getNodeIterator();
+		Iterator<Node> it = graph.iterator();
 		while (it.hasNext()){
 			Node n = (Node)it.next();
 			//System.out.println(n.getId()+" "+n.getAttribute("label").toString());
-			n.addAttribute("ui.label", n.getAttribute("label").toString());
+			n.setAttribute("ui.label", n.getAttribute("label").toString());
 		}
 
 	}
@@ -526,7 +529,7 @@ public class gsEnvironment implements IEnvironment {
 
 		if (well){
 			//wells added
-			int nbHole=1+(int)Math.round(this.graph.getNodeSet().size()*ElementType.WELL.getOccurrencePercentage());
+			int nbHole=1+(int)Math.round(this.graph.getNodeCount() *ElementType.WELL.getOccurrencePercentage());//getNodeSet().size()
 			for (int i=0;i<nbHole;i++){
 				String nodeID=findFreePlace(ElementType.WELL);
 				if (nodeID!="-1"){
@@ -538,7 +541,7 @@ public class gsEnvironment implements IEnvironment {
 
 		if (gold){
 			//adding treasures
-			int nbTreasures=1+(int)Math.round(this.graph.getNodeSet().size()*ElementType.GOLD.getOccurrencePercentage());
+			int nbTreasures=1+(int)Math.round(this.graph.getNodeCount()*ElementType.GOLD.getOccurrencePercentage());//getNodeSet().size()
 			r= new Random();
 			for(int i=0;i<nbTreasures;i++){
 				String nodeID=findFreePlace(ElementType.GOLD);
@@ -554,7 +557,7 @@ public class gsEnvironment implements IEnvironment {
 
 		if (diamond){
 			//adding treasures
-			int nbTreasures=1+(int)Math.round(this.graph.getNodeSet().size()*ElementType.DIAMOND.getOccurrencePercentage());
+			int nbTreasures=1+(int)Math.round(this.graph.getNodeCount()*ElementType.DIAMOND.getOccurrencePercentage());//getNodeSet().size()
 			r= new Random();
 			for(int i=0;i<nbTreasures;i++){
 				String nodeID=findFreePlace(ElementType.DIAMOND);
@@ -632,7 +635,7 @@ public class gsEnvironment implements IEnvironment {
 	 **/
 	private synchronized String findFreePlace(ElementType e)	{
 		Random r = new Random();
-		Iterator<Node> iter = this.graph.getNodeIterator();
+		Iterator<Node> iter = this.graph.iterator();
 		List<String> emptyNode = new ArrayList<String>();
 		while (iter.hasNext()){
 			Node n = (Node)iter.next();
@@ -708,22 +711,22 @@ public class gsEnvironment implements IEnvironment {
 		//2° update them
 		switch (elem) {
 		case GOLD :
-			i=n.getAttribute(ElementType.GOLD.getName());
+			i=(Integer) n.getAttribute(ElementType.GOLD.getName());
 			if (i!=null){
 				//if there already is gold, increment
-				n.addAttribute(ElementType.GOLD.getName(),value+i);
+				n.setAttribute(ElementType.GOLD.getName(),value+i);
 			}else{
-				n.addAttribute(ElementType.GOLD.getName(),value);
+				n.setAttribute(ElementType.GOLD.getName(),value);
 			}
 			break;
 		case DIAMOND:
-			i=n.getAttribute(ElementType.DIAMOND.getName());
+			i=(Integer) n.getAttribute(ElementType.DIAMOND.getName());
 
 			if (i!=null){
 				//if there already is gold, increment
-				n.addAttribute(ElementType.DIAMOND.getName(),value+i);
+				n.setAttribute(ElementType.DIAMOND.getName(),value+i);
 			}else{
-				n.addAttribute(ElementType.DIAMOND.getName(),value);
+				n.setAttribute(ElementType.DIAMOND.getName(),value);
 			}
 			break;
 		case WELL:
@@ -733,14 +736,14 @@ public class gsEnvironment implements IEnvironment {
 			if (n.hasAttribute(ElementType.DIAMOND.getName()) ||n.hasAttribute(ElementType.GOLD.getName())|| n.hasAttribute(ElementType.WELL.getName())|| n.hasAttribute(EntityType.AGENT_COLLECTOR.getName())|| n.hasAttribute(EntityType.AGENT_EXPLORER.getName())|| n.hasAttribute(EntityType.AGENT_TANKER.getName())|| n.hasAttribute(EntityType.WUMPUS.getName())|| n.hasAttribute(EntityType.WUMPUS_MOVER.getName())){
 				Debug.error("Impossible to deploy a Well on a position where another entity or element is. Check your configuration file");
 			}else{
-				n.addAttribute(ElementType.WELL.getName(),ElementType.WELL.getName());
+				n.setAttribute(ElementType.WELL.getName(),ElementType.WELL.getName());
 
 				//for the other agents (wind,noise,...)
 				n2update=findNeighbours(n,elem.getRadius());
 				//n.addAttribute(ElementType.WIND.getName(),true);
 				//n2update.remove(n);
 				for (Node n2:n2update){
-					n2.addAttribute(ElementType.WIND.getName(),true);
+					n2.setAttribute(ElementType.WIND.getName(),true);
 					updateNodeRendering(n2);
 					//if its not a well, change the graphic rendering
 					//if (!envComponent.WELL.getName().equalsIgnoreCase(n2.getAttribute("ui.label").toString()))
@@ -766,15 +769,15 @@ public class gsEnvironment implements IEnvironment {
 		switch(e.getMyEntityType()){
 		case AGENT_COLLECTOR:case AGENT_EXPLORER:case AGENT_TANKER:
 			//TODO use indicateElementPresence instead of this line
-			n.addAttribute(e.getMyEntityType().getName(), entityName);
+			n.setAttribute(e.getMyEntityType().getName(), entityName);
 			break;
 		case  WUMPUS : case WUMPUS_MOVER:
-			n.addAttribute(e.getMyEntityType().getName(), entityName);
-			n.addAttribute(ElementType.STENCH.getName(),true);
+			n.setAttribute(e.getMyEntityType().getName(), entityName);
+			n.setAttribute(ElementType.STENCH.getName(),true);
 			n2update=findNeighbours(n,e.getDetectionRadius());
 			n2update.remove(n);
 			for (Node n2:n2update){
-				n2.addAttribute(ElementType.STENCH.getName(),true);
+				n2.setAttribute(ElementType.STENCH.getName(),true);
 				updateNodeRendering(n2);
 			}
 			break;
@@ -802,7 +805,7 @@ public class gsEnvironment implements IEnvironment {
 		}else{
 			int temp=radius-1;
 			n2update.add(n);
-			Iterator<Node> iter=n.getNeighborNodeIterator();
+			Iterator<Node> iter=n.neighborNodes().iterator();// getNeighborNodeIterator();
 			while(iter.hasNext()){
 				n2update.addAll(findNeighbours(iter.next(), temp));
 			}
@@ -903,12 +906,12 @@ public class gsEnvironment implements IEnvironment {
 	 * Print the nodes and their respective attributes
 	 */
 	private void printAllNodes(){
-		Iterator<Node> iter=this.graph.getNodeIterator();
+		Iterator<Node> iter=this.graph.iterator();
 		System.out.println("Graph content:");
 		while (iter.hasNext()){
 			Node n=iter.next();
 			System.out.println("Node "+n.toString());
-			Iterator<String> iter2=n.getAttributeKeyIterator();
+			Iterator<String> iter2=n.attributeKeys().iterator();// AttributeKeyIterator();
 			while (iter2.hasNext()){
 				String attributeKey=iter2.next();
 				System.out.println("Attribute: "+attributeKey+";"+n.getAttribute(attributeKey).toString());

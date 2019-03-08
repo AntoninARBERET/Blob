@@ -1,10 +1,11 @@
 package eu.su.mas.dedale.env;
 
 import java.io.Serializable;
+import java.util.Random;
 
 import debug.Debug;
 import eu.su.mas.dedale.princ.ConfigurationFile;
-import scala.util.Random;
+
 
 /**
  * This class contain, for each agent, all its (default) characteristics

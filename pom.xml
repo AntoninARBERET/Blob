@@ -14,6 +14,14 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+	
+	
   <dependencies>
     <!-- https://mvnrepository.com/artifact/junit/junit -->
     <dependency>
@@ -35,7 +43,7 @@
 		<version>0.0.1</version>
 	</dependency>
 			
-	<!-- GraphStream -->
+	<!-- GraphStream 
 	<dependency>
 		<groupId>org.graphstream</groupId>
 		<artifactId>gs-core</artifactId>
@@ -50,8 +58,24 @@
 		<groupId>org.graphstream</groupId>
 		<artifactId>gs-algo</artifactId>
 		<version>1.3</version>
+	</dependency>!-->
+	
+	<dependency>
+	    <groupId>com.github.graphstream</groupId>
+	    <artifactId>gs-algo</artifactId>
+	    <version>2.0-alpha</version>
 	</dependency>
-			
+	<dependency>
+	    <groupId>com.github.graphstream</groupId>
+	    <artifactId>gs-ui-javafx</artifactId>
+	    <version>2.0-alpha</version>
+	</dependency>
+	<dependency>
+	    <groupId>com.github.graphstream</groupId>
+	    <artifactId>gs-core</artifactId>
+	    <version>2.0-alpha</version>
+	</dependency>
+	
   </dependencies>
   
   <build>
