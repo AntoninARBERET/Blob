@@ -2,6 +2,8 @@ package eu.su.mas.dedale.env.gs;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,6 +14,9 @@ import java.util.Random;
 import java.util.Set;
 
 import org.graphstream.graph.Graph;
+import org.graphstream.ui.fx_viewer.FxViewPanel;
+import org.graphstream.ui.fx_viewer.FxViewer;
+import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.algorithm.Dijkstra;
 import org.graphstream.algorithm.Dijkstra.Element;
@@ -19,6 +24,7 @@ import org.graphstream.algorithm.generator.DorogovtsevMendesGenerator;
 import org.graphstream.algorithm.generator.Generator;
 import org.graphstream.algorithm.generator.GridGenerator;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceFactory;
@@ -34,7 +40,14 @@ import eu.su.mas.dedale.env.EntityType;
 import eu.su.mas.dedale.env.IEnvironment;
 import eu.su.mas.dedale.env.InGameConfigurationFile;
 import eu.su.mas.dedale.env.Observation;
+import eu.su.mas.dedale.env.gs.gui.JavaFxmlGui;
+import eu.su.mas.dedale.env.gs.gui.MyController;
+import jade.wrapper.PlatformController;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.VBox;
+import javafx.application.*;
 //import eu.su.mas.dedale.princ.ConfigurationFile;
 
 
@@ -72,16 +85,19 @@ public class gsEnvironment implements IEnvironment {
 	private final static String nodeStyle_Stench= "node.stench {"+"fill-color: orange;"+"}";
 	private final static String nodeStyle=defaultNodeStyle+nodeStyle_wumpus+nodeStyle_agentExplo+nodeStyle_agentTanker+nodeStyle_agentCollect+nodeStyle_gold+nodeStyle_diamonds+nodeStyle_EntryExit+nodeStyle_Well+nodeStyle_Wind+nodeStyle_Stench;
 
+	private final static String styleSheet = "graph {padding: 60px;}";
+
 	private Graph graph;
 	private Viewer viewer;
 
 	private String environmentName;
-	
 
 
-/**
- * 
- */
+
+	/**
+	 * 
+	 */
+	@SuppressWarnings("restriction")
 	public void CreateEnvironment(String topologyConfigurationFilePath, String instanceConfiguration,boolean isGrid, Integer envSize,boolean diamond,boolean gold,boolean well) {
 		//	TODO allow the generation of elements on a loaded topology
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
@@ -98,7 +114,7 @@ public class gsEnvironment implements IEnvironment {
 		}else{
 			Assert.assertNotNull("The topology configuration should be given",topologyConfigurationFilePath);
 			Assert.assertNotNull("The instance configuration should be given",instanceConfiguration);
-		
+
 			loadGraph(topologyConfigurationFilePath);
 			loadingMapConfiguration(instanceConfiguration);
 
@@ -107,10 +123,32 @@ public class gsEnvironment implements IEnvironment {
 
 		//3) define GUI parameters
 		this.graph.setAttribute("ui.stylesheet", nodeStyle);
-		this.graph.display(true);
+
 		//this.graph.setProperty("org.graphstream.ui")
-		this.viewer=this.graph.display();
-		pb here in the display
+		/** work before javaFx ***/
+		//this.graph.display(true);
+		//this.viewer=this.graph.display();
+		/** end before javaFx**/
+		/** with javaFx**/
+		new Thread(() -> {
+			Application.launch(JavaFxmlGui.class, null);
+		}).start();
+		
+		JavaFxmlGui startUpTest = JavaFxmlGui.waitForStartUpTest();
+
+		//Test 1 : pb, **  Uncaught Exception for agent GK  ***
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				// Update UI here.
+					FXMLLoader loader= startUpTest.getLoad();
+					System.out.println("Loader2: "+loader);
+					MyController m=loader.getController();
+					System.out.println("controller2: "+m);
+					Assert.assertNotNull(m);
+					m.setGraph(getJavaFxViewer());
+			}
+		});
 
 		//printAllNodes();
 		this.environmentName="env";
@@ -730,7 +768,7 @@ public class gsEnvironment implements IEnvironment {
 			}
 			break;
 		case WELL:
-			//for the gui
+			//for the eu.su.mas.dedale.env.gs.gui
 			//n.addAttribute("ui.label", envComponent.WELL.getName());
 			//n.setAttribute("ui.class","well");	
 			if (n.hasAttribute(ElementType.DIAMOND.getName()) ||n.hasAttribute(ElementType.GOLD.getName())|| n.hasAttribute(ElementType.WELL.getName())|| n.hasAttribute(EntityType.AGENT_COLLECTOR.getName())|| n.hasAttribute(EntityType.AGENT_EXPLORER.getName())|| n.hasAttribute(EntityType.AGENT_TANKER.getName())|| n.hasAttribute(EntityType.WUMPUS.getName())|| n.hasAttribute(EntityType.WUMPUS_MOVER.getName())){
@@ -918,6 +956,61 @@ public class gsEnvironment implements IEnvironment {
 			}
 		}
 	}
+	
+	
+
+	/**
+	 * Test javaFx GS rendering
+	 * @return JavaFxViewPanel of a random graph
+	 */
+	private FxViewPanel truc(){
+		MultiGraph graph = new MultiGraph("mg");//createGsGraph();
+		FxViewer viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
+		viewer.enableAutoLayout();
+		//FxGraphRenderer renderer = new FxGraphRenderer();
+
+		//FxViewPanel panel = (FxViewPanel)viewer.addDefaultView(false, renderer);
+
+
+		DorogovtsevMendesGenerator gen = new DorogovtsevMendesGenerator();
+
+		gen.addSink(graph);
+		gen.begin();
+		for(int i = 0 ; i < 100 ; i++)
+			gen.nextEvents();
+		gen.end();
+		gen.removeSink(graph);
+
+
+		graph.setAttribute("ui.antialias");
+		graph.setAttribute("ui.quality");
+		graph.setAttribute("ui.stylesheet", styleSheet);
+
+
+		FxViewPanel panel = (FxViewPanel)viewer.addDefaultView(false, new FxGraphRenderer());
+
+
+
+		return panel;
+	}
+
+	/**
+	 * Test javaFx GS rendering
+	 * @return JavaFxViewPanel of the raph
+	 */
+	private FxViewPanel getJavaFxViewer(){
+		
+		FxViewer viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+		viewer.enableAutoLayout();
+		
+		graph.setAttribute("ui.antialias");
+		graph.setAttribute("ui.quality");
+		
+		FxViewPanel panel = (FxViewPanel)viewer.addDefaultView(false, new FxGraphRenderer());
+		
+		return panel;
+	}
+
 }
 
 
