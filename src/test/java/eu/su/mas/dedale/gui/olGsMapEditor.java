@@ -9,13 +9,14 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.spriteManager.SpriteManager;
-import org.graphstream.ui.swingViewer.*;
+
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 
 
-public class GsMapEditor {
+public class olGsMapEditor {
 
 	public static void main (String[] args){
 		
@@ -24,7 +25,8 @@ public class GsMapEditor {
 		
 		
 		Graph graph = createGsGraph();
-		Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+		//Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+		FxViewer viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
 		viewer.enableAutoLayout();
 		// ...
 		View view = viewer.addDefaultView(false);   // false indicates "no JFrame".
@@ -48,7 +50,7 @@ public class GsMapEditor {
 
 		Graph graph = new SingleGraph("Illustrative example");//generateGraph(true, 30);
 		
-		Iterator<Node> iter=graph.getNodeIterator();
+		Iterator<Node> iter=graph.iterator();
 		
 		//SingleGraph graph = new SingleGraph("Tutorial 1");
 		graph.setAttribute("ui.stylesheet",nodeStyle);
@@ -59,7 +61,7 @@ public class GsMapEditor {
 		// the nodes can be added dynamically.
 		graph.addNode("A");
 		Node n= graph.getNode("A");
-		n.addAttribute("ui.label", "Agent J");	
+		n.setAttribute("ui.label", "Agent J");	
 		n.setAttribute("ui.class", "agent");
 		
 		Object o=n.getAttribute("ui.label");
@@ -67,17 +69,17 @@ public class GsMapEditor {
 		
 		graph.addNode("B");
 		n= graph.getNode("B");
-		n.addAttribute("ui.label", "treasure");	
+		n.setAttribute("ui.label", "treasure");	
 		n.setAttribute("ui.class", "treasure");
 		
 		graph.addNode("C");	
 		n= graph.getNode("C");
-		n.addAttribute("ui.label", "wumpus");	
+		n.setAttribute("ui.label", "wumpus");	
 		n.setAttribute("ui.class", "wumpus");
 		
 		graph.addNode("D");
 		n= graph.getNode("D");
-		n.addAttribute("ui.label", "The exit");	
+		n.setAttribute("ui.label", "The exit");	
 		n.setAttribute("ui.class", "exit");
 		
 		graph.addNode("E");

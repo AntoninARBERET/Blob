@@ -1,40 +1,41 @@
 package eu.su.mas.dedale.gui;
 
-import java.net.URL;
+import java.awt.Component;
 import java.util.Iterator;
-import java.util.ResourceBundle;
+
+import javax.swing.JFrame;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.spriteManager.SpriteManager;
+
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 
-public class gsUI implements Initializable{
+public class oldGsMapEmbedded {
 
-	@FXML
-	private Pane map;
-
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		// TODO Auto-generated method stub
+	public static void main (String[] args){
+		
+		JFrame myJframe =new JFrame("Dedale environment");
+		myJframe.setSize(800, 600);
+		
 		
 		Graph graph = createGsGraph();
+		//Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 		FxViewer viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
 		viewer.enableAutoLayout();
 		// ...
 		View view = viewer.addDefaultView(false);   // false indicates "no JFrame".
 		
-		map.getChildren().add((javafx.scene.Node) view);
-		map.setVisible(true);
+		// ...
+		myJframe.add((Component) view);
+		myJframe.setVisible(true);
 	}
-	
+
 	private static Graph createGsGraph(){
 
 		//color of a node according to its type
@@ -49,7 +50,7 @@ public class gsUI implements Initializable{
 
 		Graph graph = new SingleGraph("Illustrative example");//generateGraph(true, 30);
 		
-		Iterator<Node> iter=graph.getNodeIterator();
+		Iterator<Node> iter=graph.iterator();
 		
 		//SingleGraph graph = new SingleGraph("Tutorial 1");
 		graph.setAttribute("ui.stylesheet",nodeStyle);
@@ -60,7 +61,7 @@ public class gsUI implements Initializable{
 		// the nodes can be added dynamically.
 		graph.addNode("A");
 		Node n= graph.getNode("A");
-		n.addAttribute("ui.label", "Agent J");	
+		n.setAttribute("ui.label", "Agent J");	
 		n.setAttribute("ui.class", "agent");
 		
 		Object o=n.getAttribute("ui.label");
@@ -68,17 +69,17 @@ public class gsUI implements Initializable{
 		
 		graph.addNode("B");
 		n= graph.getNode("B");
-		n.addAttribute("ui.label", "treasure");	
+		n.setAttribute("ui.label", "treasure");	
 		n.setAttribute("ui.class", "treasure");
 		
 		graph.addNode("C");	
 		n= graph.getNode("C");
-		n.addAttribute("ui.label", "wumpus");	
+		n.setAttribute("ui.label", "wumpus");	
 		n.setAttribute("ui.class", "wumpus");
 		
 		graph.addNode("D");
 		n= graph.getNode("D");
-		n.addAttribute("ui.label", "The exit");	
+		n.setAttribute("ui.label", "The exit");	
 		n.setAttribute("ui.class", "exit");
 		
 		graph.addNode("E");

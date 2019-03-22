@@ -1,7 +1,6 @@
 package eu.su.mas.dedale.mas;
 
 
-import env.EntityType;
 import env.Environment;
 
 import mas.abstractAgent;
