@@ -64,7 +64,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 	 * It is initiated by the gatekeeper when the agent is deployed 
 	 * It should be obtained 
 	 */
-	private IEnvironment realEnv;
+	protected IEnvironment realEnv;
 
 	/**
 	 * Used to get the ref to the environment when asking the GK 
@@ -322,7 +322,10 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 		String senderLocalName =msg.getSender().getLocalName();
 		while (iter.hasNext()){
 			AID receiverAID= iter.next();
+			System.out.println("AID" + receiverAID.toString());
 			receiverNumber++;
+			receiverAID.getLocalName();
+			ec.getCommunicationReach();
 			if (!this.realEnv.isReachable(senderLocalName,receiverAID.getLocalName(),ec.getCommunicationReach())){
 				iter.remove();
 				receiverNumber--;
@@ -384,6 +387,10 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 						break;	
 					case "agentTanker":	
 						et=EntityType.AGENT_TANKER;
+						//deployAgentFromConfig(l[1], l[2],EntityType.AGENT_TANKER, Integer.parseInt(l[3]),Integer.parseInt(l[4]));
+						break;
+					case "blobAgent":	
+						et=EntityType.BLOB_AGENT;
 						//deployAgentFromConfig(l[1], l[2],EntityType.AGENT_TANKER, Integer.parseInt(l[3]),Integer.parseInt(l[4]));
 						break;	
 					default :

@@ -31,17 +31,7 @@
       <!--  <scope>test</scope>!-->
     </dependency>
     
-    <dependency>
-		<groupId>eu.su.mas.utils</groupId>
-		<artifactId>tools</artifactId>
-		<version>0.0.1</version>
-	</dependency>
-		
-	<dependency>
-		<groupId>eu.su.mas.delta</groupId>
-		<artifactId>mas</artifactId>
-		<version>0.0.1</version>
-	</dependency>
+    
 			
 	<!-- GraphStream 
 	<dependency>

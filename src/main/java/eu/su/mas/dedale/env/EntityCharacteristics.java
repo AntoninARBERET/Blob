@@ -98,6 +98,9 @@ public final class EntityCharacteristics implements Serializable {
 				this.myTreasureType=Observation.GOLD;
 			}
 			break;
+		case BLOB_AGENT:
+			this.myTreasureType=null;
+			break;
 		default:
 			this.myTreasureType=null;
 			Debug.error("This Agent type does not currently exist");

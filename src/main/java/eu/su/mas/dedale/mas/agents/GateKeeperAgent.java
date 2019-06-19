@@ -78,7 +78,7 @@ public class GateKeeperAgent extends AbstractDeltaAgent {
 		switch ((EnvironmentType) args[2]) {
 		case GS:
 			env= new gsEnvironment();
-			env.CreateEnvironment((String)args[0], (String)args[1],(boolean)args[3],(Integer)args[4],(boolean)args[5],(boolean)args[6],(boolean)args[7]);
+			//env.CreateEnvironment((String)args[0], (String)args[1],(boolean)args[3],(Integer)args[4],(boolean)args[5],(boolean)args[6],(boolean)args[7]);
 			break;
 		case JME:
 			env = new jmeEnvironment();

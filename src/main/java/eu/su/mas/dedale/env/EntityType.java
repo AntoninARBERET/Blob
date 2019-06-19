@@ -15,8 +15,9 @@ public enum EntityType implements Serializable{
 	AGENT_TANKER("AgentTanker"),// can only store (and move)
 	AGENT_COLLECTOR("AgentCollect"), //can do anything 
 	WUMPUS("Wumpus"), //can only move
-	WUMPUS_MOVER("WumpusMover"); //can move and shift resources
-
+	WUMPUS_MOVER("WumpusMover"), //can move and shift resources
+	BLOB_AGENT("BlobAgent");
+	
 	private String name="";
 	
 	//private EntityCaracteristics caracs=null;

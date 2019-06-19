@@ -121,7 +121,7 @@ public class JavaFxmlGui extends Application {
 		
 	}
 
-	private FxViewPanel testDefaultGraphViewer(){
+	public FxViewPanel testDefaultGraphViewer(){
 		MultiGraph graph = new MultiGraph("mg");//createGsGraph();
 		FxViewer viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
 		viewer.enableAutoLayout();
