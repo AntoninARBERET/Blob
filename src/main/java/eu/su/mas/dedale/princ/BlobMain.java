@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import eu.su.mas.dedale.env.gs.gsEnvironmentBlob;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
-import eu.su.mas.dedale.mas.agents.GateKeeperAgent;
 import eu.su.mas.dedale.mas.agents.blobAgents.BlobAgent;
 import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyCollectorAgent;
 import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyMovingAgent;

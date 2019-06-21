@@ -105,7 +105,7 @@ public interface IEnvironment {
 	 * @param communicationReach the sender agent's com capability
 	 * @return true if the receiver is within reach
 	 */
-	public boolean isReachable(String senderName, String receiverName, int communicationReach);
+	public boolean isReachable(String senderName, String receiverName);
 
 		
 }

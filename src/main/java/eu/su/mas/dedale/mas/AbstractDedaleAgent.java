@@ -231,7 +231,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 		//At the same time it is normal to block the agent during the realisation of a task.
 		//conception decision to explain in the documentation
 
-		if (ec.getMyTreasureType()!=Observation.NO_TREASURE && ec.getMyTreasureType()!=Observation.ANY_TREASURE && this.realEnv.isReachable(this.getLocalName(),agentSiloName,this.ec.getCommunicationReach())){
+		if (ec.getMyTreasureType()!=Observation.NO_TREASURE && ec.getMyTreasureType()!=Observation.ANY_TREASURE && this.realEnv.isReachable(this.getLocalName(),agentSiloName)){
 			//this.addAbility(ability, abilityID, role, behavioursParameters, knowledge);
 			//this.addBehaviour(new SendTreasure(this,agentSiloName,this.myTreasureType,this.myBackPack.get(this.myTreasureType)));
 
@@ -326,7 +326,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 			receiverNumber++;
 			receiverAID.getLocalName();
 			ec.getCommunicationReach();
-			if (!this.realEnv.isReachable(senderLocalName,receiverAID.getLocalName(),ec.getCommunicationReach())){
+			if (!this.realEnv.isReachable(senderLocalName,receiverAID.getLocalName())){
 				iter.remove();
 				receiverNumber--;
 			}

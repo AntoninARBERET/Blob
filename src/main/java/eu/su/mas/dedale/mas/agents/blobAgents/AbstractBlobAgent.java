@@ -37,7 +37,6 @@ import eu.su.mas.dedale.mas.msgcontent.ResultsMsgContent;
 import jade.core.AID;
 import jade.core.Agent;
 import eu.su.mas.dedale.env.IEnvironment;
-import eu.su.mas.dedale.env.gs.gsEnvironment;
 import eu.su.mas.dedale.env.gs.gsEnvironmentBlob;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
@@ -122,7 +121,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		
 		List<Behaviour> lb=new ArrayList<Behaviour>();
 		//lb.add(new AdBroadcastingBehaviour(this));
-		lb.add(new AdBroadcastingBehaviour(this));
+		//lb.add(new AdBroadcastingBehaviour(this));
 		
 		//tests
 		//addBehaviour(new TestBlobGuiBehaviour(this));
@@ -454,12 +453,13 @@ public abstract class  AbstractBlobAgent extends Agent{
 			AID receiverAID= iter.next();
 			receiverNumber++;
 			receiverAID.getLocalName();
-			if (receiverAID.getLocalName().equals(this.getLocalName())|| !this.realEnv.isReachable(this.getLocalName(),receiverAID.getLocalName())){
+			if (!this.realEnv.isReachable(this.getLocalName(),receiverAID.getLocalName())){
+				//System.out.println(this.getLocalName()+" removed "+receiverAID.getLocalName());
 				iter.remove();
 				receiverNumber--;
 			}
 		}
-
+		
 		if (receiverNumber>0){
 			super.send(msg);
 			

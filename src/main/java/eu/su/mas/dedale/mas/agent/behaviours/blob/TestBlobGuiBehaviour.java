@@ -28,7 +28,7 @@ public class TestBlobGuiBehaviour extends AbstractBlobBehaviour{
 		this.myBlobAgent.doWait(1000);
 		myBlobAgent.setPressure(3);
 		myBlobAgent.getRealEnv().updateNodeAndEdgesStyle(myBlobAgent);
-		myBlobAgent.getnTab().put("Blob2", new NTabEntry("Blob2", 1, 3, 5, 7));
+		//myBlobAgent.getnTab().put("Blob2", new NTabEntry("Blob2", 1, 3, 5, 7));
 	}
 	
 	public boolean done() {

@@ -895,7 +895,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 	 * 
 	 * */
 	
-	float communicationReach = 1000;
+	float communicationReach = 40;
 	int edgeAdded=1;
 	
 	Map<Couple<String, String>, Node> connections = Collections.synchronizedMap(new HashMap<Couple<String, String>, Node>());
@@ -906,11 +906,6 @@ public class gsEnvironmentBlob implements IEnvironment {
 	}
 
 
-	@Override
-	public boolean isReachable(String senderName, String receiverName, int communicationReach) {
-		System.out.println("Not used in this version of the env, try with a double for communicationReach");
-		return false;
-	}
 	
 	/**
 	 * This method must be synchronized due tothe way graphStream computes the shortestPath
@@ -925,7 +920,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 			float sendX=(float)senderNode.getAttribute("x");
 			float sendY=(float)senderNode.getAttribute("y");
 			float recX=(float)receiverNode.getAttribute("x");
-			float recY=(float)senderNode.getAttribute("y");
+			float recY=(float)receiverNode.getAttribute("y");
 			double tmp = Math.sqrt(Math.pow(sendX-recX, 2)+Math.pow(sendY-recY, 2));
 			if(tmp<=communicationReach){
 				return true;
@@ -983,7 +978,6 @@ public class gsEnvironmentBlob implements IEnvironment {
 		
 		if(!getConnections().containsKey(key) && !getConnections().containsKey(yek)) {
 			if(isReachable(ag1, ag2)){
-				System.out.println(ag1);
 				Node n1 = getBlobAgentNode(ag1);
 				Node n2 = getBlobAgentNode(ag2);
 				Node n12=graph.addNode(n1.getId()+"-"+n2.getId());
@@ -1064,7 +1058,6 @@ public class gsEnvironmentBlob implements IEnvironment {
 				otherAg=k.getLeft();
 			}
 			if(otherAg!=null) {
-					System.out.println(getDist(ag,otherAg));
 					
 					if(getDist(ag,otherAg)>communicationReach) {
 						getConnections().get(k).setAttribute("oldclass",getConnections().get(k).getAttribute("ui.class"));
@@ -1087,8 +1080,11 @@ public class gsEnvironmentBlob implements IEnvironment {
 	
 	public void updateEdgeStyle(Edge e, float d, float dMax){
 		float prop=d/dMax;
-		float sizeMin = 2;
-		float sizeMax = 20;
+		if(prop>1) {
+			prop=1;
+		}
+		float sizeMin = 1;
+		float sizeMax = 200;
 		float size=sizeMin+(sizeMax-sizeMin)*prop;
 		e.setAttribute("ui.size", size);
 		e.setAttribute("ui.color", prop);

@@ -42,7 +42,7 @@ public class ResultsProcessingBehaviour extends AbstractBlobBehaviour{
 			//if results are more recent, update nTab and lastContactTable
 			if(lastCont.get(res.getSender()).getResSeqNo()<res.getSeqNo()) {
 				float lij = (float) Math.sqrt(Math.pow(myBlobAgent.getPosX()-res.getPosX(), 2)+Math.pow(myBlobAgent.getPosY()-res.getPosY(), 2));
-				nTab.put(res.getSender(), new NTabEntry(res.getSender(), res.getPressure(), 0,0,lij));
+				nTab.put(res.getSender(), new NTabEntry(res.getSender(), res.getPressure(), 1,0,lij));
 				myBlobAgent.getRealEnv().addConnection(myBlobAgent.getLocalName(), res.getSender());
 				LastContactTabEntry lcEntry = lastCont.get(res.getSender());
 				lcEntry.setResSeqNo(seqNo);

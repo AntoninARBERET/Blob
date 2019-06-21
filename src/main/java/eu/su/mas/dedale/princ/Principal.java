@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
-import eu.su.mas.dedale.mas.agents.GateKeeperAgent;
 import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyCollectorAgent;
 import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyMovingAgent;
 import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyTankerAgent;
@@ -263,16 +262,7 @@ public class Principal {
 			c = containerList.get(ConfigurationFile.LOCAL_CONTAINER_NAME);
 			Assert.assertNotNull("This container does not exist",c);
 			agentName="GK";
-			try {
-				Object[] objtab=new Object[]{ConfigurationFile.INSTANCE_TOPOLOGY,ConfigurationFile.INSTANCE_CONFIGURATION_ELEMENTS,ConfigurationFile.ENVIRONMENT_TYPE,ConfigurationFile.ENVIRONMENTisGRID,ConfigurationFile.ENVIRONMENT_SIZE,ConfigurationFile.ACTIVE_DIAMOND,ConfigurationFile.ACTIVE_GOLD,ConfigurationFile.ACTIVE_WELL};//used to give informations to the agent
-				//Object[] objtab=new Object[]{null,null,ConfigurationFile.ENVIRONMENT_TYPE};//used to give informations to the agent
-				System.out.println("GateKeeperAgent.class.getName(): "+GateKeeperAgent.class.getName());
-				AgentController	ag=c.createNewAgent(agentName,GateKeeperAgent.class.getName(),objtab);
-				agentList.add(ag);
-				System.out.println(agentName+" launched");
-			} catch (StaleProxyException e) {
-				e.printStackTrace();
-			}
+
 
 		}
 		/*the main exist, we deploy the agent(s) on  their local containers
