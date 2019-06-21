@@ -20,6 +20,8 @@ import jade.core.Runtime;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
+
+import org.graphstream.graph.Edge;
 import org.junit.Assert;
 import jade.wrapper.AgentContainer;
 
@@ -82,36 +84,9 @@ public class BlobMain {
 			//3) launch agents
 			startAgents(agentList);
 		}
-		//Tests
-		env.addConnection("Blob1", "Blob2");
-		env.addConnection("Blob2", "Blob1");
 		
-		env.getG().getNode("1").setAttribute("ui.size", 10);
-		env.getG().getEdge(1).setAttribute("ui.size", 10);
 		
-		/*for(int i =0; i<10;i++) {
-			try {
-				TimeUnit.SECONDS.sleep(2);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			env.getG().getNode("1").setAttribute("x",20+(float)env.getG().getNode("1").getAttribute("x"));
-			env.updateConnections("Blob1");
-			System.out.println("Blob1 : ("+(float)env.getG().getNode("1").getAttribute("x")+","+(float)env.getG().getNode("1").getAttribute("y")+")"+"Blob2 : ("+(float)env.getG().getNode("2").getAttribute("x")+","+(float)env.getG().getNode("2").getAttribute("y")+")"+"Blob3 : ("+(float)env.getG().getNode("3").getAttribute("x")+","+(float)env.getG().getNode("3").getAttribute("y")+")");
-		}
 		
-		for(int i =0; i<10;i++) {
-			try {
-				TimeUnit.SECONDS.sleep(2);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			env.getG().getNode("1").setAttribute("x",(float)env.getG().getNode("1").getAttribute("x")-20);
-			env.updateConnections("Blob1");
-			System.out.println("Blob1 : ("+(float)env.getG().getNode("1").getAttribute("x")+","+(float)env.getG().getNode("1").getAttribute("y")+")"+"Blob2 : ("+(float)env.getG().getNode("2").getAttribute("x")+","+(float)env.getG().getNode("2").getAttribute("y")+")"+"Blob3 : ("+(float)env.getG().getNode("3").getAttribute("x")+","+(float)env.getG().getNode("3").getAttribute("y")+")");
-		}*/
 	}
 	//}
 

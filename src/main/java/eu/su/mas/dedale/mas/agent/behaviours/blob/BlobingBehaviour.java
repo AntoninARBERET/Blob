@@ -30,9 +30,11 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 		//reset pressure if this agent was a sink or a source at the last action
 		if(isSink) {
 			myBlobAgent.setPressure(myBlobAgent.getPressure()+myBlobAgent.getDeltaPressure());
+			isSink=false;
 		}
 		else if(isSource) {
 			myBlobAgent.setPressure(myBlobAgent.getPressure()-myBlobAgent.getDeltaPressure());	
+			isSource=false;		
 		}
 		//choose if the agent is a sink or a source this time
 		float rand = new Random().nextFloat();
@@ -50,13 +52,25 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 			float sum =0;
 			float sumPress =0;
 			//solve pressure based on 5
-			for(Map.Entry<String, NTabEntry> entry : nTab.entrySet()) {
-				NTabEntry j = entry.getValue();
-				mi=mi+j.getQij();
-				sumPress=sumPress +(j.getPressure()*j.getDij()/j.getLij());
-				sum=sum +(j.getDij()/j.getLij());
+			if(nTab.size()>0) {
+				for(Map.Entry<String, NTabEntry> entry : nTab.entrySet()) {
+					NTabEntry j = entry.getValue();
+					myBlobAgent.print(" Value to compute : id "+ j.getId() + " press "+j.getPressure() +" diam " + j.getDij()+ " Long "+j.getLij()+ " q "+j.getQij());
+					mi=mi+j.getQij();
+					sumPress=sumPress +(j.getPressure()*j.getDij()/j.getLij());
+					sum=sum +(j.getDij()/j.getLij());
+				}
+				if(sum!=0) {
+					myBlobAgent.setPressure((mi + sumPress)/sum);
+				}else {
+					myBlobAgent.setPressure(0);
+				}
+			}else {
+				myBlobAgent.setPressure(0);
+
 			}
-			myBlobAgent.setPressure((mi + sumPress)/sum);
+
+			
 			//simulate pressure difference
 			if(isSink) {
 				myBlobAgent.setPressure(myBlobAgent.getPressure()-myBlobAgent.getDeltaPressure());
@@ -72,7 +86,7 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 			float mu = myBlobAgent.getMu();
 			for(Map.Entry<String, NTabEntry> entry : nTab.entrySet()) {
 				//Update qij based on 3a
-				float newq = entry.getValue().getDij()/entry.getValue().getLij()*(myBlobAgent.getPressure()-entry.getValue().getPressure());
+				float newq = (entry.getValue().getDij()/entry.getValue().getLij())*(myBlobAgent.getPressure()-entry.getValue().getPressure());
 				entry.getValue().setQij(newq);
 				for(int s=0; s<myBlobAgent.getSteps(); s++) {
 					//solve 3c for Dij based on 6
@@ -88,7 +102,9 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 				}
 			}
 		}
-		
+		myBlobAgent.print("Pressure = "+myBlobAgent.getPressure());
+		myBlobAgent.getRealEnv().updateNodeAndEdgesStyle(myBlobAgent);
+		myBlobAgent.getRealEnv().updateConnections(myBlobAgent.getLocalName());
 		
 	}
 	

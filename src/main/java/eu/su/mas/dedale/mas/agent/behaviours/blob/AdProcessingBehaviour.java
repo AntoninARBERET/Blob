@@ -24,16 +24,19 @@ public class AdProcessingBehaviour extends AbstractBlobBehaviour{
 	public void action() {
 		HashMap<String, LastContactTabEntry> lactContacts = myBlobAgent.getLastContact();
 		Map<String, NTabEntry> nTab = myBlobAgent.getnTab();
+		if(ad.getSender().equals(myBlobAgent.getLocalName())) {
+			return;
+		}
 		myBlobAgent.print("Ad recieved from "+ad.getSender());
 		//if the current agent is not in forwarders, add last forwarder to routing table
 		if(!ad.getForwarders().contains(myBlobAgent.getLocalName())) {
 			myBlobAgent.addToRoutingTab(ad.getSender(), ad.getForwarders().get(ad.getForwarders().size()-1));
 		}
-		//New contact : add to nTab and lastContacts
+		//New contact : add to lastContacts
 		if(!lactContacts.containsKey(ad.getSender())) {
 			lactContacts.put(ad.getSender(), new LastContactTabEntry(ad.getSender(), new Date(), ad.getSeqNo(), ad.getSeqNo(), 0));
-			float lij = (float) Math.sqrt(Math.pow(myBlobAgent.getPosX()-ad.getPosX(), 2)+Math.pow(myBlobAgent.getPosY()-ad.getPosY(),2));
-			nTab.put(ad.getSender(), new NTabEntry(ad.getSender(), ad.getPressure(), 0, 0, lij) );
+			//float lij = (float) Math.sqrt(Math.pow(myBlobAgent.getPosX()-ad.getPosX(), 2)+Math.pow(myBlobAgent.getPosY()-ad.getPosY(),2));
+			//nTab.put(ad.getSender(), new NTabEntry(ad.getSender(), ad.getPressure(), 0, 0, lij) );
 			ad.addForwarder(myBlobAgent.getLocalName());
 			ad.incNbHops();
 			myBlobAgent.rebroadcastAd(ad);
@@ -48,8 +51,10 @@ public class AdProcessingBehaviour extends AbstractBlobBehaviour{
 				if(entry.getSeqNo()<seqNo) {
 					entry.setSeqNo(seqNo);
 					float lij = (float) Math.sqrt(Math.pow(myBlobAgent.getPosX()-ad.getPosX(), 2)+Math.pow(myBlobAgent.getPosY()-ad.getPosY(),2));
-					nTab.get(ad.getSender()).setLij(lij);
-					nTab.get(ad.getSender()).setPressure(ad.getPressure());
+					if(nTab.containsKey(ad.getSender())) {
+						nTab.get(ad.getSender()).setLij(lij);
+						nTab.get(ad.getSender()).setPressure(ad.getPressure());					
+					}
 					entry.setDate(new Date());
 				}
 				ad.addForwarder(myBlobAgent.getLocalName());

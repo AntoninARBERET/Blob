@@ -50,7 +50,7 @@ public final class ConfigurationFile {
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2018-agentCollect";
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2018-entities";
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2018-agentGolem";
-	public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/blob-3agents";
+	public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/blob-10agents";
 	/************************************
 	 * 
 	 * 
@@ -76,12 +76,12 @@ public final class ConfigurationFile {
 	public static boolean ACTIVE_DIAMOND=true;
 	
 	/**Blob part**/
-	public static int NB_BLOB_AG= 3;
+	public static int NB_BLOB_AG= 10;
 	public static float PROBA_SINK=(float) 0.1;
 	public static float PROBA_SOURCE=(float) 0.1;
 	public static int ROUNDS= 3;
 	public static int STEPS= 3;
-	public static float DELTA_PRESSURE=(float) 0.1;
+	public static float DELTA_PRESSURE=(float) 1;
 	public static int DELTA_T= 300;
 	public static int DELTA_T_SYNC= 1000;
 	public static float D_MAX=(float) 3;

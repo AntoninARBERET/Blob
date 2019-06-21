@@ -6,7 +6,7 @@ import debug.Debug;
 import eu.su.mas.dedale.env.EnvironmentType;
 import eu.su.mas.dedale.env.IEnvironment;
 import eu.su.mas.dedale.env.gs.gsEnvironment;
-import eu.su.mas.dedale.env.jme.jmeEnvironment;
+//import eu.su.mas.dedale.env.jme.jmeEnvironment;
 import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe;
 import eu.su.mas.dedale.princ.ConfigurationFile;
 //import env.Environment;
@@ -80,10 +80,6 @@ public class GateKeeperAgent extends AbstractDeltaAgent {
 			env= new gsEnvironment();
 			//env.CreateEnvironment((String)args[0], (String)args[1],(boolean)args[3],(Integer)args[4],(boolean)args[5],(boolean)args[6],(boolean)args[7]);
 			break;
-		case JME:
-			env = new jmeEnvironment();
-			env.CreateEnvironment((String)args[0], (String)args[1],(boolean)args[3],(Integer)args[4],(boolean)args[5],(boolean)args[6],(boolean)args[7]);
-			break;	
 		default:
 			Debug.error("This type of environment is not yet supported");
 			break;

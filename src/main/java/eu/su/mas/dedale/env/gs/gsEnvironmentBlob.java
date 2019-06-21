@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,6 +49,7 @@ import eu.su.mas.dedale.env.InGameConfigurationFile;
 import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedale.env.gs.gui.JavaFxmlGui;
 import eu.su.mas.dedale.env.gs.gui.MyController;
+import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.knowledge.NTabEntry;
 import jade.wrapper.PlatformController;
 
@@ -79,12 +81,12 @@ public class gsEnvironmentBlob implements IEnvironment {
 	 * 
 	 ************************************/
 	//GUI parameters
-	private final static String defaultNodeStyle= "node {"+"fill-color: black;"+" size-mode:fit;text-alignment:under; text-size:14;text-color:white;text-background-mode:rounded-box;text-background-color:black;}";
-	private final static String nodeStyle_blob= "node.blobi {"+"fill-color: rgb(245,180,31);"+"}";
-	private final static String nodeStyle_oneside= "node.onesided {"+"fill-color: red;"+"}";
-	private final static String nodeStyle_sym= "node.symetric {"+"fill-color: green;"+"}";
-	private final static String nodeStyle_oor= "node.outofrange {"+"fill-color: black;"+"}";
-	private final static String edgeStyle= "edge {"+"fill-color: black;size-mode: dyn-size;"+"}";
+	private final static String defaultNodeStyle= "node {"+"fill-color: black;"+" size-mode:dyn-size;text-alignment:under; text-size:14;text-color:black;}";
+	private final static String nodeStyle_blob= "node.blobi {"+"fill-mode: dyn-plain; fill-color: rgb(245,180,31), rgb(0,0,0);"+"}";
+	private final static String nodeStyle_oneside= "node.onesided {"+"fill-color: red;shape: box;"+"}";
+	private final static String nodeStyle_sym= "node.symetric {"+"fill-color: green;shape: box;"+"}";
+	private final static String nodeStyle_oor= "node.outofrange {"+"fill-color: black;shape: cross;"+"}";
+	private final static String edgeStyle= "edge {"+"fill-mode: dyn-plain;fill-color: rgb(255,248,147), rgb(240,185,0);size-mode: dyn-size;"+"}";
 	
 	
 
@@ -893,7 +895,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 	 * 
 	 * */
 	
-	float communicationReach = 100;
+	float communicationReach = 1000;
 	int edgeAdded=1;
 	
 	Map<Couple<String, String>, Node> connections = Collections.synchronizedMap(new HashMap<Couple<String, String>, Node>());
@@ -939,6 +941,10 @@ public class gsEnvironmentBlob implements IEnvironment {
 		return this.graph.getNode(nodeId);
 	}
 	
+	private synchronized int getNewEdgeId() {
+		return this.edgeAdded++;
+	}
+	
 	/**
 	 * 
 	 * @return a new graph
@@ -971,11 +977,11 @@ public class gsEnvironmentBlob implements IEnvironment {
 		//return g;
 	}
 	
-	public boolean addConnection(String ag1, String ag2) {
+	public synchronized boolean addConnection(String ag1, String ag2) {
 		Couple<String,String> key = new Couple<String,String>(ag1,ag2);
 		Couple<String,String> yek = new Couple<String,String>(ag2,ag1);
 		
-		if(!connections.containsKey(key) && !connections.containsKey(yek)) {
+		if(!getConnections().containsKey(key) && !getConnections().containsKey(yek)) {
 			if(isReachable(ag1, ag2)){
 				System.out.println(ag1);
 				Node n1 = getBlobAgentNode(ag1);
@@ -987,40 +993,48 @@ public class gsEnvironmentBlob implements IEnvironment {
 				System.out.println(midX + " "+ midY);
 				n12.setAttribute("x", midX);
 				n12.setAttribute("y", midY);
-				Edge e1 = this.graph.addEdge(new Integer(this.edgeAdded++).toString(),n1.getId(),n1.getId()+"-"+n2.getId());
-				Edge e2 = this.graph.addEdge(new Integer(this.edgeAdded++).toString(),n2.getId(),n1.getId()+"-"+n2.getId());
+				Edge e1 = this.graph.addEdge(new Integer(getNewEdgeId()).toString(),n1.getId(),n1.getId()+"-"+n2.getId());
+				Edge e2 = this.graph.addEdge(new Integer(getNewEdgeId()).toString(),n2.getId(),n1.getId()+"-"+n2.getId());
 				//e1.setAttribute("layout.weight", w);
 				//e2.setAttribute("layout.weight", w);
 				n12.setAttribute("ui.class", "onesided");
-				connections.put(key, n12);
+				getConnections().put(key, n12);
+				updateConnections(ag1);
 				return true;
 			}
-		}else if (connections.containsKey(yek)) {
-			Node n21 = connections.get(yek);
+		}else if (getConnections().containsKey(yek)) {
+			Node n21 = getConnections().get(yek);
 			n21.setAttribute("ui.class", "symetric");
-			connections.put(key, n21);
+			getConnections().put(key, n21);
+			updateConnections(ag1);
 		}else {
+			//updateConnections(ag1);
 			return true;
 		}
 		return false;
 	}
 
-	public boolean removeConnection(String n1, String n2) {
+	public synchronized boolean removeConnection(String n1, String n2) {
 		Couple<String,String> key = new Couple<String,String>(n1,n2);
 		Couple<String,String> yek = new Couple<String,String>(n2,n1);
-		if(!connections.containsKey(key)) {
+		if(!getConnections().containsKey(key)) {
 			return false;
 		}
-		if(!connections.containsKey(yek)) {
-			Node n = connections.get(key);
+		if(!getConnections().containsKey(yek)) {
+			Node n = getConnections().get(key);
 			graph.removeNode(n);
 		}
 		else {
-			Node n = connections.get(yek);
+			Node n = getConnections().get(yek);
 			n.setAttribute("ui.class", "onesided");
-			connections.remove(key);
+			getConnections().remove(key);
 		}
+		updateConnections(n1);
 		return true;
+	}
+	
+	public synchronized Map<Couple<String, String>, Node> getConnections() {
+		return connections;
 	}
 	
 	/*public ArrayList<Couple<String, Node>> getConnections(String ag){
@@ -1033,9 +1047,14 @@ public class gsEnvironmentBlob implements IEnvironment {
 		return d;
 	}
 	
-	public void updateConnections(String ag) {
+	/**
+	 * Update connections of the agent, check if neigbours are in communication range
+	 * Must be call at each move
+	 * @param ag : id of the agent
+	 */
+	public synchronized void  updateConnections(String ag) {
 		Node myNode = getBlobAgentNode(ag);
-		for(Couple<String, String> k : connections.keySet()) {
+		for(Couple<String, String> k : getConnections().keySet()) {
 			boolean isLeft = k.getLeft().equals(ag);;
 			boolean isRight = k.getRight().equals(ag);
 			String otherAg=null;
@@ -1048,24 +1067,66 @@ public class gsEnvironmentBlob implements IEnvironment {
 					System.out.println(getDist(ag,otherAg));
 					
 					if(getDist(ag,otherAg)>communicationReach) {
-						connections.get(k).setAttribute("oldclass",connections.get(k).getAttribute("ui.class"));
-						connections.get(k).setAttribute("ui.class", "outofrange");
-					}else if(connections.get(k).getAttribute("ui.class").equals("outofrange")){
-						if(connections.containsKey(new Couple<String,String>(k.getRight(),k.getLeft()))){
-							connections.get(k).setAttribute("ui.class", "symetric");
+						getConnections().get(k).setAttribute("oldclass",getConnections().get(k).getAttribute("ui.class"));
+						getConnections().get(k).setAttribute("ui.class", "outofrange");
+					}else if(getConnections().get(k).getAttribute("ui.class").equals("outofrange")){
+						if(getConnections().containsKey(new Couple<String,String>(k.getRight(),k.getLeft()))){
+							getConnections().get(k).setAttribute("ui.class", "symetric");
 						}else {
-							connections.get(k).setAttribute("ui.class", "onesided");
+							getConnections().get(k).setAttribute("ui.class", "onesided");
 						}
 					}
 					Node otherNode=getBlobAgentNode(otherAg);
 					float midX = ((float)myNode.getAttribute("x")+(float)otherNode.getAttribute("x"))/2;
 					float midY = ((float)myNode.getAttribute("y")+(float)otherNode.getAttribute("y"))/2;
-					connections.get(k).setAttribute("x", midX);
-					connections.get(k).setAttribute("y", midY);
+					getConnections().get(k).setAttribute("x", midX);
+					getConnections().get(k).setAttribute("y", midY);
 			}
 		}
 	}
 	
+	public void updateEdgeStyle(Edge e, float d, float dMax){
+		float prop=d/dMax;
+		float sizeMin = 2;
+		float sizeMax = 20;
+		float size=sizeMin+(sizeMax-sizeMin)*prop;
+		e.setAttribute("ui.size", size);
+		e.setAttribute("ui.color", prop);
+	}
+	
+	public synchronized void updateNodeAndEdgesStyle(AbstractBlobAgent ag) {
+		Node n = ag.getMyNode();
+		
+		float pressure = ag.getPressure();
+		float deltaPressure = ag.getDeltaPressure();
+		try {
+			if(pressure>=0) {
+				float size = 10+(pressure/deltaPressure);
+				n.setAttribute("ui.color", (float)0.0);
+				n.setAttribute("ui.size", size);
+			}else {
+				n.setAttribute("ui.color", (float)1.0);
+				n.setAttribute("ui.size", 10);
+			}
+		}catch(Exception e) {
+			//TODO remove this disgusting try catch
+			e.printStackTrace();
+			
+		}
+		
+		
+		float dMax = ag.getdMax();
+		for(NTabEntry entry : ag.getNTabEntries()) {
+			String j = entry.getId();
+			Node mid = getConnections().get(new Couple<String,String>(ag.getLocalName(),j));
+			if(mid!=null) {
+				Edge e = n.getEdgeBetween(mid);
+				if(e!=null) {
+					updateEdgeStyle(e, entry.getDij(), dMax);
+				}
+			}
+		}
+	}	
 }
 
 

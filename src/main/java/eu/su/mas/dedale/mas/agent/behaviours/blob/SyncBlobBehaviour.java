@@ -26,6 +26,9 @@ public class SyncBlobBehaviour extends AbstractBlobBehaviour{
 	}
 	
 	public void action() {
+		//check if the agent lost some connections
+		myBlobAgent.checkContacts();
+		
 		//when the agent must send a message
 		if(sent==false) {
 			start = new Date();
@@ -39,6 +42,7 @@ public class SyncBlobBehaviour extends AbstractBlobBehaviour{
 			sent=false;
 		}
 	}
+	
 	
 	public boolean done() {
 		return finished;

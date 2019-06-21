@@ -10,7 +10,12 @@ import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public abstract class ReceiveMessageBehaviour extends AbstractBlobBehaviour{
+public class ReceiveMessageBehaviour extends AbstractBlobBehaviour{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 798562981577225116L;
+
 	public ReceiveMessageBehaviour(AbstractBlobAgent myBlobAgent){
 		super(myBlobAgent);
 	}
@@ -40,5 +45,10 @@ public abstract class ReceiveMessageBehaviour extends AbstractBlobBehaviour{
 				}else{
 					block();
 				}
+	}
+
+	@Override
+	public boolean done() {
+		return false;
 	}
 }

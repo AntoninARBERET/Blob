@@ -2,6 +2,7 @@ package eu.su.mas.dedale.mas.agents.blobAgents;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +21,8 @@ import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.RandomWalkBehaviour;
 import eu.su.mas.dedale.mas.agent.behaviours.startMyBehaviours;
 import eu.su.mas.dedale.mas.agent.behaviours.blob.AdBroadcastingBehaviour;
+import eu.su.mas.dedale.mas.agent.behaviours.blob.ReceiveMessageBehaviour;
+import eu.su.mas.dedale.mas.agent.behaviours.blob.TestBlobGuiBehaviour;
 import eu.su.mas.dedale.mas.agent.behaviours.blob.VerySimpleBehaviour;
 import eu.su.mas.dedale.mas.knowledge.ConnTabEntry;
 import eu.su.mas.dedale.mas.knowledge.LastContactTabEntry;
@@ -121,9 +124,12 @@ public abstract class  AbstractBlobAgent extends Agent{
 		//lb.add(new AdBroadcastingBehaviour(this));
 		lb.add(new AdBroadcastingBehaviour(this));
 		
-		//addBehaviour(new startMyBehaviours(this,lb));
-		//addBehaviour(new AdBroadcastingBehaviour(this));
+		//tests
+		//addBehaviour(new TestBlobGuiBehaviour(this));
 		
+		//addBehaviour(new startMyBehaviours(this,lb));
+		addBehaviour(new AdBroadcastingBehaviour(this));
+		addBehaviour(new ReceiveMessageBehaviour(this));
 		
 	}
 
@@ -284,7 +290,13 @@ public abstract class  AbstractBlobAgent extends Agent{
 	}
 	
 	public void addToRoutingTab(String dest, String hop) {
-		routingTab.get(dest).add(hop);
+		if(routingTab.containsKey(dest)) {
+			routingTab.get(dest).add(hop);
+		}else {
+			HashSet<String> hs = new HashSet<String>();
+			hs.add(hop);
+			routingTab.put(dest, hs);
+		}
 	}
 	
 	public void removeFromRoutingTab(String hop) {
@@ -295,6 +307,14 @@ public abstract class  AbstractBlobAgent extends Agent{
 	
 	public HashMap<String, HashSet<String>> getRoutingTab() {
 		return routingTab;
+	}
+	
+	public Collection<NTabEntry> getNTabEntries() {
+		return nTab.values();
+	}
+
+	public gsEnvironmentBlob getRealEnv() {
+		return realEnv;
 	}
 
 
@@ -434,8 +454,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 			AID receiverAID= iter.next();
 			receiverNumber++;
 			receiverAID.getLocalName();
-			
-			if (!this.realEnv.isReachable(this.getLocalName(),receiverAID.getLocalName())){
+			if (receiverAID.getLocalName().equals(this.getLocalName())|| !this.realEnv.isReachable(this.getLocalName(),receiverAID.getLocalName())){
 				iter.remove();
 				receiverNumber--;
 			}
@@ -447,6 +466,24 @@ public abstract class  AbstractBlobAgent extends Agent{
 		}//else{
 		//	System.out.println(msg.getSender().getLocalName()+"-- No agent within reach --");
 		//}
+	}
+	
+	public void checkContacts() {
+		for( LastContactTabEntry c : lastContact.values()) {
+			//max time before considering a connection lost : 2.5 deltaTSync to allow one lost package
+			if(new Date().getTime() - c.getDate().getTime()>2.5*deltaTSync) {
+				if(nTab.containsKey(c.getId())) {
+					nTab.remove(c.getId());
+				}
+				if(routingTab.containsKey(c.getId())) {
+					routingTab.get(c.getId()).remove(c.getId());
+				}
+				//to let other agents know that I'm not a valid forwarder to this node anymore
+				sendCoLostMsg(c.getId());
+				//to try to communicate a knew way to reach me to nodes which lost me with this disconnection
+				sendAdMsg();
+			}
+		}
 	}
 
 	
