@@ -16,6 +16,7 @@ import eu.su.mas.dedale.mas.knowledge.NTabEntry;
 import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.PingMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.ResultsMsgContent;
+import eu.su.mas.dedale.tools.Debug;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -28,7 +29,7 @@ public class ResultsProcessingBehaviour extends AbstractBlobBehaviour{
 	}
 	
 	public void action() {
-		myBlobAgent.print("received results from "+res.getSender());
+		Debug.info(myBlobAgent.getPrintPrefix()+"Received results from "+res.getSender(),1);
 		HashMap<String, LastContactTabEntry> lastCont = myBlobAgent.getLastContact();
 		Map<String, NTabEntry> nTab = myBlobAgent.getnTab();
 		int seqNo = res.getSeqNo();

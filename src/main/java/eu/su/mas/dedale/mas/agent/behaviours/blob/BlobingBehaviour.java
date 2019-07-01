@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.knowledge.NTabEntry;
+import eu.su.mas.dedale.tools.Debug;
 
 /**
  * The BlobingBehaviour is used by the BlobAgent process local informations and modify its variables
@@ -23,7 +24,7 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 		super(myBlobAgent);
 		isSink=false;
 		isSource=false;
-		myBlobAgent.print("BlobingBehaviour constructed");
+		Debug.info(myBlobAgent.getPrintPrefix()+"BlobingBehaviour constructed",4);
 		start = true;
 		roundsDone=0;
 	}
@@ -46,11 +47,11 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 			float rand = new Random().nextFloat();
 			if(rand<myBlobAgent.getProbaSink()) {
 				isSink=true;
-				myBlobAgent.print("I am sink");
+				Debug.info(myBlobAgent.getPrintPrefix()+"I am sink",2);
+
 			}else if(rand<myBlobAgent.getProbaSink()+myBlobAgent.getProbaSource()) {
 				isSource=true;
-				myBlobAgent.print("I am source");
-			}
+				Debug.info(myBlobAgent.getPrintPrefix()+"I am source",2);			}
 			start=false;
 		}
 		
@@ -65,7 +66,7 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 		if(nTab.size()>0) {
 			for(Map.Entry<String, NTabEntry> entry : nTab.entrySet()) {
 				NTabEntry j = entry.getValue();
-				myBlobAgent.print(" Value to compute : id "+ j.getId() + " press "+j.getPressure() +" diam " + j.getDij()+ " Long "+j.getLij()+ " q "+j.getQij());
+				Debug.info(myBlobAgent.getPrintPrefix()+" Value to compute : id "+ j.getId() + " press "+j.getPressure() +" diam " + j.getDij()+ " Long "+j.getLij()+ " q "+j.getQij(),2);
 				mi=mi+j.getQij();
 				sumPress=sumPress +(j.getPressure()*j.getDij()/j.getLij());
 				sum=sum +(j.getDij()/j.getLij());
@@ -122,7 +123,7 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 			roundsDone=0;
 		}
 		
-		myBlobAgent.print("Pressure = "+myBlobAgent.getPressure());
+		Debug.info(myBlobAgent.getPrintPrefix()+"Pressure = "+myBlobAgent.getPressure(),2);
 		myBlobAgent.getRealEnv().updateNodeAndEdgesStyle(myBlobAgent);
 		myBlobAgent.getRealEnv().updateConnections(myBlobAgent.getLocalName());
 		

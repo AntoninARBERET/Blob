@@ -12,6 +12,7 @@ import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyCollectorAgent;
 import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyMovingAgent;
 import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyTankerAgent;
 import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyWumpusShift;
+import eu.su.mas.dedale.tools.Debug;
 //import jade.core.AgentContainer;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -20,7 +21,9 @@ import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
+import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Edge;
+import org.graphstream.stream.ProxyPipe;
 import org.junit.Assert;
 import jade.wrapper.AgentContainer;
 
@@ -34,6 +37,7 @@ public class BlobMain {
 	private static gsEnvironmentBlob env;
 	
 	public static void main(String[] args){
+
 		
 		//GS env for blob 
 		
@@ -82,6 +86,27 @@ public class BlobMain {
 
 			//3) launch agents
 			startAgents(agentList);
+		}
+		
+		ProxyPipe pipe = env.getPipe();
+		
+		while (true) {
+			// a small delay, avoids full CPU load
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// consume the events stored in the buffer, if any
+			pipe.pump();
+
+			// in the development version the previous two instructions can be replaced by
+			// pipe.blockingPump();
+
+			// now "xyz" attributes of the nodes are updated and we can use them, for example
+			//double[] xyz = Toolkit.nodePosition(env.getG(), "A");
+			System.out.println(env.getG().getNode("1").getAttribute("x"));
 		}
 		
 		

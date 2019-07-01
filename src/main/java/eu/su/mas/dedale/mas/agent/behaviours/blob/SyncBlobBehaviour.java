@@ -1,6 +1,7 @@
 package eu.su.mas.dedale.mas.agent.behaviours.blob;
 import java.util.Date;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
+import eu.su.mas.dedale.tools.Debug;
 
 /**
  * SyncBlobBehaviour is used by BlobAgent to broadcast periodically its computing results 
@@ -22,7 +23,8 @@ public class SyncBlobBehaviour extends AbstractBlobBehaviour{
 			this.deltaTSync = myBlobAgent.getDeltaTSync();
 		}
 		sent =false;
-		myBlobAgent.print("SyncBlobBehaviour constructed");
+		Debug.info(myBlobAgent.getPrintPrefix()+"SyncBlobBehaviour constructed",4);
+
 	}
 	
 	public void action() {
@@ -33,7 +35,7 @@ public class SyncBlobBehaviour extends AbstractBlobBehaviour{
 		if(sent==false) {
 			start = new Date();
 			myBlobAgent.sendResultsMsg();
-			myBlobAgent.print("Results sent");
+			Debug.info(myBlobAgent.getPrintPrefix()+"Results sent",1);
 			sent=true;
 		}
 		//when it do not

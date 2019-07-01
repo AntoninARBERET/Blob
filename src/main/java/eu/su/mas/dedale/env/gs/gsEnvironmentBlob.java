@@ -33,6 +33,7 @@ import org.graphstream.algorithm.generator.GridGenerator;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.stream.ProxyPipe;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceFactory;
 
@@ -54,9 +55,10 @@ import eu.su.mas.dedale.mas.knowledge.NTabEntry;
 import jade.wrapper.PlatformController;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.VBox;
-import javafx.application.*;
+
 //import eu.su.mas.dedale.princ.ConfigurationFile;
 
 
@@ -94,10 +96,10 @@ public class gsEnvironmentBlob implements IEnvironment {
 	private final static String styleSheet = nodeStyle+"graph {padding: 60px;}";
 
 	private Graph graph;
-	private Viewer viewer;
+	private FxViewer viewer;
 
 	private String environmentName;
-	
+	private ProxyPipe pipe;
 	
 
 
@@ -155,11 +157,19 @@ public class gsEnvironmentBlob implements IEnvironment {
 					System.out.println("controller2: "+m);
 					Assert.assertNotNull(m);
 					m.setGraph(getJavaFxViewer());
+					
+					// Create a pipe coming from the viewer ...
+					pipe = viewer.newViewerPipe();
+					// ... and connect it to the graph
+					pipe.addAttributeSink(graph);
 			}
 		});
 
 		//printAllNodes();
 		this.environmentName="env";
+		
+
+		
 	}
 
 
@@ -871,7 +881,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 	 */
 	private FxViewPanel getJavaFxViewer(){
 		
-		FxViewer viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+		viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 		viewer.disableAutoLayout();
 		
 		graph.setAttribute("ui.antialias");
@@ -984,7 +994,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 				float midX = ((float)n1.getAttribute("x")+(float)n2.getAttribute("x"))/2;
 				float midY = ((float)n1.getAttribute("y")+(float)n2.getAttribute("y"))/2;
 				float w = (float) Math.sqrt(Math.pow(midX-(float)n1.getAttribute("x"),2)+Math.pow(midY-(float)n1.getAttribute("y"),2));
-				System.out.println(midX + " "+ midY);
+				//System.out.println(midX + " "+ midY);
 				n12.setAttribute("x", midX);
 				n12.setAttribute("y", midY);
 				Edge e1 = this.graph.addEdge(new Integer(getNewEdgeId()).toString(),n1.getId(),n1.getId()+"-"+n2.getId());
@@ -1122,7 +1132,14 @@ public class gsEnvironmentBlob implements IEnvironment {
 				}
 			}
 		}
-	}	
+	}
+
+
+	public ProxyPipe getPipe() {
+		return pipe;
+	}
+	
+	
 }
 
 

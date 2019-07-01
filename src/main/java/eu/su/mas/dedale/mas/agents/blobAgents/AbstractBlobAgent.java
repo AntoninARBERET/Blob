@@ -442,6 +442,10 @@ public abstract class  AbstractBlobAgent extends Agent{
 		System.out.println(this.getLocalName()+"\t ----> "+s);
 	}
 	
+	public String getPrintPrefix() {
+		return this.getLocalName()+"\t ----> ";
+	}
+	
 	
 	public void sendMessage(ACLMessage msg){
 		Assert.assertNotNull("The sender must have been defined",msg.getSender());

@@ -49,13 +49,13 @@ public class Debug {
 	enum DebugConf {
 		ExactlyVerboseLevel, EverythingLowerThanVerboseLEvel, ExactlyDebugSet;
 	}
-	static DebugConf infegal;
+	static DebugConf infegal = DebugConf.ExactlyVerboseLevel;
 
 	/**
 	 * The reference verbose level used for 
 	 * DebugConf.ExactlyVerboseLevel and DebugConf.EverythingLowerThanVerboseLEvel
 	 */
-	static int verboseLevel;
+	static int verboseLevel=0;
 	static Collection<Integer> debugSet;
 
 	public static boolean printDetails;//allow to express more information for a log
@@ -221,8 +221,8 @@ public class Debug {
 	private static boolean logIt(final int verboseType) {
 		return verboseType == 42 
 				|| Debug.infegal.equals(DebugConf.ExactlyVerboseLevel) && verboseType == Debug.verboseLevel
-				|| Debug.infegal.equals(DebugConf.ExactlyVerboseLevel) && verboseType <= Debug.verboseLevel
-				|| Debug.infegal.equals(DebugConf.ExactlyVerboseLevel) && Debug.debugSet.contains(verboseType);
+				|| Debug.infegal.equals(DebugConf.EverythingLowerThanVerboseLEvel) && verboseType <= Debug.verboseLevel
+				|| Debug.infegal.equals(DebugConf.ExactlyDebugSet) && Debug.debugSet.contains(verboseType);
 	}
 
 

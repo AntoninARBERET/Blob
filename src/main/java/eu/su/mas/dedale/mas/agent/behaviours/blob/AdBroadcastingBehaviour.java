@@ -2,6 +2,7 @@ package eu.su.mas.dedale.mas.agent.behaviours.blob;
 import java.util.Random;
 import java.util.Date;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
+import eu.su.mas.dedale.tools.Debug;
 
 /**
  * AdProcessingBehaviour is the first Behaviour used by the BlobAgent
@@ -35,11 +36,12 @@ public class AdBroadcastingBehaviour extends AbstractBlobBehaviour{
 		if(!adSent && new Date().after(sendDate)) {
 			myBlobAgent.sendAdMsg();
 			adSent=true;
-			myBlobAgent.print("Ad sent");
+			Debug.info(myBlobAgent.getPrintPrefix()+"Ad sent",1);
 		}
 		else if(adSent && new Date().after(adDate)) {
 			this.finished = true;
-			myBlobAgent.print("Message sent, end of AdTimer, creating next behaviours");
+			//myBlobAgent.print("Message sent, end of AdTimer, creating next behaviours");
+			Debug.info(myBlobAgent.getPrintPrefix()+"Message sent, end of AdTimer, creating next behaviours",1);
 			myBlobAgent.addBehaviour(new ParallelBlobBehaviour(myBlobAgent));
 		}
 	}

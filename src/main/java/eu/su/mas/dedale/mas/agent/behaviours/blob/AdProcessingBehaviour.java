@@ -2,10 +2,13 @@ package eu.su.mas.dedale.mas.agent.behaviours.blob;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.knowledge.LastContactTabEntry;
 import eu.su.mas.dedale.mas.knowledge.NTabEntry;
 import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
+import eu.su.mas.dedale.tools.Debug;
 
 /**
  * AdProcessingBehaviour is the first Behaviour used by the BlobAgent is used when an Ad is received by the BlobAgent
@@ -27,7 +30,8 @@ public class AdProcessingBehaviour extends AbstractBlobBehaviour{
 		if(ad.getSender().equals(myBlobAgent.getLocalName())) {
 			return;
 		}
-		myBlobAgent.print("Ad recieved from "+ad.getSender());
+		//myBlobAgent.print("Ad recieved from "+ad.getSender());
+		Debug.info(myBlobAgent.getPrintPrefix()+"Ad recieved from "+ad.getSender(),1);
 		//if the current agent is not in forwarders, add last forwarder to routing table
 		if(!ad.getForwarders().contains(myBlobAgent.getLocalName())) {
 			myBlobAgent.addToRoutingTab(ad.getSender(), ad.getForwarders().get(ad.getForwarders().size()-1));
