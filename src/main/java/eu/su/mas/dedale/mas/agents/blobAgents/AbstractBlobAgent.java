@@ -479,9 +479,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		float delay;
 		//max time before considering a connection lost : 2.5 deltaTSync to allow one lost package
 		if(TEMPO) {
-			delay = 6*(deltaTSync+TEMPOTIME);
+			delay = 10*(deltaTSync+TEMPOTIME);
 		}else {
-			delay = 6*deltaTSync;
+			delay = 10*deltaTSync;
 		}
 		for( NTabEntry n : nTab.values()) {
 			LastContactTabEntry c = lastContact.get(n.getId());
