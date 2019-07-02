@@ -14,6 +14,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.graphstream.graph.Node;
+import org.graphstream.ui.graphicGraph.GraphPosLengthUtils;
 import org.junit.Assert;
 
 import dataStructures.tuple.Couple;
@@ -34,6 +35,7 @@ import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.CoLostMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.PingMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.ResultsMsgContent;
+import eu.su.mas.dedale.tools.Debug;
 import jade.core.AID;
 import jade.core.Agent;
 import eu.su.mas.dedale.env.IEnvironment;
@@ -159,14 +161,14 @@ public abstract class  AbstractBlobAgent extends Agent{
 
 	public float getPosX() {
 		this.mutexX.readLock().lock();
-		float val = (float) myNode.getAttribute("x");
+		float val = (float)GraphPosLengthUtils.nodePosition(myNode)[0];
 		this.mutexX.readLock().unlock();
 		return val;
 	}
 	
 	public float getPosY() {
 		this.mutexY.readLock().lock();
-		float val = (float) myNode.getAttribute("y");
+		float val = (float)GraphPosLengthUtils.nodePosition(myNode)[1];
 		this.mutexY.readLock().unlock();
 		return val;
 	}
@@ -473,20 +475,34 @@ public abstract class  AbstractBlobAgent extends Agent{
 	}
 	
 	public void checkContacts() {
-		for( LastContactTabEntry c : lastContact.values()) {
-			//max time before considering a connection lost : 2.5 deltaTSync to allow one lost package
-			if(new Date().getTime() - c.getDate().getTime()>2.5*deltaTSync) {
+		ArrayList<String> toRemove = new ArrayList<String>();
+		float delay;
+		//max time before considering a connection lost : 2.5 deltaTSync to allow one lost package
+		if(TEMPO) {
+			delay = 6*(deltaTSync+TEMPOTIME);
+		}else {
+			delay = 6*deltaTSync;
+		}
+		for( NTabEntry n : nTab.values()) {
+			LastContactTabEntry c = lastContact.get(n.getId());
+			if(new Date().getTime() - c.getDate().getTime()>delay) {
+				Debug.info(getPrintPrefix()+" connection lost with "+c.getId()+", remove entries",1);
 				if(nTab.containsKey(c.getId())) {
-					nTab.remove(c.getId());
+					toRemove.add(n.getId());
 				}
 				if(routingTab.containsKey(c.getId())) {
 					routingTab.get(c.getId()).remove(c.getId());
 				}
+				this.realEnv.removeConnection(this.getLocalName(), n.getId());
 				//to let other agents know that I'm not a valid forwarder to this node anymore
 				sendCoLostMsg(c.getId());
 				//to try to communicate a knew way to reach me to nodes which lost me with this disconnection
 				sendAdMsg();
+				
 			}
+		}
+		for(String s : toRemove) {
+			nTab.remove(s);
 		}
 	}
 

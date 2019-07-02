@@ -36,12 +36,16 @@ public class ResultsProcessingBehaviour extends AbstractBlobBehaviour{
 		
 		//Sender not in nTab yet
 		if(!nTab.containsKey(res.getSender())) {
+			Debug.info(myBlobAgent.getPrintPrefix()+" new contact, results from "+res.getSender(), 5);
+
 			//Sender not in lastCont yet
 			if(!lastCont.containsKey(res.getSender())) {
+				Debug.info(myBlobAgent.getPrintPrefix()+" create entry in lastcontact for "+res.getSender(), 5);
 				lastCont.put(res.getSender(), new LastContactTabEntry(res.getSender(), new Date(), res.getSeqNo(), 0, 0));
 			}
 			//if results are more recent, update nTab and lastContactTable
 			if(lastCont.get(res.getSender()).getResSeqNo()<res.getSeqNo()) {
+				Debug.info(myBlobAgent.getPrintPrefix()+" fresh results from unknown "+res.getSender(), 5);
 				float lij = (float) Math.sqrt(Math.pow(myBlobAgent.getPosX()-res.getPosX(), 2)+Math.pow(myBlobAgent.getPosY()-res.getPosY(), 2));
 				nTab.put(res.getSender(), new NTabEntry(res.getSender(), res.getPressure(), 1,0,lij));
 				myBlobAgent.getRealEnv().addConnection(myBlobAgent.getLocalName(), res.getSender());
@@ -65,10 +69,13 @@ public class ResultsProcessingBehaviour extends AbstractBlobBehaviour{
 		
 		//Sender already in nTab
 		else{
+			Debug.info(myBlobAgent.getPrintPrefix()+" knew sender, results from "+res.getSender(), 5);
+
 			NTabEntry nTabEntry = nTab.get(res.getSender());
 			LastContactTabEntry lcEntry = lastCont.get(res.getSender());
 			//if results are more recent, update nTab and lastContactTable
 			if(lcEntry.getResSeqNo()<seqNo) {
+				Debug.info(myBlobAgent.getPrintPrefix()+" updating last contact with "+res.getSender()+" after receiving results", 5);
 				float lij = (float) Math.sqrt(Math.pow(myBlobAgent.getPosX()-res.getPosX(), 2)+Math.pow(myBlobAgent.getPosY()-res.getPosY(), 2));
 				nTabEntry.setLij(lij);
 				nTabEntry.setPressure(res.getPressure());

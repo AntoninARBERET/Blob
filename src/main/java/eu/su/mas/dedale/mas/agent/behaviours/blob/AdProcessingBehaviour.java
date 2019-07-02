@@ -27,7 +27,7 @@ public class AdProcessingBehaviour extends AbstractBlobBehaviour{
 	public void action() {
 		HashMap<String, LastContactTabEntry> lactContacts = myBlobAgent.getLastContact();
 		Map<String, NTabEntry> nTab = myBlobAgent.getnTab();
-		if(ad.getSender().equals(myBlobAgent.getLocalName())) {
+		if(ad.getSender().equals(myBlobAgent.getLocalName())||ad.getForwarders().contains(myBlobAgent.getLocalName())) {
 			return;
 		}
 		//myBlobAgent.print("Ad recieved from "+ad.getSender());

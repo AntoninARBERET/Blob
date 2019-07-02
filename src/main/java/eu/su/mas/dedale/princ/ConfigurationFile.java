@@ -76,7 +76,7 @@ public final class ConfigurationFile {
 	public static boolean ACTIVE_DIAMOND=true;
 	
 	/**Blob part**/
-	public static int NB_BLOB_AG= 10;
+	public static int NB_BLOB_AG= 3;
 	public static float PROBA_SINK=(float) 0.1;
 	public static float PROBA_SOURCE=(float) 0.1;
 	public static int ROUNDS= 3;

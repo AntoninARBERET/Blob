@@ -15,13 +15,7 @@ import eu.su.mas.dedale.env.gs.gui.JavaFxmlGui;
 public class Testgraph {
 
 	public static void main(String[] args) {
-		Couple<String, String> c,d;
-		c = new Couple<String,String>("A","B");
-		d = new Couple<String,String>("A","B");
-		System.out.println(c.equals(d));
-		HashMap<Couple<String, String>, String> m = new HashMap<Couple<String, String>, String>();
-		m.put(c, "ue");
-		System.out.println(m.containsKey(d));
+		
 
 	}
 }

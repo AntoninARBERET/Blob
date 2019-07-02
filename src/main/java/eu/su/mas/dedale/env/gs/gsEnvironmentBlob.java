@@ -21,6 +21,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.fx_viewer.FxViewer;
+import org.graphstream.ui.graphicGraph.GraphPosLengthUtils;
 import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.layout.Layout;
 import org.graphstream.ui.layout.springbox.implementations.SpringBox;
@@ -40,7 +41,6 @@ import org.graphstream.stream.file.FileSourceFactory;
 import org.junit.Assert;
 
 import dataStructures.tuple.Couple;
-import debug.Debug;
 
 import eu.su.mas.dedale.env.ElementType;
 import eu.su.mas.dedale.env.EntityCharacteristics;
@@ -52,6 +52,7 @@ import eu.su.mas.dedale.env.gs.gui.JavaFxmlGui;
 import eu.su.mas.dedale.env.gs.gui.MyController;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.knowledge.NTabEntry;
+import eu.su.mas.dedale.tools.Debug;
 import jade.wrapper.PlatformController;
 
 import javafx.application.Application;
@@ -158,8 +159,13 @@ public class gsEnvironmentBlob implements IEnvironment {
 					Assert.assertNotNull(m);
 					m.setGraph(getJavaFxViewer());
 					
+					viewer.enableXYZfeedback(true);
 					// Create a pipe coming from the viewer ...
 					pipe = viewer.newViewerPipe();
+				
+					//pipe = viewer.newThreadProxyOnGraphicGraph();
+
+					
 					// ... and connect it to the graph
 					pipe.addAttributeSink(graph);
 			}
@@ -927,10 +933,14 @@ public class gsEnvironmentBlob implements IEnvironment {
 		Node senderNode = getBlobAgentNode(senderName);
 		Node receiverNode = getBlobAgentNode(receiverName);
 		if (senderNode!=null && receiverNode!=null){			
-			float sendX=(float)senderNode.getAttribute("x");
-			float sendY=(float)senderNode.getAttribute("y");
+			float sendX=(float)GraphPosLengthUtils.nodePosition(senderNode)[0];
+			float sendY=(float)GraphPosLengthUtils.nodePosition(senderNode)[1];
+			float recX=(float)GraphPosLengthUtils.nodePosition(receiverNode)[0];
+			float recY=(float)GraphPosLengthUtils.nodePosition(receiverNode)[1];
+			
+			/*float sendY=(float)senderNode.getAttribute("y");
 			float recX=(float)receiverNode.getAttribute("x");
-			float recY=(float)receiverNode.getAttribute("y");
+			float recY=(float)receiverNode.getAttribute("y");*/
 			double tmp = Math.sqrt(Math.pow(sendX-recX, 2)+Math.pow(sendY-recY, 2));
 			if(tmp<=communicationReach){
 				return true;
@@ -969,8 +979,9 @@ public class gsEnvironmentBlob implements IEnvironment {
 			Node n =graph.getNode(nodeId);
 			n.setAttribute("ui.class", "blobi");
 			n.setAttribute("blobi", "blobi");
-			n.setAttribute("x", x);
-			n.setAttribute("y", y);
+			//n.setAttribute("x", x);
+			//n.setAttribute("y", y);
+			n.setAttribute("xyz",x,y,0);
 		}
 		//show the node Id on the GUI
 		Iterator<Node> iter=graph.iterator();
@@ -987,16 +998,22 @@ public class gsEnvironmentBlob implements IEnvironment {
 		Couple<String,String> yek = new Couple<String,String>(ag2,ag1);
 		
 		if(!getConnections().containsKey(key) && !getConnections().containsKey(yek)) {
+			Debug.info("Env update : "+ag1+" and "+ag2+" was not in connections",6);
 			if(isReachable(ag1, ag2)){
+				Debug.info("Env update : "+ag1+" and "+ag2+" was reachable",6);
 				Node n1 = getBlobAgentNode(ag1);
 				Node n2 = getBlobAgentNode(ag2);
 				Node n12=graph.addNode(n1.getId()+"-"+n2.getId());
-				float midX = ((float)n1.getAttribute("x")+(float)n2.getAttribute("x"))/2;
-				float midY = ((float)n1.getAttribute("y")+(float)n2.getAttribute("y"))/2;
-				float w = (float) Math.sqrt(Math.pow(midX-(float)n1.getAttribute("x"),2)+Math.pow(midY-(float)n1.getAttribute("y"),2));
+				/*float midX = ((float)n1.getAttribute("x")+(float)n2.getAttribute("x"))/2;
+				float midY = ((float)n1.getAttribute("y")+(float)n2.getAttribute("y"))/2;*/
+				float midX = ((float)GraphPosLengthUtils.nodePosition(n1)[0]+(float)GraphPosLengthUtils.nodePosition(n2)[0])/2;
+				float midY = ((float)GraphPosLengthUtils.nodePosition(n1)[1]+(float)GraphPosLengthUtils.nodePosition(n2)[1])/2;
+				
+				float w = (float) Math.sqrt(Math.pow(midX-(float)GraphPosLengthUtils.nodePosition(n1)[0],2)+Math.pow(midY-(float)GraphPosLengthUtils.nodePosition(n1)[1],2));
 				//System.out.println(midX + " "+ midY);
-				n12.setAttribute("x", midX);
-				n12.setAttribute("y", midY);
+				//n12.setAttribute("x", midX);
+				//n12.setAttribute("y", midY);
+				n12.setAttribute("xyz", midX, midY, 0);
 				Edge e1 = this.graph.addEdge(new Integer(getNewEdgeId()).toString(),n1.getId(),n1.getId()+"-"+n2.getId());
 				Edge e2 = this.graph.addEdge(new Integer(getNewEdgeId()).toString(),n2.getId(),n1.getId()+"-"+n2.getId());
 				//e1.setAttribute("layout.weight", w);
@@ -1027,6 +1044,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 		if(!getConnections().containsKey(yek)) {
 			Node n = getConnections().get(key);
 			graph.removeNode(n);
+			getConnections().remove(key);
 		}
 		else {
 			Node n = getConnections().get(yek);
@@ -1047,7 +1065,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 	public float getDist(String ag1, String ag2) {
 		Node n1 = getBlobAgentNode(ag1);
 		Node n2 = getBlobAgentNode(ag2);
-		float d = (float) Math.sqrt(Math.pow((float)n2.getAttribute("x")-(float)n1.getAttribute("x"),2)+Math.pow((float)n2.getAttribute("y")-(float)n1.getAttribute("y"),2));
+		float d = (float) Math.sqrt(Math.pow((float)GraphPosLengthUtils.nodePosition(n2)[0]-(float)GraphPosLengthUtils.nodePosition(n1)[0],2)+Math.pow((float)GraphPosLengthUtils.nodePosition(n2)[1]-(float)GraphPosLengthUtils.nodePosition(n1)[1],2));
 		return d;
 	}
 	
@@ -1080,10 +1098,9 @@ public class gsEnvironmentBlob implements IEnvironment {
 						}
 					}
 					Node otherNode=getBlobAgentNode(otherAg);
-					float midX = ((float)myNode.getAttribute("x")+(float)otherNode.getAttribute("x"))/2;
-					float midY = ((float)myNode.getAttribute("y")+(float)otherNode.getAttribute("y"))/2;
-					getConnections().get(k).setAttribute("x", midX);
-					getConnections().get(k).setAttribute("y", midY);
+					float midX = ((float)GraphPosLengthUtils.nodePosition(myNode)[0]+(float)GraphPosLengthUtils.nodePosition(otherNode)[0])/2;
+					float midY = ((float)GraphPosLengthUtils.nodePosition(myNode)[1]+(float)GraphPosLengthUtils.nodePosition(otherNode)[1])/2;
+					getConnections().get(k).setAttribute("xyz", midX, midY, 0);
 			}
 		}
 	}
@@ -1091,7 +1108,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 	public void updateEdgeStyle(Edge e, float d, float dMax){
 		float prop=d/dMax;
 		if(prop>1) {
-			prop=1;
+			prop=(float)9.9;
 		}
 		float sizeMin = 1;
 		float sizeMax = 200;

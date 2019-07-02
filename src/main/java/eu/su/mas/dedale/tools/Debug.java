@@ -2,7 +2,7 @@ package eu.su.mas.dedale.tools;
 
 
 import java.io.PrintStream;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -49,14 +49,17 @@ public class Debug {
 	enum DebugConf {
 		ExactlyVerboseLevel, EverythingLowerThanVerboseLEvel, ExactlyDebugSet;
 	}
-	static DebugConf infegal = DebugConf.ExactlyVerboseLevel;
+	static DebugConf infegal = DebugConf.ExactlyDebugSet;
 
 	/**
 	 * The reference verbose level used for 
 	 * DebugConf.ExactlyVerboseLevel and DebugConf.EverythingLowerThanVerboseLEvel
 	 */
-	static int verboseLevel=0;
+	static int verboseLevel=1;
+	
 	static Collection<Integer> debugSet;
+	
+
 
 	public static boolean printDetails;//allow to express more information for a log
 	public static boolean debugSend;//activate automatic printing of send messages
@@ -85,6 +88,10 @@ public class Debug {
 	 * 
 	 **********************************************/
 
+	
+	public static void setDebugSet(Collection<Integer> debugSet) {
+		Debug.debugSet = debugSet;
+	}
 	/**
 	 * Debug message for static functions
 	 * 

@@ -24,6 +24,8 @@ import jade.wrapper.StaleProxyException;
 import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Edge;
 import org.graphstream.stream.ProxyPipe;
+import org.graphstream.ui.geom.Point3;
+import org.graphstream.ui.graphicGraph.GraphPosLengthUtils;
 import org.junit.Assert;
 import jade.wrapper.AgentContainer;
 
@@ -37,8 +39,10 @@ public class BlobMain {
 	private static gsEnvironmentBlob env;
 	
 	public static void main(String[] args){
-
-		
+		ArrayList<Integer> l = new ArrayList<Integer>();
+		l.add(1);
+		l.add(5);
+		Debug.setDebugSet(l);
 		//GS env for blob 
 		
 		env = new gsEnvironmentBlob();
@@ -93,7 +97,7 @@ public class BlobMain {
 		while (true) {
 			// a small delay, avoids full CPU load
 			try {
-				Thread.sleep(100);
+				Thread.sleep(30);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -103,10 +107,14 @@ public class BlobMain {
 
 			// in the development version the previous two instructions can be replaced by
 			// pipe.blockingPump();
-
+			
 			// now "xyz" attributes of the nodes are updated and we can use them, for example
 			//double[] xyz = Toolkit.nodePosition(env.getG(), "A");
-			System.out.println(env.getG().getNode("1").getAttribute("x"));
+			//double[] tab = (double[]) env.getG().getNode("1").getAttribute("xyz");
+			//System.out.println("LE TEST ----------------------------------------------------- "+tab[0]);
+			//System.out.println(env.getG().getNode("1").getAttribute("x"));
+			//double[] tab = GraphPosLengthUtils.nodePosition(env.getG(), "1");
+			//System.out.println("LE TEST ----------------------------------------------------- "+tab[0]);
 		}
 		
 		
