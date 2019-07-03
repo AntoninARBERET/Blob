@@ -18,7 +18,7 @@ public class SyncBlobBehaviour extends AbstractBlobBehaviour{
 		super(myBlobAgent);
 		//To keep synchronize in temporized mode
 		if(AbstractBlobAgent.TEMPO) {
-			this.deltaTSync = (int)(myBlobAgent.getDeltaTSync()+myBlobAgent.getRounds()*myBlobAgent.getSteps()*AbstractBlobAgent.TEMPOTIME);
+			this.deltaTSync = (int)(myBlobAgent.getDeltaTSync()+myBlobAgent.getRounds()*AbstractBlobAgent.TEMPOTIME);
 		}else {
 			this.deltaTSync = myBlobAgent.getDeltaTSync();
 		}
@@ -35,7 +35,6 @@ public class SyncBlobBehaviour extends AbstractBlobBehaviour{
 		if(sent==false) {
 			start = new Date();
 			myBlobAgent.sendResultsMsg();
-			Debug.info(myBlobAgent.getPrintPrefix()+"Results sent",1);
 			sent=true;
 		}
 		//when it do not

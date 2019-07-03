@@ -29,7 +29,7 @@ public class ResultsProcessingBehaviour extends AbstractBlobBehaviour{
 	}
 	
 	public void action() {
-		Debug.info(myBlobAgent.getPrintPrefix()+"Received results from "+res.getSender(),1);
+		Debug.info(myBlobAgent.getPrintPrefix()+"Received results "+ res.getSeqNo()+" from "+res.getSender()+" at "+new Date().toString(),1);
 		HashMap<String, LastContactTabEntry> lastCont = myBlobAgent.getLastContact();
 		Map<String, NTabEntry> nTab = myBlobAgent.getnTab();
 		int seqNo = res.getSeqNo();

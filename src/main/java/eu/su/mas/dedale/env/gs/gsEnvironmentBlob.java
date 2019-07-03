@@ -1107,14 +1107,14 @@ public class gsEnvironmentBlob implements IEnvironment {
 	
 	public void updateEdgeStyle(Edge e, float d, float dMax){
 		float prop=d/dMax;
-		if(prop>1) {
+		if(prop>=1) {
 			prop=(float)9.9;
 		}
 		float sizeMin = 1;
 		float sizeMax = 200;
 		float size=sizeMin+(sizeMax-sizeMin)*prop;
 		e.setAttribute("ui.size", size);
-		e.setAttribute("ui.color", prop);
+		e.setAttribute("ui.color", /*prop*/(float)1.0);
 	}
 	
 	public synchronized void updateNodeAndEdgesStyle(AbstractBlobAgent ag) {
@@ -1128,8 +1128,9 @@ public class gsEnvironmentBlob implements IEnvironment {
 				n.setAttribute("ui.color", (float)0.0);
 				n.setAttribute("ui.size", size);
 			}else {
-				n.setAttribute("ui.color", (float)1.0);
-				n.setAttribute("ui.size", 10);
+				float size = 10-(pressure/deltaPressure);
+				n.setAttribute("ui.color", (float)9.9);
+				n.setAttribute("ui.size", size);			
 			}
 		}catch(Exception e) {
 			//TODO remove this disgusting try catch

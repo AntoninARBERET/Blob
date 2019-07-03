@@ -82,8 +82,8 @@ public final class ConfigurationFile {
 	public static int ROUNDS= 3;
 	public static int STEPS= 3;
 	public static float DELTA_PRESSURE=(float) 1;
-	public static int DELTA_T= 300;
-	public static int DELTA_T_SYNC= 1000;
+	public static int DELTA_T= 150;
+	public static int DELTA_T_SYNC= 2000;
 	public static float D_MAX=(float) 3;
 	public static float R=(float) 0.1;
 	public static float MU=(float) 0.5;

@@ -109,6 +109,11 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.adTimer=((Integer) args[15]).intValue();
 		this.realEnv=(gsEnvironmentBlob) args[16];
 		
+		//check values
+		if(deltaTSync<deltaT*rounds*steps) {
+			Debug.error("deltaTSync should be greater than deltaT*rounds*steps"); 
+		}
+		
 		//initializations
 		this.seqNo=0;
 		this.pressure=0;
@@ -366,7 +371,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		}
 		msg.setProtocol("RESULTS");
 		try {
-			msg.setContentObject(new ResultsMsgContent(this.getLocalName(), getPosX(), getPosY(), getPressure(),  this.nTab,getAndIncSeqNo()));
+			int currSeqNo = getAndIncSeqNo();
+			msg.setContentObject(new ResultsMsgContent(this.getLocalName(), getPosX(), getPosY(), getPressure(),  this.nTab,currSeqNo));
+			Debug.info(getPrintPrefix()+"Results " +currSeqNo +" sent at : " + new Date().toString(),1);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -479,9 +486,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		float delay;
 		//max time before considering a connection lost : 2.5 deltaTSync to allow one lost package
 		if(TEMPO) {
-			delay = 10*(deltaTSync+TEMPOTIME);
+			delay = 3*(deltaTSync+rounds*TEMPOTIME);
 		}else {
-			delay = 10*deltaTSync;
+			delay = 3*deltaTSync;
 		}
 		for( NTabEntry n : nTab.values()) {
 			LastContactTabEntry c = lastContact.get(n.getId());
