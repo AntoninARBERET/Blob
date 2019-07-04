@@ -81,7 +81,7 @@ public final class ConfigurationFile {
 	public static float PROBA_SOURCE=(float) 0.1;
 	public static int ROUNDS= 3;
 	public static int STEPS= 3;
-	public static float DELTA_PRESSURE=(float) 1;
+	public static float DELTA_PRESSURE=(float) 10;
 	public static int DELTA_T= 150;
 	public static int DELTA_T_SYNC= 2000;
 	public static float D_MAX=(float) 3;
