@@ -62,7 +62,8 @@ public class JavaFxmlGui extends Application {
 		String currentDir = System.getProperty("user.dir");
 		//System.out.println("Current dir using System:" +currentDir);
 		
-		URL fxml = new URL("file:"+currentDir+"/resources/gui/DedaleGui-v0.fxml");
+		//URL fxml = new URL("file:"+currentDir+"/resources/gui/DedaleGui-v0.fxml");
+		URL fxml = new URL("file:"+currentDir+"/resources/gui/DedaleGui-v2.fxml");
 		System.out.println(fxml);
 		
 		//VBox root= FXMLLoader.load(fxml);
@@ -105,7 +106,7 @@ public class JavaFxmlGui extends Application {
 		//first is Horizontal parameter
 		Scene scene = new Scene(root, 1200, 800);
 
-		primaryStage.setTitle("Dedale");
+		primaryStage.setTitle("Blob");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		

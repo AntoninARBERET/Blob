@@ -101,6 +101,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 
 	private String environmentName;
 	private ProxyPipe pipe;
+	private MyController m;
 	
 
 
@@ -154,11 +155,11 @@ public class gsEnvironmentBlob implements IEnvironment {
 				// Update UI here.
 					FXMLLoader loader= startUpTest.getLoad();
 					System.out.println("Loader2: "+loader);
-					MyController m=loader.getController();
+					m=loader.getController();
 					System.out.println("controller2: "+m);
 					Assert.assertNotNull(m);
 					m.setGraph(getJavaFxViewer());
-					
+					m.setNodeList(graph);
 					viewer.enableXYZfeedback(true);
 					// Create a pipe coming from the viewer ...
 					pipe = viewer.newViewerPipe();
@@ -1122,6 +1123,15 @@ public class gsEnvironmentBlob implements IEnvironment {
 		
 		float pressure = ag.getPressure();
 		float deltaPressure = ag.getDeltaPressure();
+		
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				m.setPressure(n.getId(), pressure);
+			}
+		});
+		
+		
 		try {
 			if(pressure>=0) {
 				float size = 10+(pressure/deltaPressure);
@@ -1151,7 +1161,8 @@ public class gsEnvironmentBlob implements IEnvironment {
 			}
 		}
 	}
-
+	
+	
 
 	public ProxyPipe getPipe() {
 		return pipe;
