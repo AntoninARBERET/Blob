@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox id="MainFrame" fx:id="MainFrame" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.211" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.su.mas.dedale.env.gs.gui.MyController">
+  <children>
+    <MenuBar fx:id="menuBar" VBox.vgrow="NEVER">
+      <menus>
+        <Menu fx:id="menuenv" mnemonicParsing="false" text="Environment">
+          <items>
+            <MenuItem fx:id="exit" mnemonicParsing="false" onAction="#handleExitAction" text="Quit" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <AnchorPane fx:id="generalpane" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <children>
+            <SplitPane fx:id="splitpane" dividerPositions="0.3" prefHeight="371.0" prefWidth="642.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <items>
+                <AnchorPane fx:id="left" minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="172.0">
+                     <children>
+                        <Label fx:id="pressureLabel" layoutY="1.0" prefHeight="29.0" prefWidth="235.0" text="Total pressure" textAlignment="CENTER" />
+                        <Separator layoutY="33.0" prefHeight="12.0" prefWidth="235.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                        <ListView fx:id="listNode" layoutY="45.0" prefHeight="425.0" prefWidth="235.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+                     </children></AnchorPane>
+                <AnchorPane fx:id="right" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="469.0" prefWidth="471.0" />
+              </items>
+            </SplitPane>
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>
