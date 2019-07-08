@@ -125,10 +125,8 @@ public class gsEnvironmentBlob implements IEnvironment {
 
 		}else{
 			Assert.assertNotNull("The topology configuration should be given",topologyConfigurationFilePath);
-			Assert.assertNotNull("The instance configuration should be given",instanceConfiguration);
 
 			loadGraph(topologyConfigurationFilePath);
-			loadingMapConfiguration(instanceConfiguration);
 
 		}
 
@@ -499,10 +497,14 @@ public class gsEnvironmentBlob implements IEnvironment {
 		Iterator<Node> it = graph.iterator();
 		while (it.hasNext()){
 			Node n = (Node)it.next();
+			n.setAttribute("ui.class", "blobi");
 			//System.out.println(n.getId()+" "+n.getAttribute("label").toString());
-			n.setAttribute("ui.label", n.getAttribute("label").toString());
+			//n.setAttribute("ui.label", n.getAttribute("label").toString());
+			n.setAttribute("ui.label",n.getId());
+		
+			
 		}
-
+		graph.setAttribute("ui.styleSheet", styleSheet);
 	}
 
 

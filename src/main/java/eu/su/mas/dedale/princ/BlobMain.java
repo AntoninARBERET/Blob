@@ -46,8 +46,8 @@ public class BlobMain {
 		//GS env for blob 
 		
 		env = new gsEnvironmentBlob();
-		env.CreateEnvironment(null, null, true, ConfigurationFile.NB_BLOB_AG, false, false, false);
-
+		//env.CreateEnvironment(null, null, true, ConfigurationFile.NB_BLOB_AG, false, false, false);
+		env.CreateEnvironment(ConfigurationFile.INSTANCE_TOPOLOGY, null, true, ConfigurationFile.NB_BLOB_AG, false, false, false);
 
 		//if(!ConfigurationFile.PLATFORMisDISTRIBUTED){
 		//No gateKeeper, the environment is created and a reference is given to the agents at creation

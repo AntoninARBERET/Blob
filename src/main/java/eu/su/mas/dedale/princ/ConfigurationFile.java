@@ -35,8 +35,8 @@ public final class ConfigurationFile {
 	 * When the environment is loaded; should be null if the environment is generated
 	 */
 
-	public static String INSTANCE_TOPOLOGY=null;
-	//public static String INSTANCE_TOPOLOGY="src/test/java/resources/map2016-topology";
+	//public static String INSTANCE_TOPOLOGY=null;
+	public static String INSTANCE_TOPOLOGY="src/test/java/resources/mapblob-topology1";
 
 	/**
 	 * When the environment is loaded; should be null if the environment is generated
