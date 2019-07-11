@@ -72,10 +72,14 @@ public abstract class  AbstractBlobAgent extends Agent{
 	protected HashMap<String, HashSet<String>> routingTab;
 	protected ReentrantReadWriteLock mutexX, mutexY, mutexP;
 	protected gsEnvironmentBlob realEnv;
+	protected Modes mode;
 	public static final boolean TEMPO = true;
 	public static final int TEMPOTIME = 1000;
 	
 	
+	public enum Modes{
+		RANDOM, STATIC_FOOD; 
+	}
 	
 	
 
@@ -108,6 +112,8 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.a=((Float) args[14]).floatValue();
 		this.adTimer=((Integer) args[15]).intValue();
 		this.realEnv=(gsEnvironmentBlob) args[16];
+		this.mode=(Modes) args[17];
+		
 		
 		//check values
 		if(deltaTSync<deltaT*rounds*steps) {
@@ -134,8 +140,19 @@ public abstract class  AbstractBlobAgent extends Agent{
 		//addBehaviour(new TestBlobGuiBehaviour(this));
 		
 		//addBehaviour(new startMyBehaviours(this,lb));
+		Debug.info(getPrintPrefix()+" mode = " + myNode.getAttribute("food"), 2);
+		
+		if(mode== Modes.STATIC_FOOD && myNode.getAttribute("food")!=null) {
+			pressure=(int)myNode.getAttribute("food");
+			Debug.info(getPrintPrefix()+" Pressure at construction = " +pressure, 2);
+		}
 		addBehaviour(new AdBroadcastingBehaviour(this));
 		addBehaviour(new ReceiveMessageBehaviour(this));
+
+		
+			
+				
+		
 		
 	}
 
@@ -323,6 +340,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		return realEnv;
 	}
 
+	public Modes getMode() {
+		return mode;
+	}
 
 	public void sendPingMsg() {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);

@@ -116,7 +116,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 
 		//1)load topology
 
-		if (topologyConfigurationFilePath==null && instanceConfiguration==null){
+		if (topologyConfigurationFilePath==null){
 			//randomlyGenerated environment
 			generateRandomGraph(envSize);
 
@@ -127,6 +127,9 @@ public class gsEnvironmentBlob implements IEnvironment {
 			Assert.assertNotNull("The topology configuration should be given",topologyConfigurationFilePath);
 
 			loadGraph(topologyConfigurationFilePath);
+			if(instanceConfiguration!=null) {
+				loadingMapConfiguration(instanceConfiguration);
+			}
 
 		}
 
@@ -580,29 +583,10 @@ public class gsEnvironmentBlob implements IEnvironment {
 					case "mapname":
 						System.out.println("Loading configuration for environment "+ l[1]);
 						break;
-					case "well":
-						//addWell(l[1]);
-						indicateElementPresence(this.graph.getNode(l[1]),ElementType.WELL,null);
+					case "food":
+						Debug.info("FOOD " + l[1]);
+						indicateFoodPresence(this.graph.getNode(l[1]), Integer.valueOf(l[2]));
 						break;
-					case "gold":
-						indicateElementPresence(this.graph.getNode(l[1]),ElementType.GOLD,Integer.parseInt(l[2]));
-						break;
-					case "diamonds":
-						//addTreasure(l[1], Integer.parseInt(l[2]),envComponent.DIAMONDS);
-						indicateElementPresence(this.graph.getNode(l[1]),ElementType.DIAMOND,Integer.parseInt(l[2]));
-						break;
-						//					case "wumpus":
-						//						deployWumpus(l[1],l[2],Integer.parseInt(l[3]),Integer.parseInt(l[4]));
-						//						break;
-						//					case "agentExplo":			
-						//						deployAgentFromConfig(l[1], l[2],EntityType.AGENT_EXPLORER, Integer.parseInt(l[3]),Integer.parseInt(l[4]));
-						//						break;	
-						//					case "agentCollect":			
-						//						deployAgentFromConfig(l[1], l[2],EntityType.AGENT_COLLECTOR, Integer.parseInt(l[3]),Integer.parseInt(l[4]));
-						//						break;	
-						//					case "agentTanker":			
-						//						deployAgentFromConfig(l[1], l[2],EntityType.AGENT_TANKER, Integer.parseInt(l[3]),Integer.parseInt(l[4]));
-						//						break;	
 					default:
 						System.err.println("Loading a configuration : This type of entry does not yet exist - "+l[0]);
 						System.exit(0);
@@ -702,7 +686,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 			i=(Integer) n.getAttribute(ElementType.GOLD.getName());
 			if (i!=null){
 				//if there already is gold, increment
-				n.setAttribute(ElementType.GOLD.getName(),value+i);
+				n.setAttribute("food",true);
 			}else{
 				n.setAttribute(ElementType.GOLD.getName(),value);
 			}
@@ -753,6 +737,14 @@ public class gsEnvironmentBlob implements IEnvironment {
 		updateNodeRendering(n);
 	}
 
+	private void indicateFoodPresence(Node n, int value) {
+
+		Debug.info("Env : food at "+n+" = "+ value);
+		n.setAttribute("food", value);
+		
+		updateNodeRendering(n);
+
+	}
 
 
 	/**
@@ -1114,7 +1106,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 			prop=(float)9.9;
 		}
 		float sizeMin = 1;
-		float sizeMax = 200;
+		float sizeMax = 2000;
 		float size=sizeMin+(sizeMax-sizeMin)*prop;
 		e.setAttribute("ui.size", size);
 		e.setAttribute("ui.color", /*prop*/(float)1.0);

@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import eu.su.mas.dedale.env.gs.gsEnvironmentBlob;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
+import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.agents.blobAgents.BlobAgent;
 import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyCollectorAgent;
 import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyMovingAgent;
@@ -47,7 +48,7 @@ public class BlobMain {
 		
 		env = new gsEnvironmentBlob();
 		//env.CreateEnvironment(null, null, true, ConfigurationFile.NB_BLOB_AG, false, false, false);
-		env.CreateEnvironment(ConfigurationFile.INSTANCE_TOPOLOGY, null, true, ConfigurationFile.NB_BLOB_AG, false, false, false);
+		env.CreateEnvironment(ConfigurationFile.INSTANCE_TOPOLOGY, ConfigurationFile.INSTANCE_CONFIGURATION_ELEMENTS, true, ConfigurationFile.NB_BLOB_AG, false, false, false);
 
 		//if(!ConfigurationFile.PLATFORMisDISTRIBUTED){
 		//No gateKeeper, the environment is created and a reference is given to the agents at creation
@@ -345,6 +346,7 @@ public class BlobMain {
 		Float mu =ConfigurationFile.MU;
 		Float a=ConfigurationFile.A;
 		Integer ad_timer=ConfigurationFile.AD_TIMER;
+		AbstractBlobAgent.Modes mode = ConfigurationFile.MODE;
 		
 		String[] agentsId = new String[nb_blob];
 		for(int i=1; i<=nb_blob;i++) {
@@ -362,7 +364,7 @@ public class BlobMain {
 			Object [] entityParameters={agentsId, 
 					env.getG().getNode(""+i),
 					p_sink, p_source, rounds, steps, 
-					d_press, d_t, d_t_sync, d_max, r, mu, a, ad_timer, env};
+					d_press, d_t, d_t_sync, d_max, r, mu, a, ad_timer, env, mode};
 			
 			//4) Give the class name of your agent to let the system instantiate it
 			ag=createNewDedaleAgent(c, agentName, BlobAgent.class.getName(), entityParameters);

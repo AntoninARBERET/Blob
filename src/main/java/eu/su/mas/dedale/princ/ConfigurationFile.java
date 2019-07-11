@@ -1,6 +1,7 @@
 package eu.su.mas.dedale.princ;
 
 import eu.su.mas.dedale.env.EnvironmentType;
+import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 
 /**
  * 
@@ -41,7 +42,7 @@ public final class ConfigurationFile {
 	/**
 	 * When the environment is loaded; should be null if the environment is generated
 	 */
-	public static String INSTANCE_CONFIGURATION_ELEMENTS=null;
+	public static String INSTANCE_CONFIGURATION_ELEMENTS="src/test/java/resources/mapblob-food1";
 	//public static String INSTANCE_CONFIGURATION_ELEMENTS="src/test/java/resources/map2018-elements";
 
 	//public static String INSTANCE_CONFIGURATION_ENTITIES=null;
@@ -89,4 +90,5 @@ public final class ConfigurationFile {
 	public static float MU=(float) 0.5;
 	public static float A=(float) 0.1;
 	public static int AD_TIMER= 1000;
+	public static AbstractBlobAgent.Modes MODE = AbstractBlobAgent.Modes.STATIC_FOOD;
 }
