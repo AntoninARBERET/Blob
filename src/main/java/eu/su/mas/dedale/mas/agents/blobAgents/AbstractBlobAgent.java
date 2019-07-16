@@ -33,6 +33,7 @@ import eu.su.mas.dedale.mas.knowledge.NfTabEntry;
 import eu.su.mas.dedale.mas.knowledge.SocTabEntry;
 import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.CoLostMsgContent;
+import eu.su.mas.dedale.mas.msgcontent.ContactMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.PingMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.ResultsMsgContent;
 import eu.su.mas.dedale.tools.Debug;
@@ -73,8 +74,12 @@ public abstract class  AbstractBlobAgent extends Agent{
 	protected ReentrantReadWriteLock mutexX, mutexY, mutexP;
 	protected gsEnvironmentBlob realEnv;
 	protected Modes mode;
-	public static final boolean TEMPO = true;
+	public static final boolean TEMPO = false;
 	public static final int TEMPOTIME = 1000;
+	//echo flooding
+	private int boundRoot;
+	private boolean contacted;
+	private ContactMsgContent contact;
 	
 	
 	public enum Modes{
@@ -343,6 +348,30 @@ public abstract class  AbstractBlobAgent extends Agent{
 	public Modes getMode() {
 		return mode;
 	}
+
+	
+	
+	public int getBoundRoot() {
+		return boundRoot;
+	}
+	
+	
+
+
+	public boolean isContacted() {
+		return contacted;
+	}
+
+
+	public ContactMsgContent getContact() {
+		return contact;
+	}
+
+
+	public void setContact(ContactMsgContent contact) {
+		this.contact = contact;
+	}
+
 
 	public void sendPingMsg() {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
