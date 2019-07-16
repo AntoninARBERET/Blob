@@ -38,29 +38,29 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 		if(start) {
 			//reset pressure if this agent was a sink or a source at the last action
 			if(isSink) {
-				myBlobAgent.setPressure(previousPressure);
-				//myBlobAgent.setPressure(myBlobAgent.getPressure()+myBlobAgent.getDeltaPressure());
+				//myBlobAgent.setPressure(previousPressure);
+				myBlobAgent.setPressure(myBlobAgent.getPressure()+myBlobAgent.getDeltaPressure());
 				isSink=false;
 			}
 			else if(isSource) {
-				myBlobAgent.setPressure(previousPressure);
-				//myBlobAgent.setPressure(myBlobAgent.getPressure()-myBlobAgent.getDeltaPressure());	
+				//myBlobAgent.setPressure(previousPressure);
+				myBlobAgent.setPressure(myBlobAgent.getPressure()-myBlobAgent.getDeltaPressure());	
 				isSource=false;		
 			}
 			//choose if the agent is a sink or a source this time
 			float rand = new Random().nextFloat();
 			if(rand<myBlobAgent.getProbaSink()) {
 				isSink=true;
-				//myBlobAgent.setPressure(myBlobAgent.getPressure()-myBlobAgent.getDeltaPressure());	
-				previousPressure = myBlobAgent.getPressure();
-				myBlobAgent.setPressure(-1*myBlobAgent.getDeltaPressure());
+				myBlobAgent.setPressure(myBlobAgent.getPressure()-myBlobAgent.getDeltaPressure());	
+				//previousPressure = myBlobAgent.getPressure();
+				//myBlobAgent.setPressure(-1*myBlobAgent.getDeltaPressure());
 				Debug.info(myBlobAgent.getPrintPrefix()+"I am sink",2);
 
 			}else if(rand<myBlobAgent.getProbaSink()+myBlobAgent.getProbaSource()) {
 				isSource=true;
-				//myBlobAgent.setPressure(myBlobAgent.getPressure()+myBlobAgent.getDeltaPressure());	
-				previousPressure = myBlobAgent.getPressure();
-				myBlobAgent.setPressure(myBlobAgent.getDeltaPressure());	
+				myBlobAgent.setPressure(myBlobAgent.getPressure()+myBlobAgent.getDeltaPressure());	
+				//previousPressure = myBlobAgent.getPressure();
+				//myBlobAgent.setPressure(myBlobAgent.getDeltaPressure());	
 				Debug.info(myBlobAgent.getPrintPrefix()+"I am source",2);			}
 			start=false;
 			startDate=new Date();
@@ -68,7 +68,7 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 		
 		if(roundsDone<myBlobAgent.getRounds()) {
 			//local computation, executed once for each round, then sink and source are reset
-			Map<String, NTabEntry> nTab = myBlobAgent.getnTab();
+			Map<String, NTabEntry> nTab = myBlobAgent.getnTabNotUsed();
 			
 			
 			float mi = 0;
@@ -76,7 +76,7 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 			float sumPress =0;
 			
 			//solve pressure based on 5
-			if(nTab.size()>0&&!isSink&&!isSource) {
+			if(nTab.size()>0/*&&!isSink&&!isSource*/) {
 				for(Map.Entry<String, NTabEntry> entry : nTab.entrySet()) {
 					NTabEntry j = entry.getValue();
 					Debug.info(myBlobAgent.getPrintPrefix()+" Value to compute : id "+ j.getId() + " press "+j.getPressure() +" diam " + j.getDij()+ " Long "+j.getLij()+ " q "+j.getQij(),2);

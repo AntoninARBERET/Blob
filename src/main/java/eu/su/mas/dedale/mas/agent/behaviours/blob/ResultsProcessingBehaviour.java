@@ -79,6 +79,7 @@ public class ResultsProcessingBehaviour extends AbstractBlobBehaviour{
 				float lij = (float) Math.sqrt(Math.pow(myBlobAgent.getPosX()-res.getPosX(), 2)+Math.pow(myBlobAgent.getPosY()-res.getPosY(), 2));
 				nTabEntry.setLij(lij);
 				nTabEntry.setPressure(res.getPressure());
+				nTabEntry.setUsed(false);
 				lcEntry.setResSeqNo(seqNo);
 				if(lcEntry.getSeqNo()<seqNo) {
 					lcEntry.setSeqNo(seqNo);

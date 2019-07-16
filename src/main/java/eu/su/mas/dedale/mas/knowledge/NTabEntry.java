@@ -6,6 +6,7 @@ public class NTabEntry {
 	private float Dij;
 	private float qij;
 	private float Lij;
+	private boolean used;
 	public NTabEntry(String id, float pressure, float dij, float qij, float lij) {
 		super();
 		this.id = id;
@@ -13,6 +14,7 @@ public class NTabEntry {
 		Dij = dij;
 		this.qij = qij;
 		Lij = lij;
+		used = false;
 	}
 	public float getPressure() {
 		return pressure;
@@ -42,5 +44,13 @@ public class NTabEntry {
 		return id;
 	}
 	
-	
+	public boolean isUsed() {
+		return used;
+	}
+	public void setUsed(boolean used) {
+		this.used = used;
+	}
+	public NTabEntry copy() {
+		return new NTabEntry( id,  pressure,  Dij,  qij,  Lij);
+	}
 }

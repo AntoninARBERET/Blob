@@ -242,7 +242,21 @@ public abstract class  AbstractBlobAgent extends Agent{
 		return nTab;
 	}
 
-
+	public Map<String, NTabEntry> getnTabNotUsed() {
+		Map<String, NTabEntry> copy = new HashMap<String, NTabEntry>();
+		for(String key : nTab.keySet()) {
+			if(!nTab.get(key).isUsed()) {
+				copy.put(key, nTab.get(key).copy());
+				nTab.get(key).setUsed(true);
+			}
+			else{
+				NTabEntry entry = nTab.get(key).copy();
+				entry.setPressure(0);
+				copy.put(key, entry);
+			}
+		}
+		return copy;
+	}
 	public HashMap<String, ConnTabEntry> getConnTabGrowingPhase() {
 		return connTabGrowingPhase;
 	}
