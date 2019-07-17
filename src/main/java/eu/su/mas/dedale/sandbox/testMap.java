@@ -18,6 +18,8 @@ public class testMap {
 		}
 		System.out.println(testMap.containsKey("A"));
 		
+		
+		System.out.println(1/2);
 	}
 
 }

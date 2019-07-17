@@ -7,17 +7,15 @@ import java.util.Map;
 
 import eu.su.mas.dedale.mas.knowledge.NTabEntry;
 
-public class ResultsMsgContent extends AbstractMsgContent {
+public class StateMsgContent extends AbstractMsgContent {
 	private float posX,posY;
 	private int food;
-	private int nbEntries;
-	private HashMap<String,Float> diameters;
 
-	public ResultsMsgContent(String sender, float posX, float posY, int food, int seqNo) {
+	public StateMsgContent(String sender, float posX, float posY, int food, int seqNo) {
 		super(sender, null, seqNo);
 		this.food = food;
-		
-		
+		this.posX=posX;
+		this.posY=posY;
 	}
 
 	public float getPosX() {
@@ -32,12 +30,5 @@ public class ResultsMsgContent extends AbstractMsgContent {
 		return food;
 	}
 
-	public int getNbEntries() {
-		return nbEntries;
-	}
-
-	public HashMap<String, Float> getDiameters() {
-		return diameters;
-	}
 	
 }

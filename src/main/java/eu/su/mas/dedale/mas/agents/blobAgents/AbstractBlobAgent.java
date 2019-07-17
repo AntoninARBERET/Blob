@@ -75,6 +75,8 @@ public abstract class  AbstractBlobAgent extends Agent{
 	protected Modes mode;
 	public static final boolean TEMPO = true;
 	public static final int TEMPOTIME = 1000;
+	private int food;
+	private int foodBound;
 	
 	
 	public enum Modes{
@@ -113,6 +115,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.adTimer=((Integer) args[15]).intValue();
 		this.realEnv=(gsEnvironmentBlob) args[16];
 		this.mode=(Modes) args[17];
+		this.foodBound= ((Integer) args[18]).intValue();
 		
 		
 		//check values
@@ -126,6 +129,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.nTab=Collections.synchronizedMap(new HashMap<String, NTabEntry>());
 		this.lastContact=new HashMap<String, LastContactTabEntry>();
 		this.routingTab = new HashMap<String, HashSet<String>>();
+		this.food=0;
 		
 		this.mutexX = new ReentrantReadWriteLock();
 		this.mutexY = new ReentrantReadWriteLock();
@@ -380,25 +384,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.sendMessage(msg);
 	}
 	
-	public void sendResultsMsg() {
-		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-		msg.setSender(this.getAID());
-		//Reciever for broadcast
-		for(int i =0; i<agentsIds.length; i++) {
-			if(!agentsIds[i].equals(this.getLocalName())) {
-				msg.addReceiver(new AID(agentsIds[i], AID.ISLOCALNAME));
-			}
-		}
-		msg.setProtocol("RESULTS");
-		try {
-			int currSeqNo = getAndIncSeqNo();
-			msg.setContentObject(new ResultsMsgContent(this.getLocalName(), getPosX(), getPosY(), getPressure(),  this.nTab,currSeqNo));
-			Debug.info(getPrintPrefix()+"Results " +currSeqNo +" sent at : " + new Date().toString(),1);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		this.sendMessage(msg);
-	}
+
 	
 	public void rebroadcastAd(AdMsgContent ad) {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
@@ -533,5 +519,52 @@ public abstract class  AbstractBlobAgent extends Agent{
 		}
 	}
 
+	public Couple<Integer,Map<String,Integer>> getDecision(int availableFood){
+		//Counting how much we need food
+		int needed = foodBound-food;
+		int neighbours_needs = 0;
+		for(NTabEntry entry: nTab.values()) {
+			needed+=foodBound-entry.getFood();
+			neighbours_needs+=foodBound-entry.getFood();
+			entry.setUsed(true);
+		}
+		int pickup = Math.min(availableFood, needed);
+		
+		Map<String,Integer> giveAway;
+		//I'm alone
+		if(nTab.isEmpty()) {
+			giveAway=null;
+		}
+		//I'm not alone
+		else {
+			giveAway = new HashMap<String,Integer>();
+			int partToGive=0;
+			int myNeed =foodBound-food;
+			//I need less than half of the food available
+			if(foodBound-food<availableFood/2) {
+				partToGive=availableFood-foodBound;
+			}
+			//I'm over half of the bound
+			else if(food>foodBound/2) {
+				partToGive=availableFood/2;
+			}
+			//I'm under half of the bound
+			else {
+				partToGive=availableFood-(1/2+(foodBound-food)/(2*foodBound))*availableFood;
+			}
+			
+			int remaining =availableFood;
+			if(neighbours_needs!=0) {
+				//splitting food
+				for(NTabEntry entry: nTab.values()) {
+					giveAway.put(entry.getId(), new Integer(partToGive*((foodBound-entry.getFood())/neighbours_needs)));
+					remaining -= partToGive/nTab.size();
+				}
+				//arbitrarily keeping the remaining quantity for me mouahahahah
+			}
+			
+		}
+		return(new Couple<Integer,Map<String,Integer>> (new Integer(pickup), giveAway));
+	}
 	
 }

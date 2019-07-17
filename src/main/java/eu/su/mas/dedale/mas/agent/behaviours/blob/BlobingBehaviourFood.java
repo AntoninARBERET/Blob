@@ -1,9 +1,5 @@
 package eu.su.mas.dedale.mas.agent.behaviours.blob;
 import java.util.Random;
-
-import dataStructures.tuple.Couple;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
@@ -16,7 +12,7 @@ import eu.su.mas.dedale.tools.Debug;
  * @author arberet
  *
  */
-public class BlobingBehaviour extends AbstractBlobBehaviour{
+public class BlobingBehaviourFood extends AbstractBlobBehaviour{
 	private static final long serialVersionUID = 8957058657171562574L;
 	private boolean isSink;
 	private boolean isSource;
@@ -24,26 +20,15 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 	private int roundsDone;
 	private Date startDate;
 	private float previousPressure;
-	private boolean majPhase, decisionPhase, pickupPhase ;
-	private int availableFood;
-	private  Couple<Integer,Map<String,Integer>> decision;
-	private boolean allStatesReceived;
-	private Date startDateMaj;
-	private ArrayList<String> noNewsAgent;
 	
 	
-	
-	public BlobingBehaviour(AbstractBlobAgent myBlobAgent){
+	public BlobingBehaviourFood(AbstractBlobAgent myBlobAgent){
 		super(myBlobAgent);
 		isSink=false;
 		isSource=false;
 		Debug.info(myBlobAgent.getPrintPrefix()+"BlobingBehaviour constructed",4);
 		start = true;
 		roundsDone=0;
-		availableFood=0;
-		allStatesReceived=false;
-		startDateMaj=null;
-		noNewsAgent = new ArrayList<String>();
 	}
 	
 	public void action() {
@@ -51,56 +36,35 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 		
 		//executed before a new rounds cycle
 		if(start) {
-			
+			//reset pressure if this agent was a sink or a source at the last action
+			if(isSink) {
+				myBlobAgent.setPressure(previousPressure);
+				//myBlobAgent.setPressure(myBlobAgent.getPressure()+myBlobAgent.getDeltaPressure());
+				isSink=false;
+			}
+			else if(isSource) {
+				myBlobAgent.setPressure(previousPressure);
+				//myBlobAgent.setPressure(myBlobAgent.getPressure()-myBlobAgent.getDeltaPressure());	
+				isSource=false;		
+			}
+			//choose if the agent is a sink or a source this time
 			float rand = new Random().nextFloat();
-			if(rand<myBlobAgent.getProbaSink()+myBlobAgent.getProbaSource()) {
-					
-				availableFood=20;	
+			if(rand<myBlobAgent.getProbaSink()) {
+				isSink=true;
+				//myBlobAgent.setPressure(myBlobAgent.getPressure()-myBlobAgent.getDeltaPressure());	
+				previousPressure = myBlobAgent.getPressure();
+				myBlobAgent.setPressure(-1*myBlobAgent.getDeltaPressure());
+				Debug.info(myBlobAgent.getPrintPrefix()+"I am sink",2);
+
+			}else if(rand<myBlobAgent.getProbaSink()+myBlobAgent.getProbaSource()) {
+				isSource=true;
+				//myBlobAgent.setPressure(myBlobAgent.getPressure()+myBlobAgent.getDeltaPressure());	
+				previousPressure = myBlobAgent.getPressure();
+				myBlobAgent.setPressure(myBlobAgent.getDeltaPressure());	
 				Debug.info(myBlobAgent.getPrintPrefix()+"I am source",2);			}
 			start=false;
 			startDate=new Date();
-			majPhase=true;
 		}
-		
-		//time allowed to get update of neighbours states
-		else if(majPhase) {
-			if(startDateMaj == null) {
-				startDateMaj = new Date();
-			}
-			if(!allStatesReceived) {
-				allStatesReceived=true;
-				for(NTabEntry entry : myBlobAgent.getnTab().values()) {
-					if(entry.isUsed()){
-						allStatesReceived=false;
-					}
-				}
-			}
-			if(!allStatesReceived || new Date().getTime()-startDateMaj.getTime()<myBlobAgent.getDeltaT()) {
-				return;
-			}
-			
-			else{
-				
-				majPhase =false;
-				decisionPhase = true;
-			}
-		}
-		//making a decision with states and foos available
-		else if(decisionPhase) {
-			decision = myBlobAgent.getDecision(availableFood);
-		}
-		//picking up and sending food
-		else if(pickupPhase) {
-			
-		}
-		//computing new values
-		
-		
-		
-		
-		
-		
-		
 		
 		if(roundsDone<myBlobAgent.getRounds()) {
 			//local computation, executed once for each round, then sink and source are reset

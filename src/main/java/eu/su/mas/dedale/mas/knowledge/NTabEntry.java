@@ -2,23 +2,20 @@ package eu.su.mas.dedale.mas.knowledge;
 
 public class NTabEntry {
 	private String id;
-	private float pressure;
 	private float Dij;
 	private float qij;
 	private float Lij;
-	public NTabEntry(String id, float pressure, float dij, float qij, float lij) {
+	private int food;
+	private boolean used;
+	
+	public NTabEntry(String id, float dij, float qij, float lij, int food) {
 		super();
 		this.id = id;
-		this.pressure = pressure;
 		Dij = dij;
 		this.qij = qij;
 		Lij = lij;
-	}
-	public float getPressure() {
-		return pressure;
-	}
-	public void setPressure(float pressure) {
-		this.pressure = pressure;
+		this.food = food;
+		this.used=false;
 	}
 	public float getDij() {
 		return Dij;
@@ -40,6 +37,18 @@ public class NTabEntry {
 	}
 	public String getId() {
 		return id;
+	}
+	public int getFood() {
+		return food;
+	}
+	public void setFood(int food) {
+		this.food = food;
+	}
+	public boolean isUsed() {
+		return used;
+	}
+	public void setUsed(boolean used) {
+		this.used = used;
 	}
 	
 	
