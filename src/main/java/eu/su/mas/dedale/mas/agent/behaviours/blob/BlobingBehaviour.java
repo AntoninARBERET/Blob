@@ -53,11 +53,13 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 	
 	public void action() {
 		super.action();
-		
+		if(Math.abs(myBlobAgent.getFood())>3000) {
+			Debug.info(myBlobAgent.getPrintPrefix()+" food too high or low : "+myBlobAgent.getFood());
+		}
 		//executed before a new rounds cycle
 		if(start) {
-			//myBlobAgent.setFood(Math.max(myBlobAgent.getFood()-2, 0));
-			myBlobAgent.setFood((myBlobAgent.getFood()-2));
+			myBlobAgent.setFood(Math.max(myBlobAgent.getFood()-2, 0));
+			//myBlobAgent.setFood((myBlobAgent.getFood()-2));
 			availableFood=0;
 			float rand = new Random().nextFloat();
 			if(rand<myBlobAgent.getProbaSource()) {

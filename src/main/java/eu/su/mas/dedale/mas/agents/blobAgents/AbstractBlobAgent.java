@@ -466,18 +466,19 @@ public abstract class  AbstractBlobAgent extends Agent{
 		return this.getLocalName()+"\t ----> ";
 	}
 	
-	public void sendFoodMsg(String rec, int food) {
+	public void sendFoodMsg(String rec, int foodToSend) {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
 		//Reciever for broadcast
 		msg.addReceiver(new AID(rec, AID.ISLOCALNAME));
 		msg.setProtocol("FOOD");
 		try {
-			msg.setContentObject(new FoodMsgContent(this.getLocalName(), food, getAndIncSeqNo()));
+			msg.setContentObject(new FoodMsgContent(this.getLocalName(), foodToSend, getAndIncSeqNo()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		setFood(getFood()-food);
+		Debug.info(this.getPrintPrefix()+" sent " + foodToSend + " food to "+ rec,1);
+		setFood(getFood()-foodToSend);
 		this.sendMessage(msg);
 	}
 	
@@ -496,6 +497,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		//Debug.info(this.getPrintPrefix()+" sent state to "+ rec,1);
 		this.sendMessage(msg);
 	}
 	
@@ -559,39 +561,45 @@ public abstract class  AbstractBlobAgent extends Agent{
 
 	public Couple<Integer,Map<String,Integer>> getDecision(int availableFood){
 		//Counting how much we need food
-		int needed = foodBound-food;
+		int myFood = getFood();
+		int needed = Math.max(foodBound-myFood,0);
 		int neighbours_needs = 0;
-		int meanFood = food;
+		int meanFood = myFood;
+		int partToKeep=0;
+		int partToGive=0;
 		Map<String,Integer> giveAway = new HashMap<String,Integer>();
 		for(NTabEntry entry: nTab.values()) {
-			needed+=foodBound-entry.getFood();
-			neighbours_needs+=foodBound-entry.getFood();
+			needed+=Math.max(0,foodBound-entry.getFood());
+			neighbours_needs+=Math.max(0,foodBound-entry.getFood());
 			entry.setUsed(true);
 			meanFood += entry.getFood();
 		}
 		int pickup = Math.min(availableFood, needed);
 		meanFood=(meanFood+pickup)/(nTab.size()+1);
 		//I'm alone
-		if(nTab.isEmpty()||food<=0) {
+		if(nTab.isEmpty()||myFood+pickup<=0) {
 		}
 		//I'm not alone
 		else {
-			int partToKeep=Math.max(meanFood, (food+pickup+1)/2);
-			int partToGive=food-partToKeep;
-			int myNeed =foodBound-food;
-			
-			
-			int remaining =availableFood;
-			if(neighbours_needs!=0) {
-				//splitting food
-				for(NTabEntry entry: nTab.values()) {
-					giveAway.put(entry.getId(), new Integer(partToGive*((foodBound-entry.getFood())/neighbours_needs)));
-					remaining -= partToGive/nTab.size();
+			partToKeep=Math.max(Math.min(meanFood, myFood+pickup), (myFood+pickup+1)/2);
+			partToGive=myFood+pickup-partToKeep;
+			if(partToGive!=0) {
+				int myNeed =foodBound-myFood;
+				
+				
+				int remaining =availableFood;
+				if(neighbours_needs!=0) {
+					//splitting food
+					for(NTabEntry entry: nTab.values()) {
+						giveAway.put(entry.getId(), new Integer(((partToGive*(Math.max(0,foodBound-entry.getFood())))/neighbours_needs)));
+						remaining -= partToGive/nTab.size();
+					}
+					//arbitrarily keeping the remaining quantity for me mouahahahah
 				}
-				//arbitrarily keeping the remaining quantity for me mouahahahah
 			}
 			
 		}
+		Debug.info(this.getPrintPrefix()+" made decision : my food "+food+" available "+availableFood+" neighbours need "+neighbours_needs+" will pick "+pickup+ " and send " +partToGive +" : "+giveAway.toString());
 		return(new Couple<Integer,Map<String,Integer>> (new Integer(pickup), giveAway));
 	}
 	

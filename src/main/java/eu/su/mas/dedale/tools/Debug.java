@@ -49,7 +49,7 @@ public class Debug {
 	enum DebugConf {
 		ExactlyVerboseLevel, EverythingLowerThanVerboseLEvel, ExactlyDebugSet;
 	}
-	static DebugConf infegal = DebugConf.ExactlyVerboseLevel;
+	static DebugConf infegal = DebugConf.EverythingLowerThanVerboseLEvel;
 
 	/**
 	 * The reference verbose level used for 

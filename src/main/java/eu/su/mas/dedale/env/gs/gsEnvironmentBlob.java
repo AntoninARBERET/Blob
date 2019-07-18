@@ -1133,7 +1133,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 				n.setAttribute("ui.color", (float)0.0);
 				n.setAttribute("ui.size", size);
 			}else {
-				float size = 10-food;
+				float size = 10-food/4;
 				n.setAttribute("ui.color", (float)9.9);
 				n.setAttribute("ui.size", size);			
 			}

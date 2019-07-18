@@ -36,10 +36,7 @@ public class ReceiveMessageBehaviour extends AbstractBlobBehaviour{
 							AdMsgContent ad =(AdMsgContent) msg.getContentObject();
 							myBlobAgent.addBehaviour(new AdProcessingBehaviour(myBlobAgent,ad));
 							break;
-						case "RESULTS":
-							ResultsMsgContent res =(ResultsMsgContent) msg.getContentObject();
-							myBlobAgent.addBehaviour(new ResultsProcessingBehaviour(myBlobAgent,res));
-							break;
+						
 						case "FOOD":
 							FoodMsgContent food =(FoodMsgContent) msg.getContentObject();
 							myBlobAgent.addBehaviour(new FoodProcessingBehaviour(myBlobAgent,food));

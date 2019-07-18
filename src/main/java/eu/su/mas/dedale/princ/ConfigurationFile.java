@@ -79,7 +79,7 @@ public final class ConfigurationFile {
 	/**Blob part**/
 	public static int NB_BLOB_AG= 10;
 	public static float PROBA_SINK=(float) 0.2;
-	public static float PROBA_SOURCE=(float) 0.2;
+	public static float PROBA_SOURCE=(float) 0.15;
 	public static int ROUNDS= 3;
 	public static int STEPS= 3;
 	public static float DELTA_PRESSURE=(float) 5;
