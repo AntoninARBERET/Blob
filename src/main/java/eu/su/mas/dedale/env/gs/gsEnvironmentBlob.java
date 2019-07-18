@@ -1106,7 +1106,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 			prop=(float)9.9;
 		}
 		float sizeMin = 1;
-		float sizeMax = 2000;
+		float sizeMax = 200;
 		float size=sizeMin+(sizeMax-sizeMin)*prop;
 		e.setAttribute("ui.size", size);
 		e.setAttribute("ui.color", /*prop*/(float)1.0);
@@ -1115,24 +1115,25 @@ public class gsEnvironmentBlob implements IEnvironment {
 	public synchronized void updateNodeAndEdgesStyle(AbstractBlobAgent ag) {
 		Node n = ag.getMyNode();
 		
-		float pressure = ag.getPressure();
-		float deltaPressure = ag.getDeltaPressure();
+		int food = ag.getFood();
+		
 		
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				m.setPressure(n.getId(), pressure);
+				//TODO change in food
+				m.setPressure(n.getId(), food);
 			}
 		});
 		
 		
 		try {
-			if(pressure>=0) {
-				float size = 10+(pressure/deltaPressure);
+			if(food>=0) {
+				float size = 10 + food/4;
 				n.setAttribute("ui.color", (float)0.0);
 				n.setAttribute("ui.size", size);
 			}else {
-				float size = 10-(pressure/deltaPressure);
+				float size = 10-food;
 				n.setAttribute("ui.color", (float)9.9);
 				n.setAttribute("ui.size", size);			
 			}

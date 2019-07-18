@@ -33,8 +33,10 @@ import eu.su.mas.dedale.mas.knowledge.NfTabEntry;
 import eu.su.mas.dedale.mas.knowledge.SocTabEntry;
 import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.CoLostMsgContent;
+import eu.su.mas.dedale.mas.msgcontent.FoodMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.PingMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.ResultsMsgContent;
+import eu.su.mas.dedale.mas.msgcontent.StateMsgContent;
 import eu.su.mas.dedale.tools.Debug;
 import jade.core.AID;
 import jade.core.Agent;
@@ -52,7 +54,6 @@ public abstract class  AbstractBlobAgent extends Agent{
 	protected String nodeType;
 	protected float foodVal;
 	protected int seqNo;
-	protected float pressure;
 	protected Map<String, NTabEntry> nTab;
 	protected HashMap<String, ConnTabEntry> connTabGrowingPhase;
 	protected float probaSink;
@@ -70,7 +71,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 	protected int adTimer;
 	protected HashMap<String, LastContactTabEntry> lastContact;
 	protected HashMap<String, HashSet<String>> routingTab;
-	protected ReentrantReadWriteLock mutexX, mutexY, mutexP;
+	protected ReentrantReadWriteLock mutexX, mutexY, mutexP, mutexF;
 	protected gsEnvironmentBlob realEnv;
 	protected Modes mode;
 	public static final boolean TEMPO = true;
@@ -125,7 +126,6 @@ public abstract class  AbstractBlobAgent extends Agent{
 		
 		//initializations
 		this.seqNo=0;
-		this.pressure=0;
 		this.nTab=Collections.synchronizedMap(new HashMap<String, NTabEntry>());
 		this.lastContact=new HashMap<String, LastContactTabEntry>();
 		this.routingTab = new HashMap<String, HashSet<String>>();
@@ -134,6 +134,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.mutexX = new ReentrantReadWriteLock();
 		this.mutexY = new ReentrantReadWriteLock();
 		this.mutexP = new ReentrantReadWriteLock();
+		this.mutexF = new ReentrantReadWriteLock();
 	
 		
 		List<Behaviour> lb=new ArrayList<Behaviour>();
@@ -147,8 +148,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		Debug.info(getPrintPrefix()+" mode = " + myNode.getAttribute("food"), 2);
 		
 		if(mode== Modes.STATIC_FOOD && myNode.getAttribute("food")!=null) {
-			pressure=(int)myNode.getAttribute("food");
-			Debug.info(getPrintPrefix()+" Pressure at construction = " +pressure, 2);
+			
 		}
 		addBehaviour(new AdBroadcastingBehaviour(this));
 		addBehaviour(new ReceiveMessageBehaviour(this));
@@ -215,19 +215,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 	}
 
 
-	public float getPressure() {
-		this.mutexP.readLock().lock();
-		float val = this.pressure;
-		this.mutexP.readLock().unlock();
-		return val;
-	}
 
-
-	public void setPressure(float pressure) {
-		this.mutexP.writeLock().lock();
-		this.pressure = pressure;
-		this.mutexP.writeLock().unlock();
-	}
 
 
 	public Node getMyNode() {
@@ -347,6 +335,23 @@ public abstract class  AbstractBlobAgent extends Agent{
 	public Modes getMode() {
 		return mode;
 	}
+	
+	
+	public int getFood() {
+		this.mutexF.readLock().lock();
+		int val = this.food;
+		this.mutexF.readLock().unlock();
+		return val;
+	}
+
+
+	public void setFood(int food) {
+		this.mutexF.writeLock().lock();
+		this.food = food;
+		this.mutexF.writeLock().unlock();
+	}
+
+
 
 	public void sendPingMsg() {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
@@ -377,7 +382,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		}
 		msg.setProtocol("AD");
 		try {
-			msg.setContentObject(new AdMsgContent(this.getLocalName(), getPosX(), getPosY(), getPressure(), this.getAndIncSeqNo()));
+			msg.setContentObject(new AdMsgContent(this.getLocalName(), getPosX(), getPosY(), this.getAndIncSeqNo(), getFood()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -461,6 +466,39 @@ public abstract class  AbstractBlobAgent extends Agent{
 		return this.getLocalName()+"\t ----> ";
 	}
 	
+	public void sendFoodMsg(String rec, int food) {
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		msg.setSender(this.getAID());
+		//Reciever for broadcast
+		msg.addReceiver(new AID(rec, AID.ISLOCALNAME));
+		msg.setProtocol("FOOD");
+		try {
+			msg.setContentObject(new FoodMsgContent(this.getLocalName(), food, getAndIncSeqNo()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		setFood(getFood()-food);
+		this.sendMessage(msg);
+	}
+	
+	public void sendStatetMsg() {
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		msg.setSender(this.getAID());
+		//Reciever for broadcast
+		for(int i =0; i<agentsIds.length; i++) {
+			if(!agentsIds[i].equals(this.getLocalName())) {
+				msg.addReceiver(new AID(agentsIds[i], AID.ISLOCALNAME));
+			}
+		}
+		msg.setProtocol("STATE");
+		try {
+			msg.setContentObject(new StateMsgContent(this.getLocalName(), getPosX(), getPosY(), getFood(), this.getAndIncSeqNo()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		this.sendMessage(msg);
+	}
+	
 	
 	public void sendMessage(ACLMessage msg){
 		Assert.assertNotNull("The sender must have been defined",msg.getSender());
@@ -523,35 +561,25 @@ public abstract class  AbstractBlobAgent extends Agent{
 		//Counting how much we need food
 		int needed = foodBound-food;
 		int neighbours_needs = 0;
+		int meanFood = food;
+		Map<String,Integer> giveAway = new HashMap<String,Integer>();
 		for(NTabEntry entry: nTab.values()) {
 			needed+=foodBound-entry.getFood();
 			neighbours_needs+=foodBound-entry.getFood();
 			entry.setUsed(true);
+			meanFood += entry.getFood();
 		}
 		int pickup = Math.min(availableFood, needed);
-		
-		Map<String,Integer> giveAway;
+		meanFood=(meanFood+pickup)/(nTab.size()+1);
 		//I'm alone
-		if(nTab.isEmpty()) {
-			giveAway=null;
+		if(nTab.isEmpty()||food<=0) {
 		}
 		//I'm not alone
 		else {
-			giveAway = new HashMap<String,Integer>();
-			int partToGive=0;
+			int partToKeep=Math.max(meanFood, (food+pickup+1)/2);
+			int partToGive=food-partToKeep;
 			int myNeed =foodBound-food;
-			//I need less than half of the food available
-			if(foodBound-food<availableFood/2) {
-				partToGive=availableFood-foodBound;
-			}
-			//I'm over half of the bound
-			else if(food>foodBound/2) {
-				partToGive=availableFood/2;
-			}
-			//I'm under half of the bound
-			else {
-				partToGive=availableFood-(1/2+(foodBound-food)/(2*foodBound))*availableFood;
-			}
+			
 			
 			int remaining =availableFood;
 			if(neighbours_needs!=0) {

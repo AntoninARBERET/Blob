@@ -57,7 +57,7 @@ public class AdProcessingBehaviour extends AbstractBlobBehaviour{
 					float lij = (float) Math.sqrt(Math.pow(myBlobAgent.getPosX()-ad.getPosX(), 2)+Math.pow(myBlobAgent.getPosY()-ad.getPosY(),2));
 					if(nTab.containsKey(ad.getSender())) {
 						nTab.get(ad.getSender()).setLij(lij);
-						nTab.get(ad.getSender()).setPressure(ad.getPressure());					
+										
 					}
 					entry.setDate(new Date());
 				}

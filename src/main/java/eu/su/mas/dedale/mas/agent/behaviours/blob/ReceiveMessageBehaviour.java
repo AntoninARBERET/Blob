@@ -5,7 +5,9 @@ import java.util.Random;
 import java.util.Date;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
+import eu.su.mas.dedale.mas.msgcontent.FoodMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.ResultsMsgContent;
+import eu.su.mas.dedale.mas.msgcontent.StateMsgContent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -37,6 +39,14 @@ public class ReceiveMessageBehaviour extends AbstractBlobBehaviour{
 						case "RESULTS":
 							ResultsMsgContent res =(ResultsMsgContent) msg.getContentObject();
 							myBlobAgent.addBehaviour(new ResultsProcessingBehaviour(myBlobAgent,res));
+							break;
+						case "FOOD":
+							FoodMsgContent food =(FoodMsgContent) msg.getContentObject();
+							myBlobAgent.addBehaviour(new FoodProcessingBehaviour(myBlobAgent,food));
+							break;
+						case "STATE":
+							StateMsgContent state =(StateMsgContent) msg.getContentObject();
+							myBlobAgent.addBehaviour(new StateProcessingBehaviour(myBlobAgent,state));
 							break;
 						}
 					} catch (Exception e) {

@@ -20,7 +20,7 @@ public class ParallelBlobBehaviour extends ParallelBehaviour{
 			this.addSubBehaviour(new SyncBlobBehaviour(myBlobAgent));
 			Debug.info(myBlobAgent.getPrintPrefix()+"parallelBlobBehaviour constructed in random mode",4);
 		case STATIC_FOOD:
-			this.addSubBehaviour(new BlobingBehaviourStaticFood(myBlobAgent));
+			this.addSubBehaviour(new BlobingBehaviour(myBlobAgent));
 			this.addSubBehaviour(new SyncBlobBehaviour(myBlobAgent));
 		}
 

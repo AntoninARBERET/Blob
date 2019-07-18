@@ -20,7 +20,7 @@ public class SyncBlobBehaviour extends AbstractBlobBehaviour{
 		if(AbstractBlobAgent.TEMPO) {
 			this.deltaTSync = (int)(myBlobAgent.getDeltaTSync()+myBlobAgent.getRounds()*AbstractBlobAgent.TEMPOTIME);
 		}else {
-			this.deltaTSync = myBlobAgent.getDeltaTSync();
+			this.deltaTSync = myBlobAgent.getDeltaT();
 		}
 		sent =false;
 		Debug.info(myBlobAgent.getPrintPrefix()+"SyncBlobBehaviour constructed",4);
@@ -34,7 +34,7 @@ public class SyncBlobBehaviour extends AbstractBlobBehaviour{
 		//when the agent must send a message
 		if(sent==false) {
 			start = new Date();
-			myBlobAgent.sendResultsMsg();
+			myBlobAgent.sendStatetMsg();
 			sent=true;
 		}
 		//when it do not

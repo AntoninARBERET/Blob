@@ -91,4 +91,5 @@ public final class ConfigurationFile {
 	public static float A=(float) 0.1;
 	public static int AD_TIMER= 1000;
 	public static AbstractBlobAgent.Modes MODE = AbstractBlobAgent.Modes.STATIC_FOOD;
+	public static int FOOD_BOUND=100;
 }

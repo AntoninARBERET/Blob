@@ -4,15 +4,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class AdMsgContent extends AbstractMsgContent {
-	private float posX,posY,pressure;
+	private float posX,posY;
 	private ArrayList<String> forwarders;
 	private int nbHops;
+	private int food;
 
-	public AdMsgContent(String sender, float posX, float posY, float pressure, int seqNo) {
+	public AdMsgContent(String sender, float posX, float posY, int food, int seqNo) {
 		super(sender, null, seqNo);
 		this.posX = posX;
 		this.posY = posY;
-		this.pressure=pressure;
+		this.food=food;
 		this.forwarders = new ArrayList<String>();
 		this.forwarders.add(sender);
 		this.nbHops=1;
@@ -27,8 +28,8 @@ public class AdMsgContent extends AbstractMsgContent {
 		return posY;
 	}	
 	
-	public float getPressure() {
-		return pressure;
+	public float getFood() {
+		return food;
 	}
 	
 	public void addForwarder(String id) {
