@@ -7,6 +7,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -82,6 +85,7 @@ public class MyController {
 		truc.setScaleShape(true);
 		truc.prefWidthProperty().bind(right.widthProperty());
 		truc.prefHeightProperty().bind(right.heightProperty());		
+		
 	}
 	
 	//TODO
@@ -112,6 +116,14 @@ public class MyController {
 		}
 		pressureLabel.setText("Total pressure = " +tot);
 		
+	}
+	
+	public synchronized void setFoodZone(int x1, int y1, int x2, int y2) {
+		Rectangle r  = new Rectangle(x1,y1,x2,y2);
+		r.setFill(Color.TRANSPARENT);
+        r.setStroke(Color.RED);
+        r.setStrokeWidth(2);
+		right.getChildren().add(r);
 	}
 
 }
