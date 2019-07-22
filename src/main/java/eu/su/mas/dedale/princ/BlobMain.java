@@ -348,6 +348,7 @@ public class BlobMain {
 		Integer ad_timer=ConfigurationFile.AD_TIMER;
 		AbstractBlobAgent.Modes mode = ConfigurationFile.MODE;
 		Integer foodBound = ConfigurationFile.FOOD_BOUND;
+		Integer pickCapacity = ConfigurationFile.PICK_CAPACITY;
 		
 		String[] agentsId = new String[nb_blob];
 		for(int i=1; i<=nb_blob;i++) {
@@ -365,7 +366,7 @@ public class BlobMain {
 			Object [] entityParameters={agentsId, 
 					env.getG().getNode(""+i),
 					p_sink, p_source, rounds, steps, 
-					d_press, d_t, d_t_sync, d_max, r, mu, a, ad_timer, env, mode, foodBound};
+					d_press, d_t, d_t_sync, d_max, r, mu, a, ad_timer, env, mode, foodBound, pickCapacity};
 			
 			//4) Give the class name of your agent to let the system instantiate it
 			ag=createNewDedaleAgent(c, agentName, BlobAgent.class.getName(), entityParameters);

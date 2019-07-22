@@ -1,12 +1,13 @@
 DGS004
 null 0 0
-an 1 xyz=10,12,0
-an 2 xyz=20,1,0
-an 3 xyz=56,42,0
-an 4 xyz=82,13,0
-an 5 xyz=33,66,0
-an 6 xyz=15,91,0
-an 7 xyz=29,21,0
-an 8 xyz=27,45,0
-an 9 xyz=62,54,0
-an 10 xyz=94,36,0
+an 1 xyz=10,12,0 type=blobi
+an 2 xyz=20,1,0 type=blobi
+an 3 xyz=56,42,0 type=blobi
+an 4 xyz=82,13,0 type=blobi
+an 5 xyz=33,66,0 type=blobi
+an 6 xyz=15,91,0 type=blobi
+an 7 xyz=29,21,0 type=blobi
+an 8 xyz=27,45,0 type=blobi
+an 9 xyz=62,54,0 type=blobi
+an 10 xyz=94,36,0 type=blobi
+an 11 xyz=58,36,0 type=food quantity=100000

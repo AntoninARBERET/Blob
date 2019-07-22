@@ -16,6 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
@@ -90,10 +95,11 @@ public class gsEnvironmentBlob implements IEnvironment {
 	private final static String nodeStyle_sym= "node.symetric {"+"fill-color: green;shape: box;"+"}";
 	private final static String nodeStyle_oor= "node.outofrange {"+"fill-color: black;shape: cross;"+"}";
 	private final static String edgeStyle= "edge {"+"fill-mode: dyn-plain;fill-color: rgb(255,248,147), rgb(240,185,0);size-mode: dyn-size;"+"}";
-	
+	private final static String nodeStyle_food= "node.food {"+" fill-color: rgba(0,0,0,0); stroke-mode: plain; stroke-color:blue; stroke-width:3;"+"}";
+
 	
 
-	private final static String nodeStyle=defaultNodeStyle+nodeStyle_blob+nodeStyle_oneside+nodeStyle_sym+nodeStyle_oor+edgeStyle;
+	private final static String nodeStyle=defaultNodeStyle+nodeStyle_blob+nodeStyle_oneside+nodeStyle_sym+nodeStyle_oor+edgeStyle+nodeStyle_food;
 	private final static String styleSheet = nodeStyle+"graph {padding: 60px;}";
 
 	private Graph graph;
@@ -103,7 +109,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 	private ProxyPipe pipe;
 	private MyController m;
 	
-
+	private BlockingQueue<Couple<Node, ReadWriteLock>> foodList;
 
 
 	/**
@@ -482,7 +488,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 	private void loadGraph(String topologyConfigurationFilePath) {
 
 		graph = new SingleGraph("Loaded environment");
-
+		foodList=new LinkedBlockingQueue<Couple<Node, ReadWriteLock>>();
 		FileSource fs = null;
 		try		{
 			fs = FileSourceFactory.sourceFor(topologyConfigurationFilePath);
@@ -500,14 +506,27 @@ public class gsEnvironmentBlob implements IEnvironment {
 		Iterator<Node> it = graph.iterator();
 		while (it.hasNext()){
 			Node n = (Node)it.next();
-			n.setAttribute("ui.class", "blobi");
+			
+			if(n.getAttribute("type").equals("blobi")) {
+				n.setAttribute("ui.class", "blobi");
+				n.setAttribute("ui.label",n.getId());
+
+			}
+			
+			if(n.getAttribute("type").equals("food")) {
+				n.setAttribute("ui.class", "food");
+				n.setAttribute("ui.label","Food : "+n.getAttribute("quantity"));
+				n.setAttribute("ui.size", /*((int)n.getAttribute("quantity")+10)*/5+" gu");
+				foodList.add(new Couple<Node,ReadWriteLock>(n,new ReentrantReadWriteLock()));
+			}
 			//System.out.println(n.getId()+" "+n.getAttribute("label").toString());
 			//n.setAttribute("ui.label", n.getAttribute("label").toString());
-			n.setAttribute("ui.label",n.getId());
+			
+			graph.setAttribute("ui.styleSheet", styleSheet);
 		
 			
 		}
-		graph.setAttribute("ui.styleSheet", styleSheet);
+		
 	}
 
 
@@ -1062,6 +1081,41 @@ public class gsEnvironmentBlob implements IEnvironment {
 		Node n2 = getBlobAgentNode(ag2);
 		float d = (float) Math.sqrt(Math.pow((float)GraphPosLengthUtils.nodePosition(n2)[0]-(float)GraphPosLengthUtils.nodePosition(n1)[0],2)+Math.pow((float)GraphPosLengthUtils.nodePosition(n2)[1]-(float)GraphPosLengthUtils.nodePosition(n1)[1],2));
 		return d;
+	}
+	
+	public float getDist(Node n1, Node n2) {
+		float d = (float) Math.sqrt(Math.pow((float)GraphPosLengthUtils.nodePosition(n2)[0]-(float)GraphPosLengthUtils.nodePosition(n1)[0],2)+Math.pow((float)GraphPosLengthUtils.nodePosition(n2)[1]-(float)GraphPosLengthUtils.nodePosition(n1)[1],2));
+		return d;
+	}
+	
+	public Couple<Node, ReadWriteLock> getUsableFoodNode(Node agentNode){
+		Couple<Node, ReadWriteLock> min = null;
+		float minDist = Float.MAX_VALUE;
+		
+		for(Couple<Node, ReadWriteLock> c : foodList) {
+			float d = getDist(agentNode, c.getLeft());
+			
+			c.getRight().readLock().lock();
+			String rangeStr = ((String)c.getLeft().getAttribute("ui.size")).split(" ")[0];
+			c.getRight().readLock().unlock();
+			float rangeVal = Float.valueOf(rangeStr)/2;
+			if(d<=rangeVal && d<minDist) {
+				min = c;
+				minDist=d;
+			}
+		}
+		return min;
+	}
+	
+	public void updateFoodNode(Couple<Node, ReadWriteLock> c){
+		if((int)c.getLeft().getAttribute("quantity")<=0) {
+			foodList.remove(c);
+			graph.removeNode(c.getLeft());
+		}
+		else {
+			//c.getLeft().setAttribute("ui.size", (10+(int)c.getLeft().getAttribute("quantity")+" gu"));
+			c.getLeft().setAttribute("ui.label","Food : "+c.getLeft().getAttribute("quantity"));
+		}
 	}
 	
 	/**

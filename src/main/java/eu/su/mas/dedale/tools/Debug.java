@@ -49,13 +49,13 @@ public class Debug {
 	enum DebugConf {
 		ExactlyVerboseLevel, EverythingLowerThanVerboseLEvel, ExactlyDebugSet;
 	}
-	static DebugConf infegal = DebugConf.EverythingLowerThanVerboseLEvel;
+	static DebugConf infegal = DebugConf.ExactlyVerboseLevel;
 
 	/**
 	 * The reference verbose level used for 
 	 * DebugConf.ExactlyVerboseLevel and DebugConf.EverythingLowerThanVerboseLEvel
 	 */
-	static int verboseLevel=2;
+	static int verboseLevel=7;
 	
 	static Collection<Integer> debugSet;
 	

@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.graphstream.graph.Node;
@@ -78,10 +79,11 @@ public abstract class  AbstractBlobAgent extends Agent{
 	public static final int TEMPOTIME = 1000;
 	private int food;
 	private int foodBound;
+	private int pickCapacity;
 	
 	
 	public enum Modes{
-		RANDOM, STATIC_FOOD; 
+		RANDOM, STATIC_FOOD,FOOD_IN_ENV; 
 	}
 	
 	
@@ -117,6 +119,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.realEnv=(gsEnvironmentBlob) args[16];
 		this.mode=(Modes) args[17];
 		this.foodBound= ((Integer) args[18]).intValue();
+		this.pickCapacity= ((Integer) args[19]).intValue();
 		
 		
 		//check values
@@ -147,9 +150,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		//addBehaviour(new startMyBehaviours(this,lb));
 		Debug.info(getPrintPrefix()+" mode = " + myNode.getAttribute("food"), 2);
 		
-		if(mode== Modes.STATIC_FOOD && myNode.getAttribute("food")!=null) {
-			
-		}
+		
 		addBehaviour(new AdBroadcastingBehaviour(this));
 		addBehaviour(new ReceiveMessageBehaviour(this));
 
@@ -558,6 +559,34 @@ public abstract class  AbstractBlobAgent extends Agent{
 			nTab.remove(s);
 		}
 	}
+	
+	
+	
+	public Couple<Integer,Map<String,Integer>> decideAndPick() {
+		Couple<Node, ReadWriteLock> c = realEnv.getUsableFoodNode(myNode);
+		if(c == null) {
+			//TODO better
+			return getDecision(0);
+		}
+		Node n=c.getLeft();
+		ReadWriteLock l=c.getRight();
+		Debug.info(this.getPrintPrefix()+ " try to acquire writeLock on " + n.getId(),7);
+		l.writeLock().lock();
+		Debug.info(this.getPrintPrefix()+ " writeLock locked on " + n.getId(),7);
+		int availableFood = (int)n.getAttribute("quantity");
+		Couple<Integer,Map<String,Integer>> decision = getDecision(availableFood);
+		int picked = decision.getLeft().intValue();
+		if(picked>0) {
+			Debug.info(this.getPrintPrefix()+ " picked "+picked+" on " + n.getId(),7);
+			n.setAttribute("quantity", availableFood-picked);
+			
+			realEnv.updateFoodNode(c);
+			
+		}
+		l.writeLock().unlock();
+		Debug.info(this.getPrintPrefix()+ " writeLock released on " + n.getId(),7);
+		return decision;
+	}
 
 	public Couple<Integer,Map<String,Integer>> getDecision(int availableFood){
 		//Counting how much we need food
@@ -574,14 +603,16 @@ public abstract class  AbstractBlobAgent extends Agent{
 			entry.setUsed(true);
 			meanFood += entry.getFood();
 		}
-		int pickup = Math.min(availableFood, needed);
+		int pickable = Math.min(availableFood, pickCapacity)
+;		int pickup = Math.min(pickable, needed);
 		meanFood=(meanFood+pickup)/(nTab.size()+1);
 		//I'm alone
 		if(nTab.isEmpty()||myFood+pickup<=0) {
 		}
 		//I'm not alone
 		else {
-			partToKeep=Math.max(Math.min(meanFood, myFood+pickup), (myFood+pickup+1)/2);
+			//partToKeep=Math.max(Math.min(meanFood, myFood+pickup), (myFood+pickup+1)/2); //Keep at least 1/2 food
+			partToKeep=Math.min(meanFood, myFood+pickup);
 			partToGive=myFood+pickup-partToKeep;
 			if(partToGive!=0) {
 				int myNeed =foodBound-myFood;

@@ -61,12 +61,7 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 			myBlobAgent.setFood(Math.max(myBlobAgent.getFood()-2, 0));
 			//myBlobAgent.setFood((myBlobAgent.getFood()-2));
 			availableFood=0;
-			float rand = new Random().nextFloat();
-			if(rand<myBlobAgent.getProbaSource()) {
-					
-				availableFood=20;	
-				Debug.info(myBlobAgent.getPrintPrefix()+"I am source",2);			
-			}
+			
 			start=false;
 			startDate=new Date();
 			startDateMaj=null;
@@ -100,17 +95,30 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 		//making a decision with states and food available
 		//TODO change decision, use food owned too
 		else if(decisionPhase) {
-			decision = myBlobAgent.getDecision(availableFood);
-			decisionPhase = false;
-			pickupPhase= true;
-		}
-		//picking up and sending food
-		else if(pickupPhase) {
+			if(myBlobAgent.getMode()==AbstractBlobAgent.Modes.RANDOM) {
+				float rand = new Random().nextFloat();
+				if(rand<myBlobAgent.getProbaSource()) {
+						
+					availableFood=20;	
+					Debug.info(myBlobAgent.getPrintPrefix()+"I am source",2);			
+				}
+				decision = myBlobAgent.getDecision(availableFood);
+			}
+			else if(myBlobAgent.getMode()==AbstractBlobAgent.Modes.STATIC_FOOD) {
+				//TODO
+			}
+			else if(myBlobAgent.getMode()==AbstractBlobAgent.Modes.FOOD_IN_ENV) {
+				decision=myBlobAgent.decideAndPick();
+			}
+			
+			
+		
 			myBlobAgent.setFood(myBlobAgent.getFood()+decision.getLeft().intValue());
 			for(String k : decision.getRight().keySet()) {
 				myBlobAgent.sendFoodMsg(k, decision.getRight().get(k).intValue());
 			}
-			pickupPhase=false;
+			decisionPhase = false;
+
 			computingPhase=true;
 		}
 		//computing new values

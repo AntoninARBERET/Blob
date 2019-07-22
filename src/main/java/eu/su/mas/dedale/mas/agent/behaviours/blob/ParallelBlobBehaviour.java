@@ -22,6 +22,9 @@ public class ParallelBlobBehaviour extends ParallelBehaviour{
 		case STATIC_FOOD:
 			this.addSubBehaviour(new BlobingBehaviour(myBlobAgent));
 			this.addSubBehaviour(new SyncBlobBehaviour(myBlobAgent));
+		case FOOD_IN_ENV:
+			this.addSubBehaviour(new BlobingBehaviour(myBlobAgent));
+			this.addSubBehaviour(new SyncBlobBehaviour(myBlobAgent));
 		}
 
 	}
