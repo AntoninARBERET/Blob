@@ -1,5 +1,6 @@
 package eu.su.mas.dedale.sandbox;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,12 @@ public class testMap {
 		
 		
 		System.out.println(1/2);
+		
+		ArrayList<String> L = new ArrayList<String>();
+		L.add("lol");
+		L.add("lel");
+		L.remove(0);
+		System.out.println(L.get(0));
 	}
 
 }

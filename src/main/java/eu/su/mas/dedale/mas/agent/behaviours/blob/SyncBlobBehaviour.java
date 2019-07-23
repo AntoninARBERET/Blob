@@ -34,7 +34,7 @@ public class SyncBlobBehaviour extends AbstractBlobBehaviour{
 		//when the agent must send a message
 		if(sent==false) {
 			start = new Date();
-			myBlobAgent.sendStatetMsg();
+			//myBlobAgent.sendStatetMsg();
 			sent=true;
 		}
 		//when it do not

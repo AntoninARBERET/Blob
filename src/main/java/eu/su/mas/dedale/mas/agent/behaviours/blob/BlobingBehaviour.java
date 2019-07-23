@@ -33,6 +33,7 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 	
 	
 	
+	
 	public BlobingBehaviour(AbstractBlobAgent myBlobAgent){
 		super(myBlobAgent);
 		isSink=false;
@@ -98,9 +99,10 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 			if(myBlobAgent.getMode()==AbstractBlobAgent.Modes.RANDOM) {
 				float rand = new Random().nextFloat();
 				if(rand<myBlobAgent.getProbaSource()) {
-						
+					
 					availableFood=20;	
-					Debug.info(myBlobAgent.getPrintPrefix()+"I am source",2);			
+					Debug.info(myBlobAgent.getPrintPrefix()+"I am source",2);	
+					
 				}
 				decision = myBlobAgent.getDecision(availableFood);
 			}
@@ -204,6 +206,7 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 		Debug.info(myBlobAgent.getPrintPrefix()+"Food = "+myBlobAgent.getFood(),2);
 		myBlobAgent.getRealEnv().updateNodeAndEdgesStyle(myBlobAgent);
 		myBlobAgent.getRealEnv().updateConnections(myBlobAgent.getLocalName());
+		myBlobAgent.sendStatetMsg();
 		
 	}
 	

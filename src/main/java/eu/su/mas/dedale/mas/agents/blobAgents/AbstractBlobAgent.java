@@ -79,7 +79,13 @@ public abstract class  AbstractBlobAgent extends Agent{
 	public static final int TEMPOTIME = 1000;
 	private int food;
 	private int foodBound;
+	private int originalPickCapacity;
 	private int pickCapacity;
+	private ArrayList<Integer> meanFoodHistory;
+	private ArrayList<Integer> sentFoodHistory;
+	private int foodConso;
+	private boolean onFood;
+	private int upgradedFor;
 	
 	
 	public enum Modes{
@@ -133,6 +139,11 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.lastContact=new HashMap<String, LastContactTabEntry>();
 		this.routingTab = new HashMap<String, HashSet<String>>();
 		this.food=0;
+		this.meanFoodHistory=new ArrayList<Integer>();
+		this.sentFoodHistory=new ArrayList<Integer>();
+		this.originalPickCapacity=pickCapacity;
+		this.onFood=false;
+		upgradedFor=0;
 		
 		this.mutexX = new ReentrantReadWriteLock();
 		this.mutexY = new ReentrantReadWriteLock();
@@ -338,6 +349,16 @@ public abstract class  AbstractBlobAgent extends Agent{
 	}
 	
 	
+	public boolean isOnFood() {
+		return onFood;
+	}
+
+
+	public void setOnFood(boolean onFood) {
+		this.onFood = onFood;
+	}
+
+
 	public int getFood() {
 		this.mutexF.readLock().lock();
 		int val = this.food;
@@ -566,8 +587,10 @@ public abstract class  AbstractBlobAgent extends Agent{
 		Couple<Node, ReadWriteLock> c = realEnv.getUsableFoodNode(myNode);
 		if(c == null) {
 			//TODO better
+			onFood=false;
 			return getDecision(0);
 		}
+		onFood=true;
 		Node n=c.getLeft();
 		ReadWriteLock l=c.getRight();
 		Debug.info(this.getPrintPrefix()+ " try to acquire writeLock on " + n.getId(),7);
@@ -606,6 +629,32 @@ public abstract class  AbstractBlobAgent extends Agent{
 		int pickable = Math.min(availableFood, pickCapacity)
 ;		int pickup = Math.min(pickable, needed);
 		meanFood=(meanFood+pickup)/(nTab.size()+1);
+		
+		//check food mean
+//		meanFoodHistory.add(meanFood);
+//		if(meanFoodHistory.size()>=4 && onFood) {
+//			boolean enoughFood = false;
+//			for(int i=0; i<3; i++) {
+//				int target = ((meanFoodHistory.get(i)-foodConso)+((sentFoodHistory.get(i))/nTab.size()))*3/4;
+//				Debug.info(this.getPrintPrefix()+"check if mean is rising should be at least "+target+" and is" +meanFoodHistory.get(i+1));
+//				if(target<=meanFoodHistory.get(i+1)) {
+//					enoughFood=true;
+//				}
+//				else {
+//					Debug.info(this.getPrintPrefix()+"not enough : mean at i "+meanFoodHistory.get(i)+ " sent at i "+ sentFoodHistory.get(i)+" and is" +meanFoodHistory.get(i+1));
+//				}
+//				
+//			}
+//			if(!enoughFood&&onFood/*&&upgradedFor>=10*/) {
+//				
+//				Debug.info(this.getPrintPrefix()+"pick up capacity upgraded "+pickCapacity+" ->" +(pickCapacity+originalPickCapacity));
+//				pickCapacity = pickCapacity+originalPickCapacity;
+//				upgradedFor=0;
+//			}
+//			upgradedFor++;
+//			meanFoodHistory.remove(0);
+//		}
+		
 		//I'm alone
 		if(nTab.isEmpty()||myFood+pickup<=0) {
 		}
@@ -614,6 +663,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 			//partToKeep=Math.max(Math.min(meanFood, myFood+pickup), (myFood+pickup+1)/2); //Keep at least 1/2 food
 			partToKeep=Math.min(meanFood, myFood+pickup);
 			partToGive=myFood+pickup-partToKeep;
+			
 			if(partToGive!=0) {
 				int myNeed =foodBound-myFood;
 				
@@ -630,8 +680,14 @@ public abstract class  AbstractBlobAgent extends Agent{
 			}
 			
 		}
+		if(sentFoodHistory.size()>=3) {
+			sentFoodHistory.remove(0);
+		}
+		sentFoodHistory.add(partToGive);
 		Debug.info(this.getPrintPrefix()+" made decision : my food "+food+" available "+availableFood+" neighbours need "+neighbours_needs+" will pick "+pickup+ " and send " +partToGive +" : "+giveAway.toString());
 		return(new Couple<Integer,Map<String,Integer>> (new Integer(pickup), giveAway));
 	}
+	
+	
 	
 }

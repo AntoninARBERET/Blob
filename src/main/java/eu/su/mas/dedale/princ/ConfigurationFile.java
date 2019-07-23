@@ -93,4 +93,5 @@ public final class ConfigurationFile {
 	public static AbstractBlobAgent.Modes MODE = AbstractBlobAgent.Modes.FOOD_IN_ENV;
 	public static int FOOD_BOUND=100;
 	public static int PICK_CAPACITY = 50;
+	public static int FOOD_CONSO = 2;
 }
