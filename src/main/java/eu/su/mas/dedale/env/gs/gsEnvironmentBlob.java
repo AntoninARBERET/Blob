@@ -115,7 +115,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 
 	private int nbBlob;
 	
-	private String[] agentsId;
+	private ArrayList<String> agentsId;
 	private ContainerController c;
 	/**
 	 * 
@@ -755,11 +755,17 @@ public class gsEnvironmentBlob implements IEnvironment {
 
 	}
 
-	public Node getNewBlobNode(int id) {
+	public synchronized Node getNewBlobNode(int id) {
 		Node n = graph.addNode(id+"");
 		n.setAttribute("ui.class", "blobi");
 		n.setAttribute("ui.label",""+id);
-		m.addToPressList(id);
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				m.addToPressList(id);
+			}
+		});
+		
 		return n;
 	}
 
@@ -1238,17 +1244,12 @@ public class gsEnvironmentBlob implements IEnvironment {
 	}
 
 
-	public void setAgentsId(String[] agentsId) {
+	public void setAgentsId(ArrayList<String> agentsId) {
 		this.agentsId = agentsId;
 	}
 	
-	public synchronized String[] getListWithMyId(String id) {
-		String[] tmp = new String[agentsId.length+1];
-		for(int i =0; i<agentsId.length; i++) {
-			tmp[i]=agentsId[i];
-		}
-		tmp[agentsId.length] = id;
-		agentsId=tmp;
+	public synchronized ArrayList<String> getListWithMyId(String id) {
+		agentsId.add(id);
 		return agentsId;
 	}
 	

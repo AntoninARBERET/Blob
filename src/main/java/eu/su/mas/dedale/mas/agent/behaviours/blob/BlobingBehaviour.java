@@ -60,6 +60,7 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 		//executed before a new rounds cycle
 		if(start) {
 			myBlobAgent.setFood(Math.max(myBlobAgent.getFood()-2, 0));
+			myBlobAgent.incLastExplo();
 			//myBlobAgent.setFood((myBlobAgent.getFood()-2));
 			availableFood=0;
 			

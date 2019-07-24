@@ -57,7 +57,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 	protected static final long serialVersionUID = -2991562876411096907L;
 	protected Node myNode;
 	protected float posX, posY;
-	protected String[] agentsIds;
+	protected ArrayList<String> agentsIds;
 	protected String nodeType;
 	protected float foodVal;
 	protected int seqNo;
@@ -93,6 +93,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 	private boolean onFood;
 	private int upgradedFor;
 	private boolean explorationEnabled;
+	private int lastExplo;
 
 	
 	
@@ -117,7 +118,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 
 		//Parameters
 		final Object[] args = getArguments();
-		this.agentsIds=(String[]) args[2];
+		this.agentsIds=(ArrayList<String>) args[2];
 		this.myNode=(Node) args[3];
 		this.probaSink=((Float) args[4]).floatValue();
 		this.probaSource=((Float) args[5]).floatValue();
@@ -155,6 +156,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.originalPickCapacity=pickCapacity;
 		this.onFood=false;
 		upgradedFor=0;
+		lastExplo=10;
 		
 		this.mutexX = new ReentrantReadWriteLock();
 		this.mutexY = new ReentrantReadWriteLock();
@@ -390,17 +392,27 @@ public abstract class  AbstractBlobAgent extends Agent{
 	public boolean isExplorationEnabled() {
 		return explorationEnabled;
 	}
+	
+	public void addIfNeeded(String id) {
+		if(!agentsIds.contains(id)) {
+			agentsIds.add(id);
+		}
+	}
 
-
+	public void incLastExplo() {
+		lastExplo++;
+	}
 
 
 	public void sendPingMsg() {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
 		//Reciever for broadcast
-		for(int i =0; i<agentsIds.length; i++) {
-			if(!agentsIds[i].equals(this.getLocalName())) {
-				msg.addReceiver(new AID(agentsIds[i], AID.ISLOCALNAME));
+		Iterator<String> it = agentsIds.iterator();
+		while(it.hasNext()) {
+			String id = it.next();
+			if(!id.equals(this.getLocalName())) {
+				msg.addReceiver(new AID(id, AID.ISLOCALNAME));
 			}
 		}
 		msg.setProtocol("PING");
@@ -416,9 +428,11 @@ public abstract class  AbstractBlobAgent extends Agent{
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
 		//Reciever for broadcast
-		for(int i =0; i<agentsIds.length; i++) {
-			if(!agentsIds[i].equals(this.getLocalName())) {
-				msg.addReceiver(new AID(agentsIds[i], AID.ISLOCALNAME));
+		Iterator<String> it = agentsIds.iterator();
+		while(it.hasNext()) {
+			String id = it.next();
+			if(!id.equals(this.getLocalName())) {
+				msg.addReceiver(new AID(id, AID.ISLOCALNAME));
 			}
 		}
 		msg.setProtocol("AD");
@@ -436,9 +450,11 @@ public abstract class  AbstractBlobAgent extends Agent{
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
 		//Reciever for broadcast
-		for(int i =0; i<agentsIds.length; i++) {
-			if(!agentsIds[i].equals(this.getLocalName())) {
-				msg.addReceiver(new AID(agentsIds[i], AID.ISLOCALNAME));
+		Iterator<String> it = agentsIds.iterator();
+		while(it.hasNext()) {
+			String id = it.next();
+			if(!id.equals(this.getLocalName())) {
+				msg.addReceiver(new AID(id, AID.ISLOCALNAME));
 			}
 		}
 		msg.setProtocol("AD");
@@ -454,9 +470,11 @@ public abstract class  AbstractBlobAgent extends Agent{
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
 		//Reciever for broadcast
-		for(int i =0; i<agentsIds.length; i++) {
-			if(!agentsIds[i].equals(this.getLocalName())) {
-				msg.addReceiver(new AID(agentsIds[i], AID.ISLOCALNAME));
+		Iterator<String> it = agentsIds.iterator();
+		while(it.hasNext()) {
+			String id = it.next();
+			if(!id.equals(this.getLocalName())) {
+				msg.addReceiver(new AID(id, AID.ISLOCALNAME));
 			}
 		}
 		msg.setProtocol("CO_LOST");
@@ -472,9 +490,11 @@ public abstract class  AbstractBlobAgent extends Agent{
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
 		//Reciever for broadcast
-		for(int i =0; i<agentsIds.length; i++) {
-			if(!agentsIds[i].equals(this.getLocalName())) {
-				msg.addReceiver(new AID(agentsIds[i], AID.ISLOCALNAME));
+		Iterator<String> it = agentsIds.iterator();
+		while(it.hasNext()) {
+			String id = it.next();
+			if(!id.equals(this.getLocalName())) {
+				msg.addReceiver(new AID(id, AID.ISLOCALNAME));
 			}
 		}
 		msg.setProtocol("CO_LOST");
@@ -527,9 +547,11 @@ public abstract class  AbstractBlobAgent extends Agent{
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
 		//Reciever for broadcast
-		for(int i =0; i<agentsIds.length; i++) {
-			if(!agentsIds[i].equals(this.getLocalName())) {
-				msg.addReceiver(new AID(agentsIds[i], AID.ISLOCALNAME));
+		Iterator<String> it = agentsIds.iterator();
+		while(it.hasNext()) {
+			String id = it.next();
+			if(!id.equals(this.getLocalName())) {
+				msg.addReceiver(new AID(id, AID.ISLOCALNAME));
 			}
 		}
 		msg.setProtocol("STATE");
@@ -708,6 +730,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 	}
 	
 	public boolean isAbleToExplore() {
+		if(lastExplo<10) {
+			return false;
+		}
 		//TODO Paremeter
 		if(getFood()<4*foodBound/5) {
 			return false;
@@ -724,9 +749,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 	}
 	
 	public void explore() {
-		int nbDirection = 12;
-		float distMin=1;
-		float distMax=3;
+		int nbDirection = 120;
+		float distMin=10;
+		float distMax=30;
 		float[] scores = new float[nbDirection];
 		float myX = getPosX();
 		float myY = getPosY();
@@ -738,22 +763,44 @@ public abstract class  AbstractBlobAgent extends Agent{
 			float alpha = (float)Math.atan(Math.abs(myY-entry.getPosY())/Math.abs(myX-entry.getPosX()));
 			for(int i = 0; i<nbDirection; i++) {
 				//dir angle
-				float beta = (float)(i*Math.PI/2);
-				scores[i]=scores[i]+(float)Math.min(Math.abs(alpha-beta), Math.abs(alpha+2*Math.PI-beta));
+				float beta = (float)(i*2*Math.PI/(nbDirection));
+				scores[i]=scores[i]+(float)Math.min(Math.pow(alpha-beta,2), Math.pow(alpha+2*Math.PI-beta,2));
 			}
 		}
-		int dirMin = 0;
-		float scoreMin = scores[0];
+		int dirMax = 0;
+		float scoreMax = scores[0];
+		Debug.info(this.getPrintPrefix()+ " score explo vers 0 = " +scores[0]);
 		for(int i = 1; i<nbDirection; i++) {
-			if(scores[i]<scoreMin) {
-				dirMin = i;
-				scoreMin = scores[i];
+			Debug.info(this.getPrintPrefix()+ " score explo vers "+i+"*2pi/"+nbDirection+" = " +scores[i]);
+			if(scores[i]>scoreMax) {
+				dirMax = i;
+				scoreMax = scores[i];
 			}
 			
 		}
+		Random random = new Random();
+		float propDeviation=(float)0.5;
+		float randF = random.nextFloat();
+//		if(rand<propDeviation/2) {
+//			dirMax=dirMax+1;
+//			if(dirMax>=nbDirection) {
+//				dirMax=0;
+//			}
+//		}
+		if(randF<propDeviation) {
+			int randI = random.nextInt(nbDirection/2)-nbDirection/4;
+			dirMax=randI;
+			if(dirMax<0) {
+				dirMax=nbDirection+dirMax;
+			}
+			if(dirMax>=nbDirection) {
+				dirMax = dirMax-nbDirection;
+			}
+		}
+		
 		float dist = distMin + new Random().nextFloat()*(distMax-distMin);
-		float newPosX = myX + (float) Math.cos(dirMin*Math.PI/nbDirection)*dist;
-		float newPosY = myY + (float) Math.sin(dirMin*Math.PI/nbDirection)*dist;
+		float newPosX = myX + (float) Math.cos(dirMax*2*Math.PI/nbDirection)*dist;
+		float newPosY = myY + (float) Math.sin(dirMax*2*Math.PI/nbDirection)*dist;
 		int agentNum =realEnv.incAndGetNbBlob();
 		String agentName="Blob"+agentNum;
 		Node n = realEnv.getNewBlobNode(agentNum);
@@ -781,7 +828,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		
 		
 		
-		String[] agentsId = realEnv.getListWithMyId(agentName);
+		ArrayList<String> agentsId = realEnv.getListWithMyId(agentName);
 		//3) If you want to give specific parameters to your agent, add them here
 		Object [] entityParameters={agentsId, 
 				n,

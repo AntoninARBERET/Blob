@@ -55,7 +55,7 @@ public class Debug {
 	 * The reference verbose level used for 
 	 * DebugConf.ExactlyVerboseLevel and DebugConf.EverythingLowerThanVerboseLEvel
 	 */
-	static int verboseLevel=1;
+	static int verboseLevel=8;
 	
 	static Collection<Integer> debugSet;
 	

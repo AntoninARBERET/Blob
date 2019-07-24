@@ -38,7 +38,7 @@ public class StateProcessingBehaviour extends AbstractBlobBehaviour{
 		//Sender not in nTab yet
 		if(!nTab.containsKey(state.getSender())) {
 			Debug.info(myBlobAgent.getPrintPrefix()+" new contact, state from "+state.getSender(), 5);
-
+			myBlobAgent.addIfNeeded(state.getSender());
 			//Sender not in lastCont yet
 			if(!lastCont.containsKey(state.getSender())) {
 				Debug.info(myBlobAgent.getPrintPrefix()+" create entry in lastcontact for "+state.getSender(), 5);

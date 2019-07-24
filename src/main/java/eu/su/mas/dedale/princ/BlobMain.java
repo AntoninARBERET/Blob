@@ -353,9 +353,9 @@ public class BlobMain {
 		Integer foodConso = ConfigurationFile.FOOD_CONSO;
 		Boolean explorationEnabled = ConfigurationFile.EXPLORATION_ENABLED;
 		
-		String[] agentsId = new String[nb_blob];
+		ArrayList<String> agentsId = new ArrayList<String>();
 		for(int i=1; i<=nb_blob;i++) {
-			agentsId[i-1]="Blob"+i;
+			agentsId.add("Blob"+i);
 		}
 		env.setAgentsId(agentsId);
 		for(int i=1; i<=nb_blob;i++) {
