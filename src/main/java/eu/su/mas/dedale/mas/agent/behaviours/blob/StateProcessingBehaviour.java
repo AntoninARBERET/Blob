@@ -15,7 +15,6 @@ import eu.su.mas.dedale.mas.knowledge.LastContactTabEntry;
 import eu.su.mas.dedale.mas.knowledge.NTabEntry;
 import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.PingMsgContent;
-import eu.su.mas.dedale.mas.msgcontent.ResultsMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.StateMsgContent;
 import eu.su.mas.dedale.tools.Debug;
 import jade.core.behaviours.SimpleBehaviour;

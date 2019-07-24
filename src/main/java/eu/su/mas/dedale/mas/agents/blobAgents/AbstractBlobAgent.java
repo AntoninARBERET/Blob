@@ -24,19 +24,12 @@ import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.behaviours.startMyBehaviours;
 import eu.su.mas.dedale.mas.agent.behaviours.blob.AdBroadcastingBehaviour;
 import eu.su.mas.dedale.mas.agent.behaviours.blob.ReceiveMessageBehaviour;
-import eu.su.mas.dedale.mas.agent.behaviours.blob.TestBlobGuiBehaviour;
-import eu.su.mas.dedale.mas.agent.behaviours.blob.VerySimpleBehaviour;
-import eu.su.mas.dedale.mas.knowledge.ConnTabEntry;
 import eu.su.mas.dedale.mas.knowledge.LastContactTabEntry;
 import eu.su.mas.dedale.mas.knowledge.NTabEntry;
-import eu.su.mas.dedale.mas.knowledge.NTabGrowPhaseEntry;
-import eu.su.mas.dedale.mas.knowledge.NfTabEntry;
-import eu.su.mas.dedale.mas.knowledge.SocTabEntry;
 import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.CoLostMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.FoodMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.PingMsgContent;
-import eu.su.mas.dedale.mas.msgcontent.ResultsMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.StateMsgContent;
 import eu.su.mas.dedale.princ.ConfigurationFile;
 import eu.su.mas.dedale.tools.Debug;
@@ -61,7 +54,6 @@ public abstract class  AbstractBlobAgent extends Agent{
 	protected float foodVal;
 	protected int seqNo;
 	protected Map<String, NTabEntry> nTab;
-	protected HashMap<String, ConnTabEntry> connTabGrowingPhase;
 	protected float probaSink;
 	protected float probaSource;
 	protected int rounds;
@@ -257,11 +249,6 @@ public abstract class  AbstractBlobAgent extends Agent{
 
 	public Map<String, NTabEntry> getnTab() {
 		return nTab;
-	}
-
-
-	public HashMap<String, ConnTabEntry> getConnTabGrowingPhase() {
-		return connTabGrowingPhase;
 	}
 
 

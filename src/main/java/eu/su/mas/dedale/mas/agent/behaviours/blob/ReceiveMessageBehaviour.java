@@ -6,7 +6,6 @@ import java.util.Date;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.FoodMsgContent;
-import eu.su.mas.dedale.mas.msgcontent.ResultsMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.StateMsgContent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
