@@ -9,10 +9,7 @@ import eu.su.mas.dedale.env.gs.gsEnvironmentBlob;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.agents.blobAgents.BlobAgent;
-import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyCollectorAgent;
-import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyMovingAgent;
-import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyTankerAgent;
-import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyWumpusShift;
+
 import eu.su.mas.dedale.tools.Debug;
 //import jade.core.AgentContainer;
 import jade.core.Profile;

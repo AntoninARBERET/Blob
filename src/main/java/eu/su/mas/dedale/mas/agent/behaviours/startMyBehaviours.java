@@ -5,7 +5,6 @@ import java.util.List;
 
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe;
-import eu.su.mas.dedale.mas.agents.dedaleDummyAgents.DummyMovingAgent;
 import jade.core.AID;
 import jade.core.ContainerID;
 import jade.core.behaviours.Behaviour;

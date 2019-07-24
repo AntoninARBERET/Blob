@@ -21,7 +21,6 @@ import org.junit.Assert;
 
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
-import eu.su.mas.dedale.mas.agent.behaviours.RandomWalkBehaviour;
 import eu.su.mas.dedale.mas.agent.behaviours.startMyBehaviours;
 import eu.su.mas.dedale.mas.agent.behaviours.blob.AdBroadcastingBehaviour;
 import eu.su.mas.dedale.mas.agent.behaviours.blob.ReceiveMessageBehaviour;
@@ -788,7 +787,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 //			}
 //		}
 		if(randF<propDeviation) {
-			int randI = random.nextInt(nbDirection/2)-nbDirection/4;
+			int randI = random.nextInt(nbDirection/8)-nbDirection/16;
 			dirMax=randI;
 			if(dirMax<0) {
 				dirMax=nbDirection+dirMax;

@@ -22,7 +22,6 @@ import agent.AbstractDeltaAgent;
 import dataStructures.tuple.Couple;
 import debug.Debug;
 
-import eu.su.mas.dedale.env.ElementType;
 import eu.su.mas.dedale.env.EntityCharacteristics;
 import eu.su.mas.dedale.env.EntityType;
 import eu.su.mas.dedale.env.IEnvironment;
@@ -111,78 +110,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 	}
 
 
-	/**
-	 * 
-	 * @return The available observations from the agent's current position.</br> 
-	 * A list of observed position (PositionID), and for each one is associated its list of observations under the form (ObservationType, Value))
-	 * . Null if there is a malfunction</br>
-	 * Example : {</br> Position1; [(Observation1,Value1);(Obseration2,Value2)],
-	 * </br>Position2; [(Observation1,Value1);(Obseration2,Value2)],</br>
-	 * ..}  
-	 * 
-	 * @see Observation for the list of Observation components
-	 */
-	public synchronized List<Couple<String, List<Couple<Observation,Integer>>>> observe(){
-		return this.realEnv.observe(this.getCurrentPosition(),this.getLocalName());
-	}
 
-
-	/**
-	 * This method should be the last method called in your behaviour.</br>
-	 * The agent can die if he moves too carelessly.
-	 * @param myDestination the targeted nodeId
-	 * @return true if the move is legit and triggered, false otherwise
-	 */
-	public synchronized boolean moveTo(String myDestination){
-		int consequence=this.realEnv.moveTo(this.getLocalName(),this.ec, myDestination);
-		if(consequence==1){
-			return true;
-		}else{
-			if (consequence==-1){
-				//if an event in the env killed the agent, destroy the agent
-				this.doDelete();
-			}
-			//Otherwise, just a move refused
-			return false;
-		}
-	}
-
-
-	/**
-	 * 
-	 * @return the amount of wealth that the agent was able to pick. 0 if there is no treasure at this place, or if the agent cannot grab it (
-	 * backPack full, not authorized,...)
-	 */
-	public synchronized int pick(){
-		//TODO update the agent BackPack and decide on the quantity according to its capability
-		int pickedQuantity;
-		switch (ec.getMyTreasureType()) {
-		case DIAMOND:
-			pickedQuantity= this.realEnv.pick(this.getLocalName(),this.getCurrentPosition(),
-					ElementType.DIAMOND,
-					ec.getDiamondCapacity()-this.myBackPack.get(ec.getMyTreasureType())
-					);
-			break;
-		case GOLD:
-			pickedQuantity=this.realEnv.pick(this.getLocalName(),this.getCurrentPosition(),
-					ElementType.GOLD,
-					ec.getGoldCapacity()-this.myBackPack.get(ec.getMyTreasureType())
-					);
-			break;
-		default:
-			Debug.warning("The agent's type does not allow him to pick anything in this configuration of the project");
-			pickedQuantity= 0;
-			break;
-		}
-
-		if (pickedQuantity>0){
-			//update the backpack
-			this.myBackPack.put(getMyTreasureType(),this.myBackPack.get(getMyTreasureType())+pickedQuantity);
-		}
-		return pickedQuantity;
-
-
-	}
 
 	/**
 	 * 
@@ -280,32 +208,6 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 	 * The consequences of this action, if any, will be seen in the environment
 	 */
 
-	public boolean throwGrenade(String locationId){
-		return this.realEnv.throwGrenade(this.getLocalName(), locationId);
-	}
-
-	/**
-	 * Drop the treasure on the current position, if allowed (depending of the agent's type)
-	 */
-	public void dropOff(){
-		if(ec.getMyEntityType()==EntityType.WUMPUS_MOVER || ec.getMyEntityType()==EntityType.WUMPUS){
-			switch (ec.getMyTreasureType()) {
-			case DIAMOND: 
-				this.realEnv.dropOff(this.getCurrentPosition(),ElementType.DIAMOND,this.myBackPack.get(ec.getMyTreasureType()));
-				this.myBackPack.put(getMyTreasureType(),0);
-				break;
-			case GOLD:
-				this.realEnv.dropOff(this.getCurrentPosition(),ElementType.GOLD,this.myBackPack.get(ec.getMyTreasureType()));
-				this.myBackPack.put(getMyTreasureType(),0);
-				break;
-			default:
-				Debug.warning("The agent's treasure type does not allow him to call this method");
-				break;
-			}
-		}else{
-			Debug.warning("The agent's type does not allow him to use the dropOff method");
-		}
-	}
 
 	/**
 	 * This method MUST be used instead of the final method JADE.core.Agent.send()  in order for the platform 

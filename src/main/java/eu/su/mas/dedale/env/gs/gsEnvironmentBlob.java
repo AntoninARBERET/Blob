@@ -47,7 +47,6 @@ import org.junit.Assert;
 
 import dataStructures.tuple.Couple;
 
-import eu.su.mas.dedale.env.ElementType;
 import eu.su.mas.dedale.env.EntityCharacteristics;
 import eu.su.mas.dedale.env.EntityType;
 import eu.su.mas.dedale.env.IEnvironment;
@@ -131,8 +130,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 			//randomlyGenerated environment
 			generateRandomGraph(envSize);
 
-			//2)addComponents
-			addElements(diamond,gold,well);
+
 
 		}else{
 			Assert.assertNotNull("The topology configuration should be given",topologyConfigurationFilePath);
@@ -259,52 +257,11 @@ public class gsEnvironmentBlob implements IEnvironment {
 		String nodeId=this.getCurrentPosition(entityName);
 		Assert.assertNotEquals("The entity "+entityName+ "was not found in the environment", null, nodeId);
 		Node n=this.graph.getNode(nodeId);
-		clearEntityPresence(n,entityName, e);
 	}
 
 
-	/**
-	 * 
-	 * @param n
-	 * @param entityName the name of the entity to remove (currently not used as two agents cannot be on the same location)
-	 * @param e
-	 */
-	private synchronized void clearEntityPresence(Node n, String entityName, EntityCharacteristics e) {
 
-		//1° get the node to update
-		Set<Node> n2update=findNeighbours(n,e.getDetectionRadius());
 
-		//2° update them
-		switch (e.getMyEntityType()) {
-		case WUMPUS: case WUMPUS_MOVER :
-			n.removeAttribute(ElementType.STENCH.getName());
-			n.removeAttribute(e.getMyEntityType().getName());
-			updateNodeRendering(n);
-			n2update.remove(n);
-			for (Node n2:n2update){
-				n2.removeAttribute(ElementType.STENCH.getName());
-				updateNodeRendering(n2);
-				//if this is not a well or a wind node, change the rendering
-			}
-			break;
-		case AGENT_COLLECTOR : case AGENT_EXPLORER : case AGENT_TANKER:   
-			n.removeAttribute(e.getMyEntityType().getName());
-			updateNodeRendering(n);
-			break;
-		default:
-			break;
-		}
-	}
-
-	/**
-	 * 
-	 * @param n node to update
-	 * @param e element to remove
-	 */
-	private synchronized void clearElementPresence(Node n, ElementType e){
-		n.removeAttribute(e.getName());
-		updateNodeRendering(n);
-	}
 
 	public synchronized String getCurrentPosition(String entityName) {
 		
@@ -322,150 +279,6 @@ public class gsEnvironmentBlob implements IEnvironment {
 			//Debug.warning("getCurrentPosition - The entity "+entityName +" was not found in the environment.");
 			return null;
 		}
-	}
-
-
-	public synchronized List<Couple<String, List<Couple<Observation, Integer>>>> observe(String currentPosition, String agentName) {
-		List<Couple<String, List<Couple<Observation, Integer>>>> l= new ArrayList<Couple<String, List<Couple<Observation, Integer>>>>();
-		Node n=this.graph.getNode(currentPosition);
-
-		if(!n.getAttribute("ui.label").toString().contains(agentName)){
-			Debug.error("You can't observe from this position (cheater..)");
-		}
-
-		List<Couple<Observation, Integer>> la= getObservations(n,true);
-		Couple<String,List<Couple<Observation, Integer>>> c=new Couple<String,List<Couple<Observation, Integer>>>(n.getId(),la);
-		//TODO switch to the Couple class in tools
-		l.add(c);
-
-		Iterator<Node>iter=n.neighborNodes().iterator();// getNeighborNodeIterator();
-		while(iter.hasNext()){
-			Node temp=iter.next();
-			la= getObservations(temp,false);
-			c=new Couple<String,List<Couple<Observation, Integer>>>(temp.getId(),la);	
-			l.add(c);
-		}
-
-		return l;
-	}
-
-	/**
-	 * Synchronized method to 
-	 * @param n the node to consider
-	 * @param onIt true if the agent is in node n, false otherwise
-	 * @return the associated observations (at the moment of the access)
-	 */
-	private synchronized List<Couple<Observation, Integer>> getObservations(Node n,Boolean onIt) {
-		Iterator<String>	iter=n.attributeKeys().iterator();//getAttributeKeyIterator();
-		List<Couple<Observation, Integer>> l= new ArrayList<Couple<Observation, Integer>>();
-
-		//Iterator on the attributes of node n
-		while(iter!=null && iter.hasNext()){
-			String attrib=iter.next();
-			if (ElementType.WIND.getName().equalsIgnoreCase(attrib)){
-				l.add(new Couple<Observation, Integer>(Observation.WIND,null));
-			}
-			if(onIt && ElementType.GOLD.getName().equals(attrib)){
-				//Attribute a=Attribute.TREASURE;
-				//a.setValue(n.getAttribute(attrib));
-				l.add(new Couple<Observation, Integer>(Observation.GOLD,(Integer)n.getAttribute(attrib)));
-			}
-
-			if(onIt && ElementType.DIAMOND.getName().equals(attrib)){
-				//Attribute a=Attribute.DIAMONDS;
-				//a.setValue(n.getAttribute(attrib));
-				l.add(new Couple<Observation, Integer>(Observation.DIAMOND,(Integer)n.getAttribute(attrib)));
-			}
-
-			if (ElementType.STENCH.getName().equals(attrib)){
-				l.add(new Couple<Observation,Integer>(Observation.STENCH,null));
-			}
-		}
-		return l;
-	}
-
-
-	public synchronized Integer moveTo(String entityName, EntityCharacteristics e, String targetedPosition) {
-		String currentPosition = this.getCurrentPosition(entityName);
-
-		if (currentPosition==targetedPosition){
-			return 1;
-		}else{
-			Node current=this.graph.getNode(currentPosition);
-			Node target=this.graph.getNode(targetedPosition);
-
-			//System.out.println("Move function");
-			//System.out.println("Agent "+ agentName+ ", current node"+currentNodeId+", target: "+targetedNodeId);
-
-			if(current.hasEdgeBetween(target)){
-				//if the target is reachable, the move is legit
-
-				//if the target is a well, kill the agent. Otherwise move
-				if (target.hasAttribute(ElementType.WELL.getName())){
-					//update the state of the original node
-					clearEntityPresence(current,entityName,e);
-					return -1;	
-				}else{
-					boolean targetEmpty=isPossibleToMove(targetedPosition);
-
-					if (targetEmpty){
-						//move authorized
-						clearEntityPresence(current,entityName,e);
-						indicateEntityPresence(target, e, entityName);
-						return 1;	
-					}else{
-						//move forbidden due to the presence of another entity
-						return 0;
-					}	
-				}
-			}else{
-				//The target is not reachable from the current position
-				Debug.error("This target is not reachable from the current position, cheater.");
-				return 0;
-			}
-		}
-	}
-
-
-	public synchronized int pick(String agentName,String currentPosition, ElementType e, Integer maxQuantity) {
-		//Only pick if maxQuantity>0 and there exist an element of type (diamond or gold)  on the currentPosition
-
-		Assert.assertNotNull(currentPosition);
-		Assert.assertNotNull(e);
-		Assert.assertTrue(e.getName()==ElementType.DIAMOND.getName() || e.getName()==ElementType.GOLD.getName());
-		Assert.assertNotNull(maxQuantity);
-
-		Node n= this.graph.getNode(currentPosition);
-		int pickedQuantity=0;
-		if (maxQuantity>0 && n.hasAttribute(e.getName())){
-			//the agent can grab some of e and there is e on the current position
-			Integer treasureToPick=(Integer) n.getAttribute(e.getName());
-			if (maxQuantity>=treasureToPick){
-				//the treasure is cleared
-				pickedQuantity=treasureToPick;
-				clearElementPresence(n, e);
-			}else{
-				//some of the treasure remains
-				pickedQuantity=maxQuantity;	
-				//update the env and apply the losses
-				n.setAttribute(e.getName(),((Double)((treasureToPick-pickedQuantity)*(1-InGameConfigurationFile.PERCENTAGE_TREASURE_LOSS))).intValue());
-			}
-		}
-
-		return pickedQuantity;
-	}
-
-	public synchronized void dropOff(String location, ElementType e, Integer quantity) {
-		//allowed to drop	
-		indicateElementPresence(this.graph.getNode(location),e,quantity);
-
-	}
-
-
-	public boolean throwGrenade(String agentName, String targetName) {
-		//TODO To implement	
-		Debug.error("This method is not yet implemented");
-		return false;
 	}
 
 
@@ -540,51 +353,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 	 * Randomly add the required components to the environment based on the configurationFile, the InGameConfigurationFile and the ElemenType class
 	 * Currently : well, gold, diamond
 	 */
-	private void addElements(boolean diamond,boolean gold,boolean well) {
-		Random r;
-
-		if (well){
-			//wells added
-			int nbHole=1+(int)Math.round(this.graph.getNodeCount() *ElementType.WELL.getOccurrencePercentage());//getNodeSet().size()
-			for (int i=0;i<nbHole;i++){
-				String nodeID=findFreePlace(ElementType.WELL);
-				if (nodeID!="-1"){
-					Node n= this.graph.getNode(nodeID);
-					indicateElementPresence(n,ElementType.WELL,null);
-				}
-			}
-		}
-
-		if (gold){
-			//adding treasures
-			int nbTreasures=1+(int)Math.round(this.graph.getNodeCount()*ElementType.GOLD.getOccurrencePercentage());//getNodeSet().size()
-			r= new Random();
-			for(int i=0;i<nbTreasures;i++){
-				String nodeID=findFreePlace(ElementType.GOLD);
-				if (nodeID!="-1"){
-					//createTreasure(nodeID,ElementType.GOLD);
-					Node n= this.graph.getNode(nodeID);
-					r= new Random();
-					indicateElementPresence(n,ElementType.GOLD,1+r.nextInt((Integer)InGameConfigurationFile.MAX_GOLD_VALUE));
-
-				}
-			}
-		}
-
-		if (diamond){
-			//adding treasures
-			int nbTreasures=1+(int)Math.round(this.graph.getNodeCount()*ElementType.DIAMOND.getOccurrencePercentage());//getNodeSet().size()
-			r= new Random();
-			for(int i=0;i<nbTreasures;i++){
-				String nodeID=findFreePlace(ElementType.DIAMOND);
-				if (nodeID!="-1"){
-					Node n= this.graph.getNode(nodeID);
-					r= new Random();
-					indicateElementPresence(n,ElementType.DIAMOND,1+r.nextInt((Integer)InGameConfigurationFile.MAX_DIAMOND_VALUE));
-				}
-			}
-		}
-	}
+	
 
 
 	/**
@@ -625,23 +394,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 		}
 	}
 
-	/**
-	 * A node is free is there is no agent nor well on it
-	 * @return the nodeId of a free node, -1 if no node is available
-	 **/
-	private synchronized String findFreePlace(ElementType e)	{
-		Random r = new Random();
-		Iterator<Node> iter = this.graph.iterator();
-		List<String> emptyNode = new ArrayList<String>();
-		while (iter.hasNext()){
-			Node n = (Node)iter.next();
-			if (isOktoDeployElementOn(e, n.getId()))
-				emptyNode.add(n.getId());
-		}
-		if (!emptyNode.isEmpty())
-			return (String)emptyNode.get(r.nextInt(emptyNode.size()));
-		return "-1";
-	}
+
 
 
 	/**
@@ -670,24 +423,6 @@ public class gsEnvironmentBlob implements IEnvironment {
 	 * @param targetedNodeId
 	 * @return true if the target is free
 	 */
-	private boolean isOktoDeployElementOn(ElementType e,String targetedNodeId){
-		Node n = this.graph.getNode(targetedNodeId);
-		//Iterator<String> iter = n.getAttributeKeyIterator();
-		boolean free = true;
-		switch (e) {
-		case DIAMOND: case GOLD:
-			// ok if there is not already a well or an agent on this position
-			free = ! (n.hasAttribute(ElementType.WELL.getName()) || n.hasAttribute(EntityType.AGENT_COLLECTOR.getName())|| n.hasAttribute(EntityType.AGENT_EXPLORER.getName())|| n.hasAttribute(EntityType.AGENT_TANKER.getName()) || n.hasAttribute(EntityType.WUMPUS.getName())|| n.hasAttribute(EntityType.WUMPUS_MOVER.getName())) ;
-			break;
-		case WELL:
-			// ok if there is not already a well or treasures or agents on this position
-			free = ! (n.hasAttribute(ElementType.WELL.getName()) || n.hasAttribute(ElementType.DIAMOND.getName()) || n.hasAttribute(ElementType.GOLD.getName()) || n.hasAttribute(EntityType.AGENT_COLLECTOR.getName())|| n.hasAttribute(EntityType.AGENT_EXPLORER.getName())|| n.hasAttribute(EntityType.AGENT_TANKER.getName()) || n.hasAttribute(EntityType.WUMPUS.getName())|| n.hasAttribute(EntityType.WUMPUS_MOVER.getName())) ;
-			break;
-		default:
-			break;
-		}
-		return free;
-	}
 
 
 	/**
@@ -699,61 +434,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 	 * If the element is already present, the value is added
 	 * Examples: indicateElementPresence(n,ElementType.WELL,null);indicateElementPresence(n,ElementType.Gold,42)
 	 */
-	private void indicateElementPresence(Node n, ElementType elem, Integer value) {
 
-		//1° get the nodes to update
-		Set<Node> n2update;
-		Integer i;
-		//2° update them
-		switch (elem) {
-		case GOLD :
-			i=(Integer) n.getAttribute(ElementType.GOLD.getName());
-			if (i!=null){
-				//if there already is gold, increment
-				n.setAttribute("food",true);
-			}else{
-				n.setAttribute(ElementType.GOLD.getName(),value);
-			}
-			break;
-		case DIAMOND:
-			i=(Integer) n.getAttribute(ElementType.DIAMOND.getName());
-
-			if (i!=null){
-				//if there already is gold, increment
-				n.setAttribute(ElementType.DIAMOND.getName(),value+i);
-			}else{
-				n.setAttribute(ElementType.DIAMOND.getName(),value);
-			}
-			break;
-		case WELL:
-			//for the eu.su.mas.dedale.env.gs.gui
-			//n.addAttribute("ui.label", envComponent.WELL.getName());
-			//n.setAttribute("ui.class","well");	
-			if (n.hasAttribute(ElementType.DIAMOND.getName()) ||n.hasAttribute(ElementType.GOLD.getName())|| n.hasAttribute(ElementType.WELL.getName())|| n.hasAttribute(EntityType.AGENT_COLLECTOR.getName())|| n.hasAttribute(EntityType.AGENT_EXPLORER.getName())|| n.hasAttribute(EntityType.AGENT_TANKER.getName())|| n.hasAttribute(EntityType.WUMPUS.getName())|| n.hasAttribute(EntityType.WUMPUS_MOVER.getName())){
-				Debug.error("Impossible to deploy a Well on a position where another entity or element is. Check your configuration file");
-			}else{
-				n.setAttribute(ElementType.WELL.getName(),ElementType.WELL.getName());
-
-				//for the other agents (wind,noise,...)
-				n2update=findNeighbours(n,elem.getRadius());
-				//n.addAttribute(ElementType.WIND.getName(),true);
-				//n2update.remove(n);
-				for (Node n2:n2update){
-					n2.setAttribute(ElementType.WIND.getName(),true);
-					updateNodeRendering(n2);
-					//if its not a well, change the graphic rendering
-					//if (!envComponent.WELL.getName().equalsIgnoreCase(n2.getAttribute("ui.label").toString()))
-					//	n2.setAttribute("ui.class", "wind");
-				}
-			}
-			break;
-		default:
-			System.out.println("This element is not yet defined");
-			break;
-		}
-		updateNodeRendering(n);
-
-	}
 
 	public synchronized Node getNewBlobNode(int id) {
 		Node n = graph.addNode(id+"");
