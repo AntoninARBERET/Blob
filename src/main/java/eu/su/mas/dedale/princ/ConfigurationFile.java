@@ -37,7 +37,7 @@ public final class ConfigurationFile {
 	 */
 
 	//public static String INSTANCE_TOPOLOGY=null;
-	public static String INSTANCE_TOPOLOGY="src/test/java/resources/mapblob-topology1";
+	public static String INSTANCE_TOPOLOGY="src/test/java/resources/mapblob-topology2";
 
 	/**
 	 * When the environment is loaded; should be null if the environment is generated
@@ -51,7 +51,7 @@ public final class ConfigurationFile {
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2018-agentCollect";
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2018-entities";
 	//public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/map2018-agentGolem";
-	public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/blob-10agents";
+	public static String INSTANCE_CONFIGURATION_ENTITIES="src/test/java/resources/blob-1agents";
 	/************************************
 	 * 
 	 * 
@@ -77,7 +77,7 @@ public final class ConfigurationFile {
 	public static boolean ACTIVE_DIAMOND=true;
 	
 	/**Blob part**/
-	public static int NB_BLOB_AG= 10;
+	public static int NB_BLOB_AG= 1;
 	public static float PROBA_SINK=(float) 0.2;
 	public static float PROBA_SOURCE=(float) 0.15;
 	public static int ROUNDS= 3;
@@ -94,4 +94,5 @@ public final class ConfigurationFile {
 	public static int FOOD_BOUND=100;
 	public static int PICK_CAPACITY = 50;
 	public static int FOOD_CONSO = 2;
+	public static boolean EXPLORATION_ENABLED = true;
 }

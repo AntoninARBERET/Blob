@@ -7,8 +7,10 @@ public class NTabEntry {
 	private float Lij;
 	private int food;
 	private boolean used;
+	private float posX;
+	private float posY;
 	
-	public NTabEntry(String id, float dij, float qij, float lij, int food) {
+	public NTabEntry(String id, float dij, float qij, float lij, int food, float posX, float posY) {
 		super();
 		this.id = id;
 		Dij = dij;
@@ -16,6 +18,8 @@ public class NTabEntry {
 		Lij = lij;
 		this.food = food;
 		this.used=false;
+		this.posX=posX;
+		this.posY=posY;
 	}
 	public float getDij() {
 		return Dij;
@@ -49,6 +53,18 @@ public class NTabEntry {
 	}
 	public void setUsed(boolean used) {
 		this.used = used;
+	}
+	public float getPosX() {
+		return posX;
+	}
+	public void setPosX(float posX) {
+		this.posX = posX;
+	}
+	public float getPosY() {
+		return posY;
+	}
+	public void setPosY(float posY) {
+		this.posY = posY;
 	}
 	
 	

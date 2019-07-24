@@ -55,7 +55,7 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 	public void action() {
 		super.action();
 		if(Math.abs(myBlobAgent.getFood())>3000) {
-			Debug.info(myBlobAgent.getPrintPrefix()+" food too high or low : "+myBlobAgent.getFood());
+			Debug.info(myBlobAgent.getPrintPrefix()+" food too high or low : "+myBlobAgent.getFood(),7);
 		}
 		//executed before a new rounds cycle
 		if(start) {
@@ -111,6 +111,10 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 			}
 			else if(myBlobAgent.getMode()==AbstractBlobAgent.Modes.FOOD_IN_ENV) {
 				decision=myBlobAgent.decideAndPick();
+			}
+			
+			if(myBlobAgent.isExplorationEnabled() && myBlobAgent.isAbleToExplore()) {
+				myBlobAgent.explore();
 			}
 			
 			

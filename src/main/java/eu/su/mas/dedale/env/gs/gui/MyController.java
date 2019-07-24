@@ -13,12 +13,14 @@ import javafx.scene.shape.Rectangle;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
 
+import eu.su.mas.dedale.tools.Debug;
 import javafx.fxml.FXML;
 import java.awt.Desktop;
 
@@ -36,7 +38,7 @@ public class MyController {
 	
 	@FXML private Label pressureLabel;
 	
-	private float[] pressList;
+	private ArrayList<Float> pressList;
 
 	@FXML
 	private void handleExitAction(ActionEvent event) {
@@ -91,14 +93,15 @@ public class MyController {
 	//TODO
 	public synchronized void setNodeList(Graph g) {
 		Iterator<Node> it = g.iterator();
+		pressList = new ArrayList<Float>();
 		while(it.hasNext()){
 			Node n = it.next();
-			listNode.getItems().add("Node "+ n.getId() +"\t Pressure = "+ 0);
+			if(n.getAttribute("ui.class").equals("blobi")) {
+				listNode.getItems().add("Node "+ n.getId() +"\t Pressure = "+ 0);
+				pressList.add(new Float(0));
+			}
 		}	
-		pressList = new float[listNode.getItems().size()];
-		for(int i = 0; i<pressList.length; i++) {
-			pressList[i]=0;
-		}
+
 		/*System.out.println(truc.scaleShapeProperty());
 		right.getChildren().add(truc);
 		truc.setScaleShape(true);
@@ -107,12 +110,18 @@ public class MyController {
 		
 	}
 	
+	public synchronized void addToPressList(int id) {
+		listNode.getItems().add("Node "+ id +"\t Pressure = "+ 0);
+		pressList.add(new Float(0));
+	}
+	
 	public synchronized void setPressure(String id, float pressure) {
+		//Debug.info("ID "+id);
 		listNode.getItems().set(Integer.valueOf(id)-1, "Node "+ id +"\t Pressure = "+ pressure);
-		pressList[Integer.valueOf(id)-1]=pressure;
+		pressList.set(Integer.valueOf(id)-1,pressure);
 		float tot = 0;
-		for(int i = 0; i<pressList.length; i++) {
-			tot=tot+pressList[i];
+		for(int i = 0; i<pressList.size(); i++) {
+			tot=tot+pressList.get(i);
 		}
 		pressureLabel.setText("Total pressure = " +tot);
 		

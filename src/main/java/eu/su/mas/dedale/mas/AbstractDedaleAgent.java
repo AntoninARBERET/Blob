@@ -410,9 +410,9 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 			e.printStackTrace();
 		}
 
-		if (!found){
+		/*if (!found){
 			Debug.error("The agent "+agentName +" whas not found in the configuration file: "+instanceConfigurationEntitiesFullPath+".\n Its mandatory to give its caracteristics. See https://dedale.gitlab.io/page/tutorial/deployAgents/");
-		}
+		}*/
 		Object[] result={ec,ConfigurationFile.GATEKEEPER_NAME};
 
 		return result;

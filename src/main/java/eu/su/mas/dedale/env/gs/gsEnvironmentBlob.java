@@ -57,7 +57,9 @@ import eu.su.mas.dedale.env.gs.gui.JavaFxmlGui;
 import eu.su.mas.dedale.env.gs.gui.MyController;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.knowledge.NTabEntry;
+import eu.su.mas.dedale.princ.ConfigurationFile;
 import eu.su.mas.dedale.tools.Debug;
+import jade.wrapper.ContainerController;
 import jade.wrapper.PlatformController;
 
 import javafx.application.Application;
@@ -111,7 +113,10 @@ public class gsEnvironmentBlob implements IEnvironment {
 	
 	private BlockingQueue<Couple<Node, ReadWriteLock>> foodList;
 
-
+	private int nbBlob;
+	
+	private String[] agentsId;
+	private ContainerController c;
 	/**
 	 * 
 	 */
@@ -119,7 +124,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 	public void CreateEnvironment(String topologyConfigurationFilePath, String instanceConfiguration,boolean isGrid, Integer envSize,boolean diamond,boolean gold,boolean well) {
 		//	TODO allow the generation of elements on a loaded topology
 		System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-
+		nbBlob=0;
 		//1)load topology
 
 		if (topologyConfigurationFilePath==null){
@@ -134,12 +139,12 @@ public class gsEnvironmentBlob implements IEnvironment {
 
 			loadGraph(topologyConfigurationFilePath);
 			if(instanceConfiguration!=null) {
-				loadingMapConfiguration(instanceConfiguration);
+				//loadingMapConfiguration(instanceConfiguration);
 			}
 
 		}
 
-
+		
 		//3) define GUI parameters
 		this.graph.setAttribute("ui.stylesheet", styleSheet);
 
@@ -514,6 +519,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 			}
 			
 			if(n.getAttribute("type").equals("food")) {
+				Debug.info("Food node : "+n.getId());
 				n.setAttribute("ui.class", "food");
 				n.setAttribute("ui.label","Food : "+n.getAttribute("quantity"));
 				n.setAttribute("ui.size", /*((int)n.getAttribute("quantity")+10)*/5+" gu");
@@ -603,7 +609,6 @@ public class gsEnvironmentBlob implements IEnvironment {
 						System.out.println("Loading configuration for environment "+ l[1]);
 						break;
 					case "food":
-						Debug.info("FOOD " + l[1]);
 						indicateFoodPresence(this.graph.getNode(l[1]), Integer.valueOf(l[2]));
 						break;
 					default:
@@ -750,15 +755,22 @@ public class gsEnvironmentBlob implements IEnvironment {
 
 	}
 
+	public Node getNewBlobNode(int id) {
+		Node n = graph.addNode(id+"");
+		n.setAttribute("ui.class", "blobi");
+		n.setAttribute("ui.label",""+id);
+		m.addToPressList(id);
+		return n;
+	}
 
-	private void indicateEntityPresence(Node n,EntityCharacteristics e, String entityName) {
+	public void indicateEntityPresence(Node n,EntityCharacteristics e, String entityName) {
 		n.setAttribute("blob", entityName);
 		updateNodeRendering(n);
 	}
 
 	private void indicateFoodPresence(Node n, int value) {
 
-		Debug.info("Env : food at "+n+" = "+ value);
+		Debug.info("Env : food at "+n+" = "+ value,7);
 		n.setAttribute("food", value);
 		
 		updateNodeRendering(n);
@@ -968,6 +980,9 @@ public class gsEnvironmentBlob implements IEnvironment {
 	private Node getBlobAgentNode(String agentId) {
 		String nodeId = agentId.substring(4);
 		return this.graph.getNode(nodeId);
+
+		
+		
 	}
 	
 	private synchronized int getNewEdgeId() {
@@ -1217,7 +1232,35 @@ public class gsEnvironmentBlob implements IEnvironment {
 		return pipe;
 	}
 	
+	public synchronized int incAndGetNbBlob() {
+		nbBlob++;
+		return nbBlob;
+	}
+
+
+	public void setAgentsId(String[] agentsId) {
+		this.agentsId = agentsId;
+	}
 	
+	public synchronized String[] getListWithMyId(String id) {
+		String[] tmp = new String[agentsId.length+1];
+		for(int i =0; i<agentsId.length; i++) {
+			tmp[i]=agentsId[i];
+		}
+		tmp[agentsId.length] = id;
+		agentsId=tmp;
+		return agentsId;
+	}
+	
+	public void setC(ContainerController c) {
+		this.c = c;
+	}
+
+
+	public ContainerController getC() {
+		return c;
+	}
+
 }
 
 

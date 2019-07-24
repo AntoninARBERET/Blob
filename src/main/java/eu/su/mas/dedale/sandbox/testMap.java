@@ -27,6 +27,9 @@ public class testMap {
 		L.add("lel");
 		L.remove(0);
 		System.out.println(L.get(0));
+		int a =17;
+		System.out.println(a++);
+		
 	}
 
 }

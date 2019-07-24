@@ -47,9 +47,10 @@ public class BlobMain {
 		//GS env for blob 
 		
 		env = new gsEnvironmentBlob();
+		
 		//env.CreateEnvironment(null, null, true, ConfigurationFile.NB_BLOB_AG, false, false, false);
 		env.CreateEnvironment(ConfigurationFile.INSTANCE_TOPOLOGY, ConfigurationFile.INSTANCE_CONFIGURATION_ELEMENTS, true, ConfigurationFile.NB_BLOB_AG, false, false, false);
-
+		
 		//if(!ConfigurationFile.PLATFORMisDISTRIBUTED){
 		//No gateKeeper, the environment is created and a reference is given to the agents at creation
 
@@ -350,11 +351,13 @@ public class BlobMain {
 		Integer foodBound = ConfigurationFile.FOOD_BOUND;
 		Integer pickCapacity = ConfigurationFile.PICK_CAPACITY;
 		Integer foodConso = ConfigurationFile.FOOD_CONSO;
+		Boolean explorationEnabled = ConfigurationFile.EXPLORATION_ENABLED;
 		
 		String[] agentsId = new String[nb_blob];
 		for(int i=1; i<=nb_blob;i++) {
 			agentsId[i-1]="Blob"+i;
 		}
+		env.setAgentsId(agentsId);
 		for(int i=1; i<=nb_blob;i++) {
 			//1) Get the container where the agent will appear
 			c = containerList.get(ConfigurationFile.LOCAL_CONTAINER_NAME);
@@ -362,20 +365,21 @@ public class BlobMain {
 			
 			//2) Give the name of your agent, MUST be the same as the one given in the entities file.
 			agentName="Blob"+i;
+			env.incAndGetNbBlob();
 			
 			//3) If you want to give specific parameters to your agent, add them here
 			Object [] entityParameters={agentsId, 
 					env.getG().getNode(""+i),
 					p_sink, p_source, rounds, steps, 
 					d_press, d_t, d_t_sync, d_max, r, mu, a, ad_timer, env, 
-					mode, foodBound, pickCapacity,foodConso};
+					mode, foodBound, pickCapacity,foodConso, explorationEnabled};
 			
 			//4) Give the class name of your agent to let the system instantiate it
 			ag=createNewDedaleAgent(c, agentName, BlobAgent.class.getName(), entityParameters);
 			agentList.add(ag);
 		}
 		
-
+		env.setC(containerList.get(ConfigurationFile.LOCAL_CONTAINER_NAME));
 		System.out.println("Agents created...");
 		return agentList;
 	}

@@ -10,4 +10,4 @@ an 7 xyz=29,21,0 type=blobi
 an 8 xyz=27,45,0 type=blobi
 an 9 xyz=62,54,0 type=blobi
 an 10 xyz=94,36,0 type=blobi
-an 11 xyz=58,36,0 type=food quantity=100000
+an f1 xyz=58,36,0 type=food quantity=100000

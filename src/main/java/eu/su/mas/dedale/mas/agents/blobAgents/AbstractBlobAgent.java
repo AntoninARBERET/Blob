@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -38,13 +39,18 @@ import eu.su.mas.dedale.mas.msgcontent.FoodMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.PingMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.ResultsMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.StateMsgContent;
+import eu.su.mas.dedale.princ.ConfigurationFile;
 import eu.su.mas.dedale.tools.Debug;
 import jade.core.AID;
 import jade.core.Agent;
+import eu.su.mas.dedale.env.EntityCharacteristics;
 import eu.su.mas.dedale.env.IEnvironment;
 import eu.su.mas.dedale.env.gs.gsEnvironmentBlob;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
+import jade.wrapper.AgentController;
+import jade.wrapper.ContainerController;
+import jade.wrapper.StaleProxyException;
 
 public abstract class  AbstractBlobAgent extends Agent{
 
@@ -86,6 +92,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 	private int foodConso;
 	private boolean onFood;
 	private int upgradedFor;
+	private boolean explorationEnabled;
+
+	
 	
 	
 	public enum Modes{
@@ -126,6 +135,8 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.mode=(Modes) args[17];
 		this.foodBound= ((Integer) args[18]).intValue();
 		this.pickCapacity= ((Integer) args[19]).intValue();
+		this.foodConso= ((Integer) args[20]).intValue();
+		this.explorationEnabled=((Boolean) args[21]).booleanValue();
 		
 		
 		//check values
@@ -150,6 +161,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.mutexP = new ReentrantReadWriteLock();
 		this.mutexF = new ReentrantReadWriteLock();
 	
+		myNode.setAttribute("agentId", getLocalName());
 		
 		List<Behaviour> lb=new ArrayList<Behaviour>();
 		//lb.add(new AdBroadcastingBehaviour(this));
@@ -372,6 +384,13 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.food = food;
 		this.mutexF.writeLock().unlock();
 	}
+
+
+
+	public boolean isExplorationEnabled() {
+		return explorationEnabled;
+	}
+
 
 
 
@@ -684,10 +703,139 @@ public abstract class  AbstractBlobAgent extends Agent{
 			sentFoodHistory.remove(0);
 		}
 		sentFoodHistory.add(partToGive);
-		Debug.info(this.getPrintPrefix()+" made decision : my food "+food+" available "+availableFood+" neighbours need "+neighbours_needs+" will pick "+pickup+ " and send " +partToGive +" : "+giveAway.toString());
+		Debug.info(this.getPrintPrefix()+" made decision : my food "+food+" available "+availableFood+" neighbours need "+neighbours_needs+" will pick "+pickup+ " and send " +partToGive +" : "+giveAway.toString(),7);
 		return(new Couple<Integer,Map<String,Integer>> (new Integer(pickup), giveAway));
 	}
 	
+	public boolean isAbleToExplore() {
+		//TODO Paremeter
+		if(getFood()<4*foodBound/5) {
+			return false;
+		}
+		for(NTabEntry entry : nTab.values()) {
+			if(entry.getFood()<foodBound/2) {
+				return false;
+			}
+		}
+		if(new Random().nextFloat()<0.5){
+			return false;
+		}
+		return true;
+	}
 	
+	public void explore() {
+		int nbDirection = 12;
+		float distMin=1;
+		float distMax=3;
+		float[] scores = new float[nbDirection];
+		float myX = getPosX();
+		float myY = getPosY();
+		for(int i = 0; i<nbDirection; i++) {
+			scores[i]=0;
+		}
+		for(NTabEntry entry : nTab.values()) {
+			//neighbour angle
+			float alpha = (float)Math.atan(Math.abs(myY-entry.getPosY())/Math.abs(myX-entry.getPosX()));
+			for(int i = 0; i<nbDirection; i++) {
+				//dir angle
+				float beta = (float)(i*Math.PI/2);
+				scores[i]=scores[i]+(float)Math.min(Math.abs(alpha-beta), Math.abs(alpha+2*Math.PI-beta));
+			}
+		}
+		int dirMin = 0;
+		float scoreMin = scores[0];
+		for(int i = 1; i<nbDirection; i++) {
+			if(scores[i]<scoreMin) {
+				dirMin = i;
+				scoreMin = scores[i];
+			}
+			
+		}
+		float dist = distMin + new Random().nextFloat()*(distMax-distMin);
+		float newPosX = myX + (float) Math.cos(dirMin*Math.PI/nbDirection)*dist;
+		float newPosY = myY + (float) Math.sin(dirMin*Math.PI/nbDirection)*dist;
+		int agentNum =realEnv.incAndGetNbBlob();
+		String agentName="Blob"+agentNum;
+		Node n = realEnv.getNewBlobNode(agentNum);
+		n.setAttribute("xyz", newPosX, newPosY, 0);
+		
+
+		Integer nb_blob=ConfigurationFile.NB_BLOB_AG;
+		Float p_sink=ConfigurationFile.PROBA_SINK;
+		Float p_source=ConfigurationFile.PROBA_SOURCE;
+		Integer rounds =ConfigurationFile.ROUNDS;
+		Integer steps=ConfigurationFile.STEPS;
+		Float d_press=ConfigurationFile.DELTA_PRESSURE;
+		Integer d_t =ConfigurationFile.DELTA_T;
+		Integer d_t_sync=ConfigurationFile.DELTA_T_SYNC;
+		Float d_max=ConfigurationFile.D_MAX;
+		Float r=ConfigurationFile.R;
+		Float mu =ConfigurationFile.MU;
+		Float a=ConfigurationFile.A;
+		Integer ad_timer=ConfigurationFile.AD_TIMER;
+		AbstractBlobAgent.Modes mode = ConfigurationFile.MODE;
+		Integer foodBound = ConfigurationFile.FOOD_BOUND;
+		Integer pickCapacity = ConfigurationFile.PICK_CAPACITY;
+		Integer foodConso = ConfigurationFile.FOOD_CONSO;
+		Boolean explorationEnabled = ConfigurationFile.EXPLORATION_ENABLED;
+		
+		
+		
+		String[] agentsId = realEnv.getListWithMyId(agentName);
+		//3) If you want to give specific parameters to your agent, add them here
+		Object [] entityParameters={agentsId, 
+				n,
+				p_sink, p_source, rounds, steps, 
+				d_press, d_t, d_t_sync, d_max, r, mu, a, ad_timer, realEnv, 
+				mode, foodBound, pickCapacity,foodConso, explorationEnabled};
+		
+		//4) Give the class name of your agent to let the system instantiate it
+		AgentController ag=createNewDedaleAgent(realEnv.getC(), agentName, BlobAgent.class.getName(), entityParameters);
+		try {
+			ag.start();
+		} catch (StaleProxyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		realEnv.indicateEntityPresence(n, null, agentName);
+		
+	}
+	
+	private static AgentController createNewDedaleAgent(ContainerController initialContainer, String agentName,String className, Object[] additionnalParameters){
+		//Object[] objtab=new Object[]{env,agentName};//used to give informations to the agent
+		Object[] objtab=AbstractDedaleAgent.loadEntityCaracteristics(agentName,ConfigurationFile.INSTANCE_CONFIGURATION_ENTITIES);
+		Object []res2=merge(objtab,additionnalParameters);
+
+		AgentController ag=null;
+		try {
+			ag = initialContainer.createNewAgent(agentName,className,res2);
+		} catch (StaleProxyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Assert.assertNotNull(ag);
+		//agentList.add(ag);
+		System.out.println(agentName+" launched");
+		return ag;
+	}
+	
+	private static Object[] merge (Object [] tab1, Object[] tab2){
+		Assert.assertNotNull(tab1);
+		Object [] res;
+		if (tab2!=null){
+			res= new Object[tab1.length+tab2.length];
+			int i= tab1.length;
+			for(i=0;i<tab1.length;i++){
+				res[i]=tab1[i];
+			}
+			for (int ind=0;ind<tab2.length;ind++){
+				res[i]=tab2[ind];
+				i++;
+			}
+		}else{
+			res=tab1;
+		}
+		return res;
+	}
 	
 }
