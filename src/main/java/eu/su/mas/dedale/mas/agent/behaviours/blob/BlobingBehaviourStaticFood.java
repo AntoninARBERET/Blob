@@ -1,9 +1,5 @@
 package eu.su.mas.dedale.mas.agent.behaviours.blob;
-import java.util.Random;
-import java.util.Date;
-import java.util.Map;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
-import eu.su.mas.dedale.mas.knowledge.NTabEntry;
 import eu.su.mas.dedale.tools.Debug;
 
 /**
@@ -14,21 +10,13 @@ import eu.su.mas.dedale.tools.Debug;
  */
 public class BlobingBehaviourStaticFood extends AbstractBlobBehaviour{
 	private static final long serialVersionUID = 8957058657171562574L;
-	private boolean isSink;
-	private boolean isSource;
-	private boolean start;
-	private int roundsDone;
-	private Date startDate;
-	private float previousPressure;
+
 	
 	
 	public BlobingBehaviourStaticFood(AbstractBlobAgent myBlobAgent){
 		super(myBlobAgent);
-		isSink=false;
-		isSource=false;
 		Debug.info(myBlobAgent.getPrintPrefix()+"BlobingBehaviour constructed",4);
-		start = true;
-		roundsDone=0;
+
 	}
 	
 	public void action() {

@@ -1,7 +1,6 @@
 package eu.su.mas.dedale.env.gs.gui;
 
 
-import javafx.application.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -20,7 +19,6 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
 
-import eu.su.mas.dedale.tools.Debug;
 import javafx.fxml.FXML;
 import java.awt.Desktop;
 

@@ -1,13 +1,11 @@
 package eu.su.mas.dedale.mas.msgcontent;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import eu.su.mas.dedale.mas.knowledge.NTabEntry;
 
 public class StateMsgContent extends AbstractMsgContent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2673317524141240199L;
 	private float posX,posY;
 	private int food;
 

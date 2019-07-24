@@ -5,29 +5,21 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 import jade.core.AID;
-import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
-import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.ControllerException;
 
 import org.junit.Assert;
 import agent.AbstractDeltaAgent;
-import dataStructures.tuple.Couple;
 import debug.Debug;
 
 import eu.su.mas.dedale.env.EntityCharacteristics;
 import eu.su.mas.dedale.env.EntityType;
 import eu.su.mas.dedale.env.IEnvironment;
 import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe;
-import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe.R1_ManagerAnswer;
-import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe.R1_deployMe;
 import eu.su.mas.dedale.princ.ConfigurationFile;
 
 

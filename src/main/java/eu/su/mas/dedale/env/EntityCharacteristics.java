@@ -1,6 +1,5 @@
 package eu.su.mas.dedale.env;
 import java.io.Serializable;
-import debug.Debug;
 import eu.su.mas.dedale.princ.ConfigurationFile;
 
 

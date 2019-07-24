@@ -1,9 +1,12 @@
 package eu.su.mas.dedale.mas.msgcontent;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class AdMsgContent extends AbstractMsgContent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3131141869010017938L;
 	private float posX,posY;
 	private ArrayList<String> forwarders;
 	private int nbHops;

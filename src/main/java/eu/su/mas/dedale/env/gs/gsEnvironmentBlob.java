@@ -2,23 +2,18 @@ package eu.su.mas.dedale.env.gs;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -30,12 +25,7 @@ import org.graphstream.ui.graphicGraph.GraphPosLengthUtils;
 import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.layout.Layout;
 import org.graphstream.ui.layout.springbox.implementations.SpringBox;
-import org.graphstream.ui.view.Viewer;
-import org.graphstream.algorithm.Dijkstra;
-import org.graphstream.algorithm.Dijkstra.Element;
 import org.graphstream.algorithm.generator.DorogovtsevMendesGenerator;
-import org.graphstream.algorithm.generator.Generator;
-import org.graphstream.algorithm.generator.GridGenerator;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
@@ -54,15 +44,12 @@ import eu.su.mas.dedale.env.gs.gui.JavaFxmlGui;
 import eu.su.mas.dedale.env.gs.gui.MyController;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.knowledge.NTabEntry;
-import eu.su.mas.dedale.princ.ConfigurationFile;
 import eu.su.mas.dedale.tools.Debug;
 import jade.wrapper.ContainerController;
-import jade.wrapper.PlatformController;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.VBox;
 
 //import eu.su.mas.dedale.princ.ConfigurationFile;
 

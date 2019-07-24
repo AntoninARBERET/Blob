@@ -1,26 +1,17 @@
 package eu.su.mas.dedale.mas.agent.behaviours.blob;
 
-import java.time.Clock;
-import java.util.Random;
-
-import dataStructures.tuple.Couple;
-
-import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
-import eu.su.mas.dedale.mas.knowledge.LastContactTabEntry;
-import eu.su.mas.dedale.mas.knowledge.NTabEntry;
-import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.CoLostMsgContent;
-import eu.su.mas.dedale.mas.msgcontent.PingMsgContent;
-import jade.core.behaviours.SimpleBehaviour;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
+
 
 public abstract class CoLostProcessingBehaviour extends AbstractBlobBehaviour{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1184763466861677073L;
 	private CoLostMsgContent coLost;
 	public CoLostProcessingBehaviour(AbstractBlobAgent myBlobAgent, CoLostMsgContent coLost){
 		super(myBlobAgent);

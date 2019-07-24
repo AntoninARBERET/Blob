@@ -3,10 +3,11 @@ package eu.su.mas.dedale.mas.agent.behaviours.blob;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.tools.Debug;
 import jade.core.behaviours.ParallelBehaviour;
-import jade.core.behaviours.SimpleBehaviour;
-import jade.lang.acl.ACLMessage;
-
 public class ParallelBlobBehaviour extends ParallelBehaviour{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7404737960641865296L;
 	protected AbstractBlobAgent myBlobAgent;
 	protected boolean finished;
 

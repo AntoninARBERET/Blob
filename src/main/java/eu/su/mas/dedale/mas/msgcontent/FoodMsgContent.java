@@ -1,9 +1,11 @@
 package eu.su.mas.dedale.mas.msgcontent;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 
 public class FoodMsgContent extends AbstractMsgContent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8784788210014944295L;
 	private int food;
 
 	public FoodMsgContent(String sender, int food, int seqNo) {

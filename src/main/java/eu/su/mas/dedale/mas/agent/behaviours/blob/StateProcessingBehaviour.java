@@ -1,10 +1,4 @@
 package eu.su.mas.dedale.mas.agent.behaviours.blob;
-
-import java.time.Clock;
-import java.util.Random;
-
-import dataStructures.tuple.Couple;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,13 +7,8 @@ import java.util.Map;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.knowledge.LastContactTabEntry;
 import eu.su.mas.dedale.mas.knowledge.NTabEntry;
-import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
-import eu.su.mas.dedale.mas.msgcontent.PingMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.StateMsgContent;
 import eu.su.mas.dedale.tools.Debug;
-import jade.core.behaviours.SimpleBehaviour;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 
 public class StateProcessingBehaviour extends AbstractBlobBehaviour{
 	private StateMsgContent state;

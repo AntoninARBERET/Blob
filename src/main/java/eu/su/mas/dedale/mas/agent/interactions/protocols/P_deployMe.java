@@ -4,11 +4,9 @@ package eu.su.mas.dedale.mas.agent.interactions.protocols;
 
 import agent.A2oInterface;
 import agent.AbstractDeltaAgent;
-import eu.su.mas.dedale.env.EntityCharacteristics;
 import eu.su.mas.dedale.env.IEnvironment;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
 import jade.core.AID;
-import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;

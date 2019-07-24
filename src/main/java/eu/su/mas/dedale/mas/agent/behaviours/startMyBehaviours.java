@@ -1,16 +1,10 @@
 package eu.su.mas.dedale.mas.agent.behaviours;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
-import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe;
-import jade.core.AID;
-import jade.core.ContainerID;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.SimpleBehaviour;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 
 /**
  * This behaviour must be the only one added directly to any dedale agent.<br/>

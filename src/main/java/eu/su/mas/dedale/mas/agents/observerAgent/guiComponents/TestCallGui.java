@@ -1,11 +1,6 @@
 package eu.su.mas.dedale.mas.agents.observerAgent.guiComponents;
 
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import javafx.application.Application;
 
 public class TestCallGui {
 

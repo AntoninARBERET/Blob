@@ -3,7 +3,6 @@ package eu.su.mas.dedale.princ;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import eu.su.mas.dedale.env.gs.gsEnvironmentBlob;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
@@ -19,11 +18,7 @@ import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
-import org.graphstream.algorithm.Toolkit;
-import org.graphstream.graph.Edge;
 import org.graphstream.stream.ProxyPipe;
-import org.graphstream.ui.geom.Point3;
-import org.graphstream.ui.graphicGraph.GraphPosLengthUtils;
 import org.junit.Assert;
 import jade.wrapper.AgentContainer;
 

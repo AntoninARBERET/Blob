@@ -8,10 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -21,7 +19,6 @@ import org.junit.Assert;
 
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.mas.AbstractDedaleAgent;
-import eu.su.mas.dedale.mas.agent.behaviours.startMyBehaviours;
 import eu.su.mas.dedale.mas.agent.behaviours.blob.AdBroadcastingBehaviour;
 import eu.su.mas.dedale.mas.agent.behaviours.blob.ReceiveMessageBehaviour;
 import eu.su.mas.dedale.mas.knowledge.LastContactTabEntry;
@@ -29,16 +26,12 @@ import eu.su.mas.dedale.mas.knowledge.NTabEntry;
 import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.CoLostMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.FoodMsgContent;
-import eu.su.mas.dedale.mas.msgcontent.PingMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.StateMsgContent;
 import eu.su.mas.dedale.princ.ConfigurationFile;
 import eu.su.mas.dedale.tools.Debug;
 import jade.core.AID;
 import jade.core.Agent;
-import eu.su.mas.dedale.env.EntityCharacteristics;
-import eu.su.mas.dedale.env.IEnvironment;
 import eu.su.mas.dedale.env.gs.gsEnvironmentBlob;
-import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
@@ -156,7 +149,6 @@ public abstract class  AbstractBlobAgent extends Agent{
 	
 		myNode.setAttribute("agentId", getLocalName());
 		
-		List<Behaviour> lb=new ArrayList<Behaviour>();
 		//lb.add(new AdBroadcastingBehaviour(this));
 		//lb.add(new AdBroadcastingBehaviour(this));
 		
@@ -390,25 +382,6 @@ public abstract class  AbstractBlobAgent extends Agent{
 	}
 
 
-	public void sendPingMsg() {
-		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-		msg.setSender(this.getAID());
-		//Reciever for broadcast
-		Iterator<String> it = agentsIds.iterator();
-		while(it.hasNext()) {
-			String id = it.next();
-			if(!id.equals(this.getLocalName())) {
-				msg.addReceiver(new AID(id, AID.ISLOCALNAME));
-			}
-		}
-		msg.setProtocol("PING");
-		try {
-			msg.setContentObject(new PingMsgContent(this.getLocalName(), (float)myNode.getAttribute("x"),  (float)myNode.getAttribute("y"), getAndIncSeqNo()));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		this.sendMessage(msg);
-	}
 	
 	public void sendAdMsg() {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);

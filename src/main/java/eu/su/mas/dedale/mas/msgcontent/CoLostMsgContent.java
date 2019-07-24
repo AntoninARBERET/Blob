@@ -1,9 +1,12 @@
 package eu.su.mas.dedale.mas.msgcontent;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class CoLostMsgContent extends AbstractMsgContent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7698417353174653190L;
 	private ArrayList<String> forwarders;
 	private String lostNode;
 
