@@ -50,8 +50,6 @@ import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.env.EntityCharacteristics;
 import eu.su.mas.dedale.env.EntityType;
 import eu.su.mas.dedale.env.IEnvironment;
-import eu.su.mas.dedale.env.InGameConfigurationFile;
-import eu.su.mas.dedale.env.Observation;
 import eu.su.mas.dedale.env.gs.gui.JavaFxmlGui;
 import eu.su.mas.dedale.env.gs.gui.MyController;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
@@ -521,24 +519,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 		}
 	}
 
-	/**
-	 * Only check for free regarding an agent move, do not guarantee the safety of the targeted area (well,...)
-	 * 
-	 * @param targetedNodeId
-	 * @return true is the entity can be moved on the target
-	 */
-	private boolean isPossibleToMove(String targetedNodeId) {
 
-		Node n=this.graph.getNode(targetedNodeId);
-		//Iterator<String> iter=n.getAttributeKeyIterator();
-		boolean free=!(n.hasAttribute(EntityType.AGENT_COLLECTOR.getName()) || 
-				n.hasAttribute(EntityType.AGENT_EXPLORER.getName()) || 
-				n.hasAttribute(EntityType.AGENT_TANKER.getName()) || 
-				n.hasAttribute(EntityType.WUMPUS.getName()) || 
-				n.hasAttribute(EntityType.WUMPUS_MOVER.getName())
-				);
-		return free;
-	}
 
 	/**
 	 * Print the nodes and their respective attributes

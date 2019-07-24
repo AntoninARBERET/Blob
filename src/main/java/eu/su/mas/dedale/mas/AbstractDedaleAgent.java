@@ -25,8 +25,6 @@ import debug.Debug;
 import eu.su.mas.dedale.env.EntityCharacteristics;
 import eu.su.mas.dedale.env.EntityType;
 import eu.su.mas.dedale.env.IEnvironment;
-import eu.su.mas.dedale.env.Observation;
-import eu.su.mas.dedale.mas.agent.behaviours.ReceiveTreasureTankerBehaviour;
 import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe;
 import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe.R1_ManagerAnswer;
 import eu.su.mas.dedale.mas.agent.interactions.protocols.P_deployMe.R1_deployMe;
@@ -55,7 +53,6 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 	 * The key is the Observation used as an ObservationType
 	 * The value is the Observation object. Currently two elements of the same class, but not in the future 
 	 */
-	private HashMap<Observation,Integer> myBackPack;
 
 
 	/**
@@ -90,51 +87,12 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 		Assert.assertNotNull(ec);
 		Assert.assertNotNull(environmentName);
 		this.ec=ec;
-		this.myBackPack=new HashMap<Observation, Integer>();
 		this.environmentName=environmentName;
 
 		//see AAgent (EnvironmentManager) //registerO2AInterface(EnvironmentManager.class,this);
 	}
 
 
-	/**
-	 * 
-	 * @return The agent's current position, null if the agent is not in the environment
-	 */
-	public String getCurrentPosition(){
-		if (realEnv==null){
-			Debug.warning("The agent is currently not deployed in any environment, you should not call getCurrentPosition()");
-			return null;
-		}		
-		return this.realEnv.getCurrentPosition(this.getLocalName());
-	}
-
-
-
-
-	/**
-	 * 
-	 * @return The available carrying capacity of the agent according to its type. Null if not applicable (Tanker,Explo,..)
-	 */
-	public Integer getBackPackFreeSpace(){
-		switch (ec.getMyTreasureType()) {
-		case DIAMOND:
-			return ec.getDiamondCapacity()-this.myBackPack.get(ec.getMyTreasureType());
-		case GOLD:
-			return ec.getGoldCapacity()-this.myBackPack.get(ec.getMyTreasureType());
-		default:
-			return null;
-		}
-
-	}
-
-	/**
-	 * 
-	 * @return The type of treasure that the agent is able to pick
-	 */
-	public Observation getMyTreasureType(){
-		return this.ec.getMyTreasureType();
-	}
 
 	/**
 	 * 
@@ -142,64 +100,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 	 * @return true if you're agent was allowed to realize the transfer, false otherwise 
 	 * 
 	 */
-	public synchronized boolean emptyMyBackPack(String agentSiloName){
-		
-		//I cannot be sure that the targetAgent is a silo before sending the message.
-		//Protocol SendTreasure:
-		// A -(type,quantity)-> B
-		//Message arrive only if reacheable.
-		// if B ok -(done)->A
-		// if B nok -(refused)->A
-		//A return false;
 
-		//chose to do it in the critical section with senMessage, but will block the agent
-		//or asynchronously
-		
-		//critical section is preferred to check the agentSiloName type and ensure the boolean answer. Otherwise I cannot give a boolean answer to the agent.
-		//At the same time it is normal to block the agent during the realisation of a task.
-		//conception decision to explain in the documentation
-
-		if (ec.getMyTreasureType()!=Observation.NO_TREASURE && ec.getMyTreasureType()!=Observation.ANY_TREASURE && this.realEnv.isReachable(this.getLocalName(),agentSiloName)){
-			//this.addAbility(ability, abilityID, role, behavioursParameters, knowledge);
-			//this.addBehaviour(new SendTreasure(this,agentSiloName,this.myTreasureType,this.myBackPack.get(this.myTreasureType)));
-
-			ACLMessage msg= new ACLMessage(ACLMessage.REQUEST);
-			msg.setProtocol(ReceiveTreasureTankerBehaviour.PROTOCOL_TANKER);
-			msg.setSender(this.getAID());
-			msg.addReceiver(new AID(agentSiloName,AID.ISLOCALNAME));
-			
-			Couple<Observation, Integer> c= new Couple<Observation, Integer>(ec.getMyTreasureType(), this.myBackPack.get(ec.getMyTreasureType()));
-			try {
-				msg.setContentObject(c);
-			} catch (IOException e) {
-				Debug.error("EmptyMyBackPack - non serializable");
-				e.printStackTrace();
-			}
-			send(msg);
-			
-			//Filter the messages
-			MessageTemplate template= 
-					MessageTemplate.and(
-							MessageTemplate.MatchSender(new AID(agentSiloName, AID.ISLOCALNAME)),
-							MessageTemplate.and(
-									MessageTemplate.MatchProtocol(ReceiveTreasureTankerBehaviour.PROTOCOL_TANKER),
-									MessageTemplate.MatchPerformative(ACLMessage.AGREE)		
-									)
-							);
-
-			//I'm waiting for a message indicating that the silo received the value. If not, then the receiver is not a silo
-			ACLMessage msg2=this.blockingReceive(template,4000);
-
-			if (msg2!=null){
-				this.myBackPack.put(ec.getMyTreasureType(), 0);
-				return true;
-			}else{
-				return false;
-			}			
-		}else{
-			return false;
-		}
-	}
 
 	/**
 	 * Throw a grenade to a given location.
@@ -275,22 +176,6 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 				EntityType et=null;
 				if (l[1].equals(agentName)){
 					switch (l[0]) {
-					case "wumpus":
-						et=EntityType.WUMPUS;
-						//deployWumpus(l[1],l[2],Integer.parseInt(l[3]),Integer.parseInt(l[4]));
-						break;
-					case "agentExplo":	
-						et=EntityType.AGENT_EXPLORER;
-						//deployAgentFromConfig(l[1], l[2],EntityType.AGENT_EXPLORER, Integer.parseInt(l[3]),Integer.parseInt(l[4]));
-						break;	
-					case "agentCollect":	
-						et=EntityType.AGENT_COLLECTOR;
-						//deployAgentFromConfig(l[1], l[2],EntityType.AGENT_COLLECTOR, Integer.parseInt(l[3]),Integer.parseInt(l[4]));
-						break;	
-					case "agentTanker":	
-						et=EntityType.AGENT_TANKER;
-						//deployAgentFromConfig(l[1], l[2],EntityType.AGENT_TANKER, Integer.parseInt(l[3]),Integer.parseInt(l[4]));
-						break;
 					case "blobAgent":	
 						et=EntityType.BLOB_AGENT;
 						//deployAgentFromConfig(l[1], l[2],EntityType.AGENT_TANKER, Integer.parseInt(l[3]),Integer.parseInt(l[4]));
@@ -319,17 +204,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 
 		return result;
 	}
-	
-	/********************************
-	 * Visible to the project only
-	 *******************************/
-	/**
-	 * Used by the Knowledge components
-	 * @return the backpack
-	 */
-	protected HashMap<Observation,Integer> getBackPack(){
-		return this.myBackPack;
-	}
+
 
 	/******************
 	 * Agent Creation
@@ -352,9 +227,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 		EntityCharacteristics ec=(EntityCharacteristics) args[0];
 		Assert.assertNotNull(ec);
 		this.ec=ec;
-		this.myBackPack=new HashMap<Observation, Integer>();
-		this.myBackPack.put(Observation.GOLD, 0);
-		this.myBackPack.put(Observation.DIAMOND, 0);
+
 	
 		this.environmentName="env";
 		//TODO move the environment name in the configuration file
@@ -370,9 +243,7 @@ public class AbstractDedaleAgent extends AbstractDeltaAgent {
 		addBehaviour(p.new R1_deployMe(gateKeeperName,this));
 		addBehaviour(p.new R1_ManagerAnswer(gateKeeperName,this));
 		
-		if (ec.getMyEntityType()==EntityType.AGENT_TANKER){
-			addBehaviour(new ReceiveTreasureTankerBehaviour(this,myBackPack));
-		}
+		
 
 		System.out.println("the agent "+this.getLocalName()+ " is started");
 	}
