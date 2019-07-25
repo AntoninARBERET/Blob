@@ -23,7 +23,7 @@ public class FoodProcessingBehaviour extends AbstractBlobBehaviour{
 	public void action() {
 		Debug.info(myBlobAgent.getPrintPrefix()+"food results "+ food.getSeqNo()+" from "+food.getSender()+" at "+new Date().toString(),1);
 		myBlobAgent.setFood(myBlobAgent.getFood()+food.getFood());
-		
+		myBlobAgent.addFoodTrade(food.getSender(), food.getFood());
 		
 		finished=true;
 	}

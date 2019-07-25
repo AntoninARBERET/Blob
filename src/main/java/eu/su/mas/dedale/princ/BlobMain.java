@@ -327,13 +327,10 @@ public class BlobMain {
 		
 
 		Integer nb_blob=ConfigurationFile.NB_BLOB_AG;
-		Float p_sink=ConfigurationFile.PROBA_SINK;
 		Float p_source=ConfigurationFile.PROBA_SOURCE;
 		Integer rounds =ConfigurationFile.ROUNDS;
 		Integer steps=ConfigurationFile.STEPS;
-		Float d_press=ConfigurationFile.DELTA_PRESSURE;
 		Integer d_t =ConfigurationFile.DELTA_T;
-		Integer d_t_sync=ConfigurationFile.DELTA_T_SYNC;
 		Float d_max=ConfigurationFile.D_MAX;
 		Float r=ConfigurationFile.R;
 		Float mu =ConfigurationFile.MU;
@@ -344,6 +341,16 @@ public class BlobMain {
 		Integer pickCapacity = ConfigurationFile.PICK_CAPACITY;
 		Integer foodConso = ConfigurationFile.FOOD_CONSO;
 		Boolean explorationEnabled = ConfigurationFile.EXPLORATION_ENABLED;
+		Integer tempoExplo = ConfigurationFile.TEMPO_EXPLO;
+		Float myPropFood=ConfigurationFile.MY_PROP_FOOD;
+		Float neighboursPropFood=ConfigurationFile.NEIGHBOURS_PROP_FOOD;
+		Float probaExplo=ConfigurationFile.PROBA_EXPLO;
+		Integer nbDirection = ConfigurationFile.NB_DIRECTION;
+		Integer distMin = ConfigurationFile.DIST_MIN;
+		Integer distMax = ConfigurationFile.DIST_MAX;
+		Float probaDeviation=ConfigurationFile.PROBA_DEVIATION;
+
+		
 		
 		ArrayList<String> agentsId = new ArrayList<String>();
 		for(int i=1; i<=nb_blob;i++) {
@@ -362,9 +369,11 @@ public class BlobMain {
 			//3) If you want to give specific parameters to your agent, add them here
 			Object [] entityParameters={agentsId, 
 					env.getG().getNode(""+i),
-					p_sink, p_source, rounds, steps, 
-					d_press, d_t, d_t_sync, d_max, r, mu, a, ad_timer, env, 
-					mode, foodBound, pickCapacity,foodConso, explorationEnabled};
+					p_source, rounds, steps, 
+					d_t, d_max, r, mu, a, ad_timer, env, 
+					mode, foodBound, pickCapacity,foodConso, explorationEnabled,
+					tempoExplo, myPropFood, neighboursPropFood, probaExplo, 
+					nbDirection, distMin, distMax, probaDeviation};
 			
 			//4) Give the class name of your agent to let the system instantiate it
 			ag=createNewDedaleAgent(c, agentName, BlobAgent.class.getName(), entityParameters);

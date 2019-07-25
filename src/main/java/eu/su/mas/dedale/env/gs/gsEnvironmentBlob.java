@@ -44,6 +44,7 @@ import eu.su.mas.dedale.env.gs.gui.JavaFxmlGui;
 import eu.su.mas.dedale.env.gs.gui.MyController;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.knowledge.NTabEntry;
+import eu.su.mas.dedale.princ.ConfigurationFile;
 import eu.su.mas.dedale.tools.Debug;
 import jade.wrapper.ContainerController;
 
@@ -592,7 +593,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 	 * 
 	 * */
 	
-	float communicationReach = 40;
+	float communicationReach = ConfigurationFile.COMM_REACH;
 	int edgeAdded=1;
 	
 	Map<Couple<String, String>, Node> connections = Collections.synchronizedMap(new HashMap<Couple<String, String>, Node>());

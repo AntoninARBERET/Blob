@@ -95,4 +95,15 @@ public final class ConfigurationFile {
 	public static int PICK_CAPACITY = 50;
 	public static int FOOD_CONSO = 2;
 	public static boolean EXPLORATION_ENABLED = true;
+	public static int TEMPO_EXPLO=10;
+	public static float MY_PROP_FOOD=(float)0.8;
+	public static float NEIGHBOURS_PROP_FOOD=(float)0.8;
+	public static float PROBA_EXPLO=(float)0.5;
+	public static int NB_DIRECTION=120;
+	public static int DIST_MIN=10;
+	public static int DIST_MAX=30;
+	public static float PROBA_DEVIATION=(float)1;
+	public static int COMM_REACH = 40;
+
+
 }

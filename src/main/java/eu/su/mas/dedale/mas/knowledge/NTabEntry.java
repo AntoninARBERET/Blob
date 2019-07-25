@@ -1,5 +1,12 @@
 package eu.su.mas.dedale.mas.knowledge;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+
+import dataStructures.tuple.Couple;
+import eu.su.mas.dedale.princ.ConfigurationFile;
+
 public class NTabEntry {
 	private String id;
 	private float Dij;
@@ -9,6 +16,8 @@ public class NTabEntry {
 	private boolean used;
 	private float posX;
 	private float posY;
+	private ArrayList<Couple<Date,Integer>> foodHist;
+	static final int DELTA_T = ConfigurationFile.DELTA_T;
 	
 	public NTabEntry(String id, float dij, float qij, float lij, int food, float posX, float posY) {
 		super();
@@ -20,6 +29,7 @@ public class NTabEntry {
 		this.used=false;
 		this.posX=posX;
 		this.posY=posY;
+		foodHist=new ArrayList<Couple<Date,Integer>>();
 	}
 	public float getDij() {
 		return Dij;
@@ -66,6 +76,21 @@ public class NTabEntry {
 	public void setPosY(float posY) {
 		this.posY = posY;
 	}
-	
-	
+	public void addFoodTrade(int val) {
+		foodHist.add(new Couple<Date,Integer>(new Date(), val));
+	}
+	public int getSentFood() {
+		Date d = new Date();
+		int sum  =0;
+		Iterator<Couple<Date, Integer>> it = foodHist.iterator();
+		while(it.hasNext()) {
+			Couple<Date, Integer> c = it.next();
+			if(d.getTime()-c.getLeft().getTime()>10*DELTA_T) {
+				it.remove();
+			}else {
+				sum+=Math.abs(c.getRight());
+			}
+		}
+		return sum;
+	}
 }

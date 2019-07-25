@@ -134,7 +134,7 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 				float mu = myBlobAgent.getMu();
 				for(Map.Entry<String, NTabEntry> entry : nTab.entrySet()) {
 					//Update qij based on 3a
-					float newq = (entry.getValue().getDij()/entry.getValue().getLij())*(myBlobAgent.getFood()-entry.getValue().getFood());
+					float newq = (entry.getValue().getDij()/entry.getValue().getLij())*(myBlobAgent.getFood()-entry.getValue().getFood()/*entry.getValue().getSentFood()*/);
 					entry.getValue().setQij(newq);
 					for(int s=0; s<myBlobAgent.getSteps(); s++) {
 						//solve 3c for Dij based on 6

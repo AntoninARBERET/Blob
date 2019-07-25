@@ -36,7 +36,7 @@ public class StateProcessingBehaviour extends AbstractBlobBehaviour{
 			if(lastCont.get(state.getSender()).getResSeqNo()<state.getSeqNo()) {
 				Debug.info(myBlobAgent.getPrintPrefix()+" fresh state from unknown "+state.getSender(), 5);
 				float lij = (float) Math.sqrt(Math.pow(myBlobAgent.getPosX()-state.getPosX(), 2)+Math.pow(myBlobAgent.getPosY()-state.getPosY(), 2));
-				nTab.put(state.getSender(), new NTabEntry(state.getSender(), (float)0.1,0,lij, state.getFood(), state.getPosX(), state.getPosY()));
+				nTab.put(state.getSender(), new NTabEntry(state.getSender(), (float)0.01,0,lij, state.getFood(), state.getPosX(), state.getPosY()));
 				myBlobAgent.getRealEnv().addConnection(myBlobAgent.getLocalName(), state.getSender());
 				LastContactTabEntry lcEntry = lastCont.get(state.getSender());
 				lcEntry.setResSeqNo(seqNo);

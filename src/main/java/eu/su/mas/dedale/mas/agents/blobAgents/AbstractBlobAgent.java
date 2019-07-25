@@ -78,6 +78,15 @@ public abstract class  AbstractBlobAgent extends Agent{
 	private int upgradedFor;
 	private boolean explorationEnabled;
 	private int lastExplo;
+	private int tempoExplo;
+	private float myPropFood;
+	private float neighboursPropFood;
+	private float probaExplo;
+	private int nbDirection;
+	private int distMin;
+	private int distMax;
+	private float probaDeviation;
+
 
 	
 	
@@ -104,30 +113,31 @@ public abstract class  AbstractBlobAgent extends Agent{
 		final Object[] args = getArguments();
 		this.agentsIds=(ArrayList<String>) args[2];
 		this.myNode=(Node) args[3];
-		this.probaSink=((Float) args[4]).floatValue();
-		this.probaSource=((Float) args[5]).floatValue();
-		this.rounds=((Integer) args[6]).intValue();
-		this.steps=((Integer) args[7]).intValue();
-		this.deltaPressure=((Float) args[8]).floatValue();
-		this.deltaT=((Integer) args[9]).intValue();
-		this.deltaTSync=((Integer) args[10]).intValue();
-		this.dMax=((Float) args[11]).floatValue();
-		this.r=((Float) args[12]).floatValue();
-		this.mu=((Float) args[13]).floatValue();
-		this.a=((Float) args[14]).floatValue();
-		this.adTimer=((Integer) args[15]).intValue();
-		this.realEnv=(gsEnvironmentBlob) args[16];
-		this.mode=(Modes) args[17];
-		this.foodBound= ((Integer) args[18]).intValue();
-		this.pickCapacity= ((Integer) args[19]).intValue();
-		this.foodConso= ((Integer) args[20]).intValue();
-		this.explorationEnabled=((Boolean) args[21]).booleanValue();
+		this.probaSource=((Float) args[4]).floatValue();
+		this.rounds=((Integer) args[5]).intValue();
+		this.steps=((Integer) args[6]).intValue();
+		this.deltaT=((Integer) args[7]).intValue();
+		this.dMax=((Float) args[8]).floatValue();
+		this.r=((Float) args[9]).floatValue();
+		this.mu=((Float) args[10]).floatValue();
+		this.a=((Float) args[11]).floatValue();
+		this.adTimer=((Integer) args[12]).intValue();
+		this.realEnv=(gsEnvironmentBlob) args[13];
+		this.mode=(Modes) args[14];
+		this.foodBound= ((Integer) args[15]).intValue();
+		this.pickCapacity= ((Integer) args[16]).intValue();
+		this.foodConso= ((Integer) args[17]).intValue();
+		this.explorationEnabled=((Boolean) args[18]).booleanValue();
+		this.tempoExplo= ((Integer) args[19]).intValue();
+		this.myPropFood=((Float) args[20]).floatValue();
+		this.neighboursPropFood=((Float) args[21]).floatValue();
+		this.probaExplo=((Float) args[22]).floatValue();
+		this.nbDirection= ((Integer) args[23]).intValue();
+		this.distMin= ((Integer) args[24]).intValue();
+		this.distMax= ((Integer) args[25]).intValue();
+		this.probaDeviation=((Float) args[26]).floatValue();
+
 		
-		
-		//check values
-		if(deltaTSync<deltaT*rounds*steps) {
-			Debug.error("deltaTSync should be greater than deltaT*rounds*steps"); 
-		}
 		
 		//initializations
 		this.seqNo=0;
@@ -381,7 +391,13 @@ public abstract class  AbstractBlobAgent extends Agent{
 		lastExplo++;
 	}
 
-
+	public void addFoodTrade(String id, int val) {
+		nTab.get(id).addFoodTrade(val);
+	}
+	
+	public int getSentFood(String id) {
+		return nTab.get(id).getSentFood();
+	}
 	
 	public void sendAdMsg() {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
@@ -487,6 +503,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 	}
 	
 	public void sendFoodMsg(String rec, int foodToSend) {
+		addFoodTrade(rec, -foodToSend);
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
 		//Reciever for broadcast
@@ -689,28 +706,27 @@ public abstract class  AbstractBlobAgent extends Agent{
 	}
 	
 	public boolean isAbleToExplore() {
-		if(lastExplo<10) {
+		
+		if(lastExplo<tempoExplo) {
 			return false;
 		}
 		//TODO Paremeter
-		if(getFood()<4*foodBound/5) {
+		if(getFood()<foodBound*myPropFood) {
 			return false;
 		}
 		for(NTabEntry entry : nTab.values()) {
-			if(entry.getFood()<foodBound/2) {
+			if(entry.getFood()<foodBound*neighboursPropFood) {
 				return false;
 			}
 		}
-		if(new Random().nextFloat()<0.5){
+		if(new Random().nextFloat()<probaExplo){
 			return false;
 		}
 		return true;
 	}
 	
 	public void explore() {
-		int nbDirection = 120;
-		float distMin=10;
-		float distMax=30;
+
 		float[] scores = new float[nbDirection];
 		float myX = getPosX();
 		float myY = getPosY();
@@ -738,7 +754,6 @@ public abstract class  AbstractBlobAgent extends Agent{
 			
 		}
 		Random random = new Random();
-		float propDeviation=(float)0.5;
 		float randF = random.nextFloat();
 //		if(rand<propDeviation/2) {
 //			dirMax=dirMax+1;
@@ -746,7 +761,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 //				dirMax=0;
 //			}
 //		}
-		if(randF<propDeviation) {
+		if(randF<probaDeviation) {
 			int randI = random.nextInt(nbDirection/8)-nbDirection/16;
 			dirMax=randI;
 			if(dirMax<0) {
@@ -767,13 +782,10 @@ public abstract class  AbstractBlobAgent extends Agent{
 		
 
 		Integer nb_blob=ConfigurationFile.NB_BLOB_AG;
-		Float p_sink=ConfigurationFile.PROBA_SINK;
 		Float p_source=ConfigurationFile.PROBA_SOURCE;
 		Integer rounds =ConfigurationFile.ROUNDS;
 		Integer steps=ConfigurationFile.STEPS;
-		Float d_press=ConfigurationFile.DELTA_PRESSURE;
 		Integer d_t =ConfigurationFile.DELTA_T;
-		Integer d_t_sync=ConfigurationFile.DELTA_T_SYNC;
 		Float d_max=ConfigurationFile.D_MAX;
 		Float r=ConfigurationFile.R;
 		Float mu =ConfigurationFile.MU;
@@ -784,16 +796,26 @@ public abstract class  AbstractBlobAgent extends Agent{
 		Integer pickCapacity = ConfigurationFile.PICK_CAPACITY;
 		Integer foodConso = ConfigurationFile.FOOD_CONSO;
 		Boolean explorationEnabled = ConfigurationFile.EXPLORATION_ENABLED;
-		
+		Integer tempoExplo = ConfigurationFile.TEMPO_EXPLO;
+		Float myPropFood=ConfigurationFile.MY_PROP_FOOD;
+		Float neighboursPropFood=ConfigurationFile.NEIGHBOURS_PROP_FOOD;
+		Float probaExplo=ConfigurationFile.PROBA_EXPLO;
+		Integer nbDirection = ConfigurationFile.NB_DIRECTION;
+		Integer distMin = ConfigurationFile.DIST_MIN;
+		Integer distMax = ConfigurationFile.DIST_MAX;
+		Float probaDeviation=ConfigurationFile.PROBA_DEVIATION;
 		
 		
 		ArrayList<String> agentsId = realEnv.getListWithMyId(agentName);
 		//3) If you want to give specific parameters to your agent, add them here
 		Object [] entityParameters={agentsId, 
 				n,
-				p_sink, p_source, rounds, steps, 
-				d_press, d_t, d_t_sync, d_max, r, mu, a, ad_timer, realEnv, 
-				mode, foodBound, pickCapacity,foodConso, explorationEnabled};
+				p_source, rounds, steps, 
+				d_t, d_max, r, mu, a, ad_timer, realEnv, 
+				mode, foodBound, pickCapacity,foodConso, explorationEnabled,
+				tempoExplo, myPropFood, neighboursPropFood, probaExplo, 
+				nbDirection, distMin, distMax, probaDeviation};
+		
 		
 		//4) Give the class name of your agent to let the system instantiate it
 		AgentController ag=createNewDedaleAgent(realEnv.getC(), agentName, BlobAgent.class.getName(), entityParameters);
