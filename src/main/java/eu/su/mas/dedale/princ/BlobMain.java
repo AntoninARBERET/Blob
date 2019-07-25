@@ -349,7 +349,7 @@ public class BlobMain {
 		Integer distMin = ConfigurationFile.DIST_MIN;
 		Integer distMax = ConfigurationFile.DIST_MAX;
 		Float probaDeviation=ConfigurationFile.PROBA_DEVIATION;
-
+		Float propKeep=ConfigurationFile.PROP_KEEP;
 		
 		
 		ArrayList<String> agentsId = new ArrayList<String>();
@@ -373,7 +373,7 @@ public class BlobMain {
 					d_t, d_max, r, mu, a, ad_timer, env, 
 					mode, foodBound, pickCapacity,foodConso, explorationEnabled,
 					tempoExplo, myPropFood, neighboursPropFood, probaExplo, 
-					nbDirection, distMin, distMax, probaDeviation};
+					nbDirection, distMin, distMax, probaDeviation, propKeep};
 			
 			//4) Give the class name of your agent to let the system instantiate it
 			ag=createNewDedaleAgent(c, agentName, BlobAgent.class.getName(), entityParameters);

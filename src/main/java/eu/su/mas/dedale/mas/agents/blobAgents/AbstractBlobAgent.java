@@ -86,7 +86,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 	private int distMin;
 	private int distMax;
 	private float probaDeviation;
-
+	private float propKeep;
 
 	
 	
@@ -136,6 +136,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.distMin= ((Integer) args[24]).intValue();
 		this.distMax= ((Integer) args[25]).intValue();
 		this.probaDeviation=((Float) args[26]).floatValue();
+		this.propKeep=((Float) args[26]).floatValue();
 
 		
 		
@@ -677,8 +678,8 @@ public abstract class  AbstractBlobAgent extends Agent{
 		}
 		//I'm not alone
 		else {
-			//partToKeep=Math.max(Math.min(meanFood, myFood+pickup), (myFood+pickup+1)/2); //Keep at least 1/2 food
-			partToKeep=Math.min(meanFood, myFood+pickup);
+			partToKeep=(int)Math.max(Math.min(meanFood, myFood+pickup), (myFood+pickup+1)*propKeep); //Keep at least 1/2 food
+			//partToKeep=Math.min(meanFood, myFood+pickup);
 			partToGive=myFood+pickup-partToKeep;
 			
 			if(partToGive!=0) {
@@ -804,7 +805,8 @@ public abstract class  AbstractBlobAgent extends Agent{
 		Integer distMin = ConfigurationFile.DIST_MIN;
 		Integer distMax = ConfigurationFile.DIST_MAX;
 		Float probaDeviation=ConfigurationFile.PROBA_DEVIATION;
-		
+		Float propKeep=ConfigurationFile.PROP_KEEP;
+
 		
 		ArrayList<String> agentsId = realEnv.getListWithMyId(agentName);
 		//3) If you want to give specific parameters to your agent, add them here
@@ -814,7 +816,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 				d_t, d_max, r, mu, a, ad_timer, realEnv, 
 				mode, foodBound, pickCapacity,foodConso, explorationEnabled,
 				tempoExplo, myPropFood, neighboursPropFood, probaExplo, 
-				nbDirection, distMin, distMax, probaDeviation};
+				nbDirection, distMin, distMax, probaDeviation, propKeep};
 		
 		
 		//4) Give the class name of your agent to let the system instantiate it
