@@ -99,7 +99,9 @@ public class BlobingBehaviour extends AbstractBlobBehaviour{
 				decision = myBlobAgent.getDecision(availableFood);
 			}
 			else if(myBlobAgent.getMode()==AbstractBlobAgent.Modes.STATIC_FOOD) {
-				//TODO
+				if(myBlobAgent.getMyNode().hasAttribute("food")) {
+					decision = myBlobAgent.getDecision((int)myBlobAgent.getMyNode().getAttribute("food"));
+				}
 			}
 			else if(myBlobAgent.getMode()==AbstractBlobAgent.Modes.FOOD_IN_ENV) {
 				decision=myBlobAgent.decideAndPick();

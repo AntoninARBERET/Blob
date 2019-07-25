@@ -1,13 +1,9 @@
 package eu.su.mas.dedale.mas.agent.behaviours.blob;
 
-import java.time.Clock;
-import java.util.Random;
-import java.util.Date;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.msgcontent.AdMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.FoodMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.StateMsgContent;
-import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
