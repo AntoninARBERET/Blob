@@ -1,7 +1,11 @@
 package eu.su.mas.dedale.mas.knowledge;
 
 import java.util.Date;
-
+/**
+ * Entry in the last contact table of the blobagent
+ * @author antoninarberet
+ *
+ */
 public class LastContactTabEntry {
 	private String id;
 	private Date date;

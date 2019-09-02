@@ -7,6 +7,11 @@ import java.util.Iterator;
 import dataStructures.tuple.Couple;
 import eu.su.mas.dedale.princ.ConfigurationFile;
 
+/**
+ * Entry int the neigbour table of the agent
+ * @author antoninarberet
+ *
+ */
 public class NTabEntry {
 	private String id;
 	private float Dij;
@@ -79,6 +84,10 @@ public class NTabEntry {
 	public void addFoodTrade(int val) {
 		foodHist.add(new Couple<Date,Integer>(new Date(), val));
 	}
+	
+	/**
+	 * return recently sent food
+	 */
 	public int getSentFood() {
 		Date d = new Date();
 		int sum  =0;

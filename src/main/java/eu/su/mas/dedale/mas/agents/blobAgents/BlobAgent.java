@@ -1,7 +1,7 @@
 package eu.su.mas.dedale.mas.agents.blobAgents;
 
 /**
- * Mainly a instaciable version of AbstractBlobAgent
+ * Mainly a instantiable version of AbstractBlobAgent
  * @author arberet
  *
  */

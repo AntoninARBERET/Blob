@@ -96,8 +96,14 @@ public class gsEnvironmentBlob implements IEnvironment {
 	private ProxyPipe pipe;
 	private MyController m;
 	
+	/**
+	 * List of RWLock to get acces to food nodes
+	 */
 	private BlockingQueue<Couple<Node, ReadWriteLock>> foodList;
 
+	/**
+	 * number of BlobAgent
+	 */
 	private int nbBlob;
 	
 	private ArrayList<String> agentsId;
@@ -422,6 +428,11 @@ public class gsEnvironmentBlob implements IEnvironment {
 	 */
 
 
+	/**
+	 * create a new node for a BlobAgent
+	 * @param id of the agent
+	 * @return the node
+	 */
 	public synchronized Node getNewBlobNode(int id) {
 		Node n = graph.addNode(id+"");
 		n.setAttribute("ui.class", "blobi");
@@ -436,11 +447,22 @@ public class gsEnvironmentBlob implements IEnvironment {
 		return n;
 	}
 
+	/**
+	 * indicate that a BlobAgent is on the Node
+	 * @param n node
+	 * @param e not used in this version, can be null
+	 * @param entityName
+	 */
 	public void indicateEntityPresence(Node n,EntityCharacteristics e, String entityName) {
 		n.setAttribute("blob", entityName);
 		updateNodeRendering(n);
 	}
 
+	/**
+	 * indicate that food is on the node
+	 * @param n node
+	 * @param value of food quantity
+	 */
 	private void indicateFoodPresence(Node n, int value) {
 
 		Debug.info("Env : food at "+n+" = "+ value,7);
@@ -586,7 +608,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 	 * 
 	 * 
 	 * 
-	 * BLOB MODIFS
+	 * BLOB MODIF
 	 * 
 	 * 
 	 * 
@@ -633,6 +655,11 @@ public class gsEnvironmentBlob implements IEnvironment {
 
 	}
 	
+	/**
+	 * retrun the node associated to the agent
+	 * @param agentId 
+	 * @return node
+	 */
 	private Node getBlobAgentNode(String agentId) {
 		String nodeId = agentId.substring(4);
 		return this.graph.getNode(nodeId);
@@ -641,6 +668,10 @@ public class gsEnvironmentBlob implements IEnvironment {
 		
 	}
 	
+	/**
+	 * get a new number to use as an id for new edge
+	 * @return numbet
+	 */
 	private synchronized int getNewEdgeId() {
 		return this.edgeAdded++;
 	}
@@ -678,6 +709,11 @@ public class gsEnvironmentBlob implements IEnvironment {
 		//return g;
 	}
 	
+	/**
+	 * Create a new connection between two agent, check the state of the connection and update the GUI
+	 * @param ag1 agent 1
+	 * @param ag2 agent 2
+	 */
 	public synchronized boolean addConnection(String ag1, String ag2) {
 		Couple<String,String> key = new Couple<String,String>(ag1,ag2);
 		Couple<String,String> yek = new Couple<String,String>(ag2,ag1);
@@ -720,6 +756,9 @@ public class gsEnvironmentBlob implements IEnvironment {
 		return false;
 	}
 
+	/**
+	 * remove connection between ag1 and ag2, then update the GUI
+	 */
 	public synchronized boolean removeConnection(String n1, String n2) {
 		Couple<String,String> key = new Couple<String,String>(n1,n2);
 		Couple<String,String> yek = new Couple<String,String>(n2,n1);
@@ -740,6 +779,7 @@ public class gsEnvironmentBlob implements IEnvironment {
 		return true;
 	}
 	
+
 	public synchronized Map<Couple<String, String>, Node> getConnections() {
 		return connections;
 	}
@@ -747,6 +787,9 @@ public class gsEnvironmentBlob implements IEnvironment {
 	/*public ArrayList<Couple<String, Node>> getConnections(String ag){
 		
 	}*/
+	/**
+	 * return distance between two agent ag1 and ag2
+	 */
 	public float getDist(String ag1, String ag2) {
 		Node n1 = getBlobAgentNode(ag1);
 		Node n2 = getBlobAgentNode(ag2);
@@ -754,11 +797,19 @@ public class gsEnvironmentBlob implements IEnvironment {
 		return d;
 	}
 	
+	/**
+	 * return distance between two nodes n1 and n2
+	 */
 	public float getDist(Node n1, Node n2) {
 		float d = (float) Math.sqrt(Math.pow((float)GraphPosLengthUtils.nodePosition(n2)[0]-(float)GraphPosLengthUtils.nodePosition(n1)[0],2)+Math.pow((float)GraphPosLengthUtils.nodePosition(n2)[1]-(float)GraphPosLengthUtils.nodePosition(n1)[1],2));
 		return d;
 	}
 	
+	/**
+	 * return the closer food node the agent can reach
+	 * @param agentNode
+	 * @return the node if it exists, null if not
+	 */
 	public Couple<Node, ReadWriteLock> getUsableFoodNode(Node agentNode){
 		Couple<Node, ReadWriteLock> min = null;
 		float minDist = Float.MAX_VALUE;
@@ -778,6 +829,10 @@ public class gsEnvironmentBlob implements IEnvironment {
 		return min;
 	}
 	
+	/**
+	 * remove food node if empty
+	 * @param c
+	 */
 	public void updateFoodNode(Couple<Node, ReadWriteLock> c){
 		if((int)c.getLeft().getAttribute("quantity")<=0) {
 			foodList.remove(c);
@@ -825,6 +880,9 @@ public class gsEnvironmentBlob implements IEnvironment {
 		}
 	}
 	
+	/**
+	 * Update the e edge render
+	 */
 	public void updateEdgeStyle(Edge e, float d, float dMax){
 		float prop=d/dMax;
 		if(prop>=1) {
@@ -837,6 +895,9 @@ public class gsEnvironmentBlob implements IEnvironment {
 		e.setAttribute("ui.color", /*prop*/(float)1.0);
 	}
 	
+	/**
+	 * update the ag agent node and edges associated
+	 */
 	public synchronized void updateNodeAndEdgesStyle(AbstractBlobAgent ag) {
 		Node n = ag.getMyNode();
 		
@@ -888,10 +949,15 @@ public class gsEnvironmentBlob implements IEnvironment {
 		return pipe;
 	}
 	
+	/**
+	 * get number of a new blob agent
+	 * @return
+	 */
 	public synchronized int incAndGetNbBlob() {
 		nbBlob++;
 		return nbBlob;
 	}
+
 
 
 	public void setAgentsId(ArrayList<String> agentsId) {

@@ -2,6 +2,11 @@ package eu.su.mas.dedale.mas.msgcontent;
 
 import java.util.ArrayList;
 
+/**
+ * Ad message content
+ * @author antoninarberet
+ *
+ */
 public class AdMsgContent extends AbstractMsgContent {
 	/**
 	 * 

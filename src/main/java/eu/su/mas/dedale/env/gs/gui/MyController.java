@@ -32,10 +32,19 @@ public class MyController {
 	
 	@FXML private AnchorPane right;
 	
+	/**
+	 * list of node to display with pressure on the right
+	 */
 	@FXML private ListView listNode;
 	
+	/**
+	 * Label on the top of the list
+	 */
 	@FXML private Label pressureLabel;
 	
+	/**
+	 * list of pressure associated to nodes
+	 */
 	private ArrayList<Float> pressList;
 
 	@FXML
@@ -88,14 +97,17 @@ public class MyController {
 		
 	}
 	
-	//TODO
+	/**
+	 * Add nodes of the graph g to the listNode and associate null pressure in pressList
+	 * @param g
+	 */
 	public synchronized void setNodeList(Graph g) {
 		Iterator<Node> it = g.iterator();
 		pressList = new ArrayList<Float>();
 		while(it.hasNext()){
 			Node n = it.next();
 			if(n.getAttribute("ui.class").equals("blobi")) {
-				listNode.getItems().add("Node "+ n.getId() +"\t Pressure = "+ 0);
+				listNode.getItems().add("Node "+ n.getId() +"\t Food = "+ 0);
 				pressList.add(new Float(0));
 			}
 		}	
@@ -108,29 +120,29 @@ public class MyController {
 		
 	}
 	
+	/**
+	 * Add a new node id to listNode and set the associate pressure at 0
+	 * @param id
+	 */
 	public synchronized void addToPressList(int id) {
-		listNode.getItems().add("Node "+ id +"\t Pressure = "+ 0);
+		listNode.getItems().add("Node "+ id +"\t Food = "+ 0);
 		pressList.add(new Float(0));
 	}
 	
+	/**
+	 * set the pressure of id at pressure
+	 * @param id
+	 * @param pressure
+	 */
 	public synchronized void setPressure(String id, float pressure) {
 		//Debug.info("ID "+id);
-		listNode.getItems().set(Integer.valueOf(id)-1, "Node "+ id +"\t Pressure = "+ pressure);
+		listNode.getItems().set(Integer.valueOf(id)-1, "Node "+ id +"\t Food = "+ pressure);
 		pressList.set(Integer.valueOf(id)-1,pressure);
 		float tot = 0;
 		for(int i = 0; i<pressList.size(); i++) {
 			tot=tot+pressList.get(i);
 		}
-		pressureLabel.setText("Total pressure = " +tot);
+		pressureLabel.setText("Total Food = " +tot);
 		
 	}
-	
-	public synchronized void setFoodZone(int x1, int y1, int x2, int y2) {
-		Rectangle r  = new Rectangle(x1,y1,x2,y2);
-		r.setFill(Color.TRANSPARENT);
-        r.setStroke(Color.RED);
-        r.setStrokeWidth(2);
-		right.getChildren().add(r);
-	}
-
 }

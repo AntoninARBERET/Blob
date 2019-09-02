@@ -1,10 +1,12 @@
 package eu.su.mas.dedale.mas.msgcontent;
 
-
+/**
+ * Food message content
+ * @author antoninarberet
+ *
+ */
 public class FoodMsgContent extends AbstractMsgContent {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 8784788210014944295L;
 	private int food;
 

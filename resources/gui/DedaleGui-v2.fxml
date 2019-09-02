@@ -27,7 +27,7 @@
               <items>
                 <AnchorPane fx:id="left" minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="172.0">
                      <children>
-                        <Label fx:id="pressureLabel" layoutY="1.0" prefHeight="29.0" prefWidth="235.0" text="Total pressure" textAlignment="CENTER" />
+                        <Label fx:id="pressureLabel" layoutY="1.0" prefHeight="29.0" prefWidth="235.0" text="Total food" textAlignment="CENTER" />
                         <Separator layoutY="33.0" prefHeight="12.0" prefWidth="235.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                         <ListView fx:id="listNode" layoutY="45.0" prefHeight="425.0" prefWidth="235.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
                      </children></AnchorPane>

@@ -2,6 +2,12 @@ package eu.su.mas.dedale.mas.msgcontent;
 
 import java.io.Serializable;
 
+/**
+ * Abstract class, contains the content needed in every message, implements serializable interface
+ * to be sendable
+ * @author antoninarberet
+ *
+ */
 public abstract class AbstractMsgContent implements Serializable {
 	/**
 	 * 

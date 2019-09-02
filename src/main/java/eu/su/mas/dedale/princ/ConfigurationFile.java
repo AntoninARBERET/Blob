@@ -104,6 +104,6 @@ public final class ConfigurationFile {
 	public static int DIST_MAX=30;
 	public static float PROBA_DEVIATION=(float)1;
 	public static int COMM_REACH = 40;
-	public static float PROP_KEEP = 0;
+	public static float PROP_KEEP = (float)0.5;
 
 }

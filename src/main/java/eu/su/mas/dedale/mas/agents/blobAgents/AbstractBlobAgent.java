@@ -229,6 +229,10 @@ public abstract class  AbstractBlobAgent extends Agent{
 	}
 
 
+	/**
+	 * get the next seq number
+	 * @return
+	 */
 	private synchronized int getAndIncSeqNo() {
 		seqNo++;
 		return seqNo;
@@ -315,9 +319,13 @@ public abstract class  AbstractBlobAgent extends Agent{
 		return lastContact;
 	}
 	
+	/**
+	 * get next node to forward a package for dest
+	 */
 	public HashSet<String> getNextTo(String dest){
 		return routingTab.get(dest);
 	}
+	
 	
 	public void addToRoutingTab(String dest, String hop) {
 		if(routingTab.containsKey(dest)) {
@@ -400,6 +408,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		return nTab.get(id).getSentFood();
 	}
 	
+	/**
+	 * Send an Ad message
+	 */
 	public void sendAdMsg() {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
@@ -421,7 +432,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 	}
 	
 
-	
+	/**
+	 * Rebrodcast a received Ad message
+	 */
 	public void rebroadcastAd(AdMsgContent ad) {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
@@ -442,6 +455,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.sendMessage(msg);
 	}
 	
+	/**
+	 * Send a coLost message
+	 */
 	public void sendCoLostMsg(String lostNode) {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
@@ -462,6 +478,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.sendMessage(msg);
 	}
 	
+	/**
+	 * Rebroadcat a received coLost message message
+	 */
 	public void reBroadcastCoLostMsg(CoLostMsgContent coLost) {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
@@ -482,6 +501,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.sendMessage(msg);
 	}
 	
+	/**
+	 * Resend a received coLost message to a specific agent
+	 */
 	public void reSendCoLostMsgTo(CoLostMsgContent coLost, String receiver) {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
@@ -495,14 +517,24 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.sendMessage(msg);
 	}
 	
+	/**
+	 * print the prefix of the agent concatenated with s
+	 * @param s
+	 */
 	public void print(String s) {
 		System.out.println(this.getLocalName()+"\t ----> "+s);
 	}
 	
+	/**
+	 * Return a prefix used to identify the agent in console displays
+	 */
 	public String getPrintPrefix() {
 		return this.getLocalName()+"\t ----> ";
 	}
 	
+	/**
+	 * Send a food message
+	 */
 	public void sendFoodMsg(String rec, int foodToSend) {
 		addFoodTrade(rec, -foodToSend);
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
@@ -520,6 +552,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.sendMessage(msg);
 	}
 	
+	/**
+	 * Send a state message
+	 */
 	public void sendStatetMsg() {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		msg.setSender(this.getAID());
@@ -541,7 +576,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		this.sendMessage(msg);
 	}
 	
-	
+	/**
+	 * Send a message, used by every message sending function
+	 */
 	public void sendMessage(ACLMessage msg){
 		Assert.assertNotNull("The sender must have been defined",msg.getSender());
 
@@ -567,6 +604,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		//}
 	}
 	
+	/**
+	 * check if neighbours are still close to the agent
+	 */
 	public void checkContacts() {
 		ArrayList<String> toRemove = new ArrayList<String>();
 		float delay;
@@ -600,7 +640,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 	}
 	
 	
-	
+	/**
+	 *Decide how to pick and pick it
+	 */
 	public Couple<Integer,Map<String,Integer>> decideAndPick() {
 		Couple<Node, ReadWriteLock> c = realEnv.getUsableFoodNode(myNode);
 		if(c == null) {
@@ -629,6 +671,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		return decision;
 	}
 
+	/**
+	 * Decide the way to pick and share the available food
+	 */
 	public Couple<Integer,Map<String,Integer>> getDecision(int availableFood){
 		//Counting how much we need food
 		int myFood = getFood();
@@ -678,7 +723,7 @@ public abstract class  AbstractBlobAgent extends Agent{
 		}
 		//I'm not alone
 		else {
-			partToKeep=(int)Math.max(Math.min(meanFood, myFood+pickup), (myFood+pickup+1)*propKeep); //Keep at least 1/2 food
+			partToKeep=(int)Math.min(Math.min(meanFood, myFood+pickup), (myFood+pickup+1)*propKeep); //Keep at least 1/2 food
 			//partToKeep=Math.min(meanFood, myFood+pickup);
 			partToGive=myFood+pickup-partToKeep;
 			
@@ -706,6 +751,10 @@ public abstract class  AbstractBlobAgent extends Agent{
 		return(new Couple<Integer,Map<String,Integer>> (new Integer(pickup), giveAway));
 	}
 	
+	/**
+	 * Check if an agent is in condition to explore
+	 * @return
+	 */
 	public boolean isAbleToExplore() {
 		
 		if(lastExplo<tempoExplo) {
@@ -726,6 +775,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		return true;
 	}
 	
+	/**
+	 * Explore the environment : create a new agent and a node for it
+	 */
 	public void explore() {
 
 		float[] scores = new float[nbDirection];
@@ -831,6 +883,9 @@ public abstract class  AbstractBlobAgent extends Agent{
 		
 	}
 	
+	/**
+	 * create a new agent
+	 */
 	private static AgentController createNewDedaleAgent(ContainerController initialContainer, String agentName,String className, Object[] additionnalParameters){
 		//Object[] objtab=new Object[]{env,agentName};//used to give informations to the agent
 		Object[] objtab=AbstractDedaleAgent.loadEntityCaracteristics(agentName,ConfigurationFile.INSTANCE_CONFIGURATION_ENTITIES);

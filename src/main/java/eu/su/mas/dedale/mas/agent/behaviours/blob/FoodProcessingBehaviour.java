@@ -8,11 +8,13 @@ import eu.su.mas.dedale.mas.msgcontent.FoodMsgContent;
 
 import eu.su.mas.dedale.tools.Debug;
 
-
+/**
+ * Used to process a food message on reception
+ * @author antoninarberet
+ *
+ */
 public class FoodProcessingBehaviour extends AbstractBlobBehaviour{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -552903737105053141L;
 	private FoodMsgContent food;
 	public FoodProcessingBehaviour(AbstractBlobAgent myBlobAgent, FoodMsgContent food){

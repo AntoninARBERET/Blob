@@ -1,10 +1,11 @@
 package eu.su.mas.dedale.mas.msgcontent;
 
-
+/**
+ * State message content
+ * @author antoninarberet
+ *
+ */
 public class StateMsgContent extends AbstractMsgContent {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2673317524141240199L;
 	private float posX,posY;
 	private int food;

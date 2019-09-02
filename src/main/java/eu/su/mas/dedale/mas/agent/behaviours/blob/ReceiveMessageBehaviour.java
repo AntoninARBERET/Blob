@@ -6,11 +6,13 @@ import eu.su.mas.dedale.mas.msgcontent.FoodMsgContent;
 import eu.su.mas.dedale.mas.msgcontent.StateMsgContent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-
+/**
+ * Behaviour blocked until a message arrives, then add the corresponding behaviour to the queue of behaviour
+ * @author antoninarberet
+ *
+ */
 public class ReceiveMessageBehaviour extends AbstractBlobBehaviour{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 798562981577225116L;
 
 	public ReceiveMessageBehaviour(AbstractBlobAgent myBlobAgent){

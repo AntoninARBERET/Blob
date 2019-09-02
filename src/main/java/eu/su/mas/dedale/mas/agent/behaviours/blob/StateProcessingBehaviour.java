@@ -10,6 +10,11 @@ import eu.su.mas.dedale.mas.knowledge.NTabEntry;
 import eu.su.mas.dedale.mas.msgcontent.StateMsgContent;
 import eu.su.mas.dedale.tools.Debug;
 
+/**
+ * Used at reception of a state package to update knowledge and forward it if needed
+ * @author antoninarberet
+ *
+ */
 public class StateProcessingBehaviour extends AbstractBlobBehaviour{
 	private StateMsgContent state;
 	public StateProcessingBehaviour(AbstractBlobAgent myBlobAgent, StateMsgContent state){

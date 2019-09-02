@@ -6,11 +6,13 @@ import java.util.Iterator;
 import eu.su.mas.dedale.mas.agents.blobAgents.AbstractBlobAgent;
 import eu.su.mas.dedale.mas.msgcontent.CoLostMsgContent;
 
-
+/**
+ * Used on reception of a CoLost message to forward it
+ * @author antoninarberet
+ *
+ */
 public abstract class CoLostProcessingBehaviour extends AbstractBlobBehaviour{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1184763466861677073L;
 	private CoLostMsgContent coLost;
 	public CoLostProcessingBehaviour(AbstractBlobAgent myBlobAgent, CoLostMsgContent coLost){
